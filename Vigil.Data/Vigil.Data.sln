@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{22939AA9-17CD-4EF2-92AC-205EF9B79321}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Data Core", "Vigil Data Core", "{96D44A0B-F033-496F-A3F7-9CA00219B794}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigi.Data.Core", "Vigi.Data.Core\Vigi.Data.Core.csproj", "{19D5BC74-A409-435A-9DD0-18AC8346FF3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Modeling", "Vigil.Data.Modeling\Vigil.Data.Modeling.csproj", "{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Services", "Vigil.Data.Services\Vigil.Data.Services.csproj", "{12290054-BB9A-41F2-97E1-F6D64FFE36E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Data", "Vigil.Testing.Data\Vigil.Testing.Data.csproj", "{DF5B52C3-6153-4984-B75A-F314C30C5E8E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19D5BC74-A409-435A-9DD0-18AC8346FF3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19D5BC74-A409-435A-9DD0-18AC8346FF3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19D5BC74-A409-435A-9DD0-18AC8346FF3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19D5BC74-A409-435A-9DD0-18AC8346FF3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12290054-BB9A-41F2-97E1-F6D64FFE36E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12290054-BB9A-41F2-97E1-F6D64FFE36E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12290054-BB9A-41F2-97E1-F6D64FFE36E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12290054-BB9A-41F2-97E1-F6D64FFE36E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF5B52C3-6153-4984-B75A-F314C30C5E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF5B52C3-6153-4984-B75A-F314C30C5E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF5B52C3-6153-4984-B75A-F314C30C5E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF5B52C3-6153-4984-B75A-F314C30C5E8E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19D5BC74-A409-435A-9DD0-18AC8346FF3B} = {96D44A0B-F033-496F-A3F7-9CA00219B794}
+		{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA} = {96D44A0B-F033-496F-A3F7-9CA00219B794}
+		{12290054-BB9A-41F2-97E1-F6D64FFE36E7} = {96D44A0B-F033-496F-A3F7-9CA00219B794}
+		{DF5B52C3-6153-4984-B75A-F314C30C5E8E} = {96D44A0B-F033-496F-A3F7-9CA00219B794}
+	EndGlobalSection
+EndGlobal
