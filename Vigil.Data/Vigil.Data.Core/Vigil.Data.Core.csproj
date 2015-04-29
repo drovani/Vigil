@@ -7,8 +7,8 @@
     <ProjectGuid>{19D5BC74-A409-435A-9DD0-18AC8346FF3B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vigi.Data.Core</RootNamespace>
-    <AssemblyName>Vigi.Data.Core</AssemblyName>
+    <RootNamespace>Vigil.Data.Core</RootNamespace>
+    <AssemblyName>Vigil.Data.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>

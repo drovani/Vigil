@@ -30,10 +30,20 @@ namespace Vigil.Testing.Data.Modeling
             VigilUser testUser = new VigilUser{ UserName = "TestUser" };
 
             DateTime now = new DateTime(2015, 4, 23, 13, 33, 12, DateTimeKind.Utc);
-            VigilContext context = new VigilContext(testUser, now);
+            IVigilContext context = new VigilContext(testUser, now);
 
             Assert.AreEqual(testUser, context.AffectedBy);
             Assert.AreEqual(now, context.Now);
+        }
+
+        [TestMethod]
+        public void Set_Method_Returns_Valid_Objects()
+        {
+            VigilUser testUser = new VigilUser { UserName = "TestUser" };
+            DateTime now = new DateTime(2015, 04, 29, 11, 51, 14, DateTimeKind.Utc);
+            IVigilContext context = new VigilContext(testUser, now);
+
+            Assert.IsInstanceOfType(context.Set<VigilUser>(), typeof(IDbSet<VigilUser>));
         }
     }
 }

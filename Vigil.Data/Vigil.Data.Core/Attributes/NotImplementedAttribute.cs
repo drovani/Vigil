@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Vigi.Data.Core.Attributes
+namespace Vigil.Data.Core.Attributes
 {
-    public class NotImplementedAttribute:Attribute
+    public class NotImplementedAttribute : Attribute
     {
         public NotImplementedAttribute()
         {

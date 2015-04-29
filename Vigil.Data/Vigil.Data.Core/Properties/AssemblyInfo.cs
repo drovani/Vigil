@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Vigi.Data.Core")]
+[assembly: AssemblyTitle("Vigil.Data.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vigil Projects")]
-[assembly: AssemblyProduct("Vigi.Data.Core")]
+[assembly: AssemblyProduct("Vigil.Data.Core")]
 [assembly: AssemblyCopyright("Copyright © Vigil Projects 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
