@@ -8,6 +8,8 @@ namespace Vigil.Data.Core
     {
         VigilUser AffectedBy { get; }
         DateTime Now { get; }
+
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Set")]
         IDbSet<TEntity> Set<TEntity>() where TEntity : class;
         int SaveChanges();
     }

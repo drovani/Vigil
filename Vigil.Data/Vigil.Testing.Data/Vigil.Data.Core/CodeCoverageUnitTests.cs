@@ -7,11 +7,11 @@ namespace Vigil.Testing.Data.Vigil.Data.Core
     [TestClass]
     public class CodeCoverageUnitTests
     {
-        [TestMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Vigil.Data.Core.Attributes.NotImplementedAttribute"), TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
         public void NotImplementedAttribute_Throws_NotImplementedException()
         {
-            var nia = new NotImplementedAttribute();
+            new NotImplementedAttribute();
 
             Assert.Fail("Constructor should have throw Not Implemented Exception.");
         }

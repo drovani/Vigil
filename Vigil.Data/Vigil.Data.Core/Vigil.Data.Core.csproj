@@ -66,6 +66,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -96,7 +97,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\NotImplementedAttribute.cs" />
+    <Compile Include="Identity.cs" />
+    <Compile Include="Interfaces\IEffectiveRange.cs" />
+    <Compile Include="Interfaces\IEffective.cs" />
+    <Compile Include="Interfaces\IOrdered.cs" />
+    <Compile Include="Interfaces\IDeleted.cs" />
+    <Compile Include="Interfaces\IModified.cs" />
+    <Compile Include="Interfaces\ICreated.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\ChangeLog.cs" />
     <Compile Include="System\VigilRole.cs" />
     <Compile Include="System\VigilUser.cs" />
     <Compile Include="System\VigilUserClaim.cs" />

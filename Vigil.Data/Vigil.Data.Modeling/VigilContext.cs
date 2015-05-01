@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core.System;
 
@@ -33,6 +34,7 @@ namespace Vigil.Data.Core
             return base.Set<TEntity>();
         }
 
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("vigil");
