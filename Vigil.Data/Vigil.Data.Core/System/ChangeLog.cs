@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Vigil.Data.Core.System
 {
@@ -32,19 +31,22 @@ namespace Vigil.Data.Core.System
         /// <param name="oldValue">The old value of the changing member.</param>
         /// <param name="newValue">The new value of the changing member.</param>
         /// <returns>A new ChangeLog instance.</returns>
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
         public static ChangeLog CreateLog<TSource, TProperty>(Guid identifier, Expression<Func<TSource, TProperty>> property, TProperty oldValue, TProperty newValue)
         {
-            Contract.Requires<ArgumentNullException>(identifier != null);
             Contract.Requires<ArgumentNullException>(property != null);
-            Contract.Requires<ArgumentException>(property is MemberExpression);
-            Contract.Requires<AggregateException>((property as MemberExpression).Member is MemberInfo);
+            Contract.Ensures(Contract.Result<ChangeLog>() != null);
+
+            MemberExpression memExpr = property.Body as MemberExpression;
+            if (memExpr == null)
+            {
+                throw new ArgumentException("Expression must be a MemberExpression");
+            }
 
             return new ChangeLog()
             {
                 SourceId = identifier,
                 ModelName = typeof(TSource).Name,
-                PropertyName = ((MemberInfo)((MemberExpression)property.Body).Member).Name,
+                PropertyName = memExpr.Member.Name,
                 OldValue = oldValue == null ? null : oldValue.ToString(),
                 NewValue = newValue == null ? null : newValue.ToString()
             };
@@ -62,8 +64,7 @@ namespace Vigil.Data.Core.System
         {
             Contract.Requires<ArgumentNullException>(source != null);
             Contract.Requires<ArgumentNullException>(property != null);
-            Contract.Requires<ArgumentException>(property is MemberExpression);
-            Contract.Requires<AggregateException>((property as MemberExpression).Member is MemberInfo);
+            Contract.Ensures(Contract.Result<ChangeLog>() != null);
 
             return CreateLog<TSource, TProperty>(source.Id, property, oldValue, newValue);
         }

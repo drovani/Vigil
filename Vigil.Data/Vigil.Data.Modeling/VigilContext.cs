@@ -34,9 +34,11 @@ namespace Vigil.Data.Core
             return base.Set<TEntity>();
         }
 
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
+        [ContractVerification(false)]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Contract.Assume(modelBuilder != null);
+
             modelBuilder.HasDefaultSchema("vigil");
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vigil.Data.Core;
 using Vigil.Data.Core.System;
 using Vigil.Testing.Data.TestClasses;
 
