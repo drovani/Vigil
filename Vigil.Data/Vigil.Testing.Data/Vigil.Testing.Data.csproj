@@ -118,11 +118,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Core\System\ChangeLogTests.cs" />
+    <Compile Include="Core\IdentityTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Modeling\VigilContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClasses\TestIdentity.cs" />
     <Compile Include="Core\CodeCoverageUnitTests.cs" />
+    <Compile Include="TestClasses\TestTypeBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

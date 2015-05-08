@@ -98,7 +98,9 @@
   <ItemGroup>
     <Compile Include="Attributes\NotImplementedAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Identity.cs" />
+    <Compile Include="Identity.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Interfaces\IEffectiveRange.cs" />
     <Compile Include="Interfaces\IEffective.cs" />
     <Compile Include="Interfaces\IOrdered.cs" />
@@ -112,6 +114,9 @@
     <Compile Include="System\VigilUserClaim.cs" />
     <Compile Include="System\VigilUserLogin.cs" />
     <Compile Include="System\VigilUserRole.cs" />
+    <Compile Include="TypeBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

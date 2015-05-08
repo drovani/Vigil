@@ -20,7 +20,7 @@ namespace Vigil.Data.Core.System
         public string OldValue { get; protected set; }
         public string NewValue { get; protected set; }
 
-        private ChangeLog() { }
+        private ChangeLog() : base() { }
 
         /// <summary>Creates a new ChangeLog object.
         /// </summary>
