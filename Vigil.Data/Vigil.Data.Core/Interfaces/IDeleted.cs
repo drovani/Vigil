@@ -31,6 +31,7 @@ namespace Vigil.Data.Core
             public DateTime CreatedOn { get; set; }
 
             [ContractInvariantMethod]
+            [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
             private void ObjectInvariant()
             {

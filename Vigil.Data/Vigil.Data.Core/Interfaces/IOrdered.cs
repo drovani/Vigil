@@ -16,6 +16,7 @@ namespace Vigil.Data.Core
             public int Ordinal { get; set; }
 
             [ContractInvariantMethod]
+            [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
             private void ObjectInvariant()
             {

@@ -6,10 +6,17 @@ namespace Vigil.Testing.Data.TestClasses
 {
     internal class TestTypeBase : TypeBase
     {
-        public TestTypeBase(string typeName)
+        protected TestTypeBase(string typeName)
             : base(typeName)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrWhiteSpace(typeName));
+            Contract.Assume(!String.IsNullOrEmpty(typeName));
+        }
+
+        internal static TestTypeBase CreateType(string typeName)
+        {
+            Contract.Assume(!String.IsNullOrEmpty(typeName));
+
+            return new TestTypeBase(typeName);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Contracts;
-
 using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
@@ -18,11 +17,9 @@ namespace Vigil.Data.Core
         public DateTime? DeletedOn { get; protected set; }
 
         [Required, StringLength(250)]
-        [Index("IX_TypeName_Ordinal", 1)]
-        public string TypeName { get; set; }
-        public string Description { get; set; }
-        [Index("IX_TypeName_Ordinal", 2)]
-        public int Ordinal { get; set; }
+        public string TypeName { get; protected set; }
+        public string Description { get; protected set; }
+        public int Ordinal { get; protected set; }
 
         protected TypeBase(string typeName)
         {
@@ -51,6 +48,7 @@ namespace Vigil.Data.Core
         }
 
         [ContractInvariantMethod]
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {

@@ -37,9 +37,9 @@ namespace Vigil.Data.Core.System
             Contract.Ensures(Contract.Result<ChangeLog>() != null);
 
             MemberExpression memExpr = property.Body as MemberExpression;
-            if (memExpr == null)
+            if (memExpr == null || typeof(TSource).GetProperty(memExpr.Member.Name) == null)
             {
-                throw new ArgumentException("Expression must be a MemberExpression");
+                throw new ArgumentException("Expression must be a MemberExpression with a property from TSource.");
             }
 
             return new ChangeLog()
