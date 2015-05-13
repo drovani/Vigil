@@ -103,6 +103,10 @@
     <None Include="Vigil.Data.Services.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Vigil.Data.Core\Vigil.Data.Core.csproj">
+      <Project>{19d5bc74-a409-435a-9dd0-18ac8346ff3b}</Project>
+      <Name>Vigil.Data.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Vigil.Data.Modeling\Vigil.Data.Modeling.csproj">
       <Project>{d6f9b9c3-7537-448d-a2b2-3ffc13cf95ea}</Project>
       <Name>Vigil.Data.Modeling</Name>
