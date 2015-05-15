@@ -6,7 +6,7 @@ using Microsoft.Owin;
 using Vigil.Data.Core;
 using Vigil.Data.Core.System;
 
-namespace Vigil.Data.Modeling.Identity
+namespace Vigil.Identity.Model
 {
     public class VigilRoleManager : RoleManager<VigilRole, Guid>
     {
@@ -15,7 +15,7 @@ namespace Vigil.Data.Modeling.Identity
         {
             Contract.Ensures(Contract.Result<VigilRoleManager>() != null);
 
-            return new VigilRoleManager(new VigilRoleStore(context.Get<VigilContext>()));
+            return new VigilRoleManager(new VigilRoleStore(context.Get<IdentityVigilContext>()));
         }
     }
 }

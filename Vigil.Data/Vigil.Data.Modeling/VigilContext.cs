@@ -3,9 +3,10 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Vigil.Data.Core;
 using Vigil.Data.Core.System;
 
-namespace Vigil.Data.Core
+namespace Vigil.Data.Modeling
 {
     public class VigilContext : IdentityDbContext<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IVigilContext
     {

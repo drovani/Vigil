@@ -126,15 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Identity\VigilRoleManager.cs" />
-    <Compile Include="Identity\VigilRoleStore.cs" />
-    <Compile Include="Identity\VigilSignInManager.cs" />
-    <Compile Include="Identity\VigilUserManager.cs" />
-    <Compile Include="Identity\VigilUserStore.cs" />
-    <Compile Include="IVigilContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VigilContext.cs" />
-    <Compile Include="VigilDbInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

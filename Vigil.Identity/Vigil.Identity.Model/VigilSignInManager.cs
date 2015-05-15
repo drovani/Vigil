@@ -8,7 +8,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Vigil.Data.Core.System;
 
-namespace Vigil.Data.Modeling.Identity
+namespace Vigil.Identity.Model
 {
     public class VigilSignInManager : SignInManager<VigilUser, Guid>
     {
@@ -21,10 +21,12 @@ namespace Vigil.Data.Modeling.Identity
 
         public override Task<ClaimsIdentity> CreateUserIdentityAsync(VigilUser user)
         {
-            Contract.Requires<ArgumentNullException>(user != null);
             Contract.Ensures(Contract.Result<Task<ClaimsIdentity>>() != null);
 
-            return ((VigilUserManager)UserManager).CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            Task<ClaimsIdentity> claim = ((VigilUserManager)UserManager).CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            Contract.Assume(claim != null);
+
+            return claim;
         }
 
         public static VigilSignInManager Create(IdentityFactoryOptions<VigilSignInManager> options, IOwinContext context)
@@ -32,7 +34,12 @@ namespace Vigil.Data.Modeling.Identity
             Contract.Requires<ArgumentNullException>(context != null);
             Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
 
-            return new VigilSignInManager(context.GetUserManager<VigilUserManager>(), context.Authentication);
+            VigilUserManager manager = context.GetUserManager<VigilUserManager>();
+
+            Contract.Assume(manager != null);
+            Contract.Assume(context.Authentication != null);
+
+            return new VigilSignInManager(manager, context.Authentication);
         }
 
         [ContractInvariantMethod]

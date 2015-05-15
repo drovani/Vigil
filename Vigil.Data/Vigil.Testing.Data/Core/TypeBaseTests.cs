@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vigil.Data.Core;
 using Vigil.Data.Core.System;
@@ -7,6 +8,7 @@ using Vigil.Testing.Data.TestClasses;
 namespace Vigil.Testing.Data.Core
 {
     [TestClass]
+    [ContractVerification(false)]
     public class TypeBaseTests
     {
         [TestMethod]
