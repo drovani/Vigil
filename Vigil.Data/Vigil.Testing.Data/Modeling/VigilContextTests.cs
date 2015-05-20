@@ -5,8 +5,8 @@ using System.Data.Entity.Infrastructure;
 using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vigil.Data.Core;
 using Vigil.Data.Core.System;
+using Vigil.Data.Modeling;
 
 namespace Vigil.Testing.Data.Modeling
 {
@@ -14,17 +14,23 @@ namespace Vigil.Testing.Data.Modeling
     [ContractVerification(false)]
     public class VigilContextTests
     {
+        VigilUser testUser;
+        DateTime now;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            testUser = new VigilUser { UserName = "TestUser" };
+            now = new DateTime(2015, 4, 23, 13, 33, 12, DateTimeKind.Utc);
+        }
+
         [TestMethod]
         public void Initialize_And_Create_Database_Cause_Database_To_Exists()
         {
-            using (VigilContext context = new VigilContext())
+            using (VigilContext context = new VigilContext(testUser, now))
             {
+                Database.SetInitializer<VigilContext>(new DropCreateDatabaseAlways<VigilContext>());
                 context.Database.Initialize(true);
-                if (context.Database.Exists())
-                {
-                    context.Database.Delete();
-                }
-                context.Database.Create();
 
                 Assert.IsTrue(context.Database.Exists());
             }
@@ -33,9 +39,6 @@ namespace Vigil.Testing.Data.Modeling
         [TestMethod]
         public void Explicit_Constructor_Sets_AffectedBy_And_Now()
         {
-            VigilUser testUser = new VigilUser { UserName = "TestUser" };
-
-            DateTime now = new DateTime(2015, 4, 23, 13, 33, 12, DateTimeKind.Utc);
             using (VigilContext context = new VigilContext(testUser, now))
             {
                 Assert.AreEqual(testUser, context.AffectedBy);
@@ -47,7 +50,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUser_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext())
+            using (VigilContext context = new VigilContext(testUser, now))
             {
                 tableName = GetTableName<VigilUser>(context);
             }
@@ -58,7 +61,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUserClaim_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext())
+            using (VigilContext context = new VigilContext(testUser, now))
             {
                 tableName = GetTableName<VigilUserClaim>(context);
             }
@@ -69,7 +72,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUserLogin_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext())
+            using (VigilContext context = new VigilContext(testUser, now))
             {
                 tableName = GetTableName<VigilUserLogin>(context);
             }
@@ -80,7 +83,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUserRole_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext())
+            using (VigilContext context = new VigilContext(testUser, now))
             {
                 tableName = GetTableName<VigilUserRole>(context);
             }
@@ -91,7 +94,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilRole_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext())
+            using (VigilContext context = new VigilContext(testUser, now))
             {
                 tableName = GetTableName<VigilRole>(context);
             }
@@ -101,14 +104,11 @@ namespace Vigil.Testing.Data.Modeling
         [TestMethod]
         public void Set_Method_Returns_Valid_Objects()
         {
-            VigilUser testUser = new VigilUser { UserName = "TestUser" };
-            DateTime now = new DateTime(2015, 04, 29, 11, 51, 14, DateTimeKind.Utc);
             using (VigilContext context = new VigilContext(testUser, now))
             {
                 Assert.IsInstanceOfType(context.Set<VigilUser>(), typeof(IDbSet<VigilUser>));
             }
         }
-
 
         private static string GetTableName<TEntity>(DbContext context) where TEntity : class
         {

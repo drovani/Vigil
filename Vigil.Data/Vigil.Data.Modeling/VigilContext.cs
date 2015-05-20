@@ -13,13 +13,12 @@ namespace Vigil.Data.Modeling
         public VigilUser AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
-        public VigilContext()
-            : base("VigilDb")
+        static VigilContext()
         {
-            Database.SetInitializer<VigilContext>(new DropCreateDatabaseAlways<VigilContext>());
+            Database.SetInitializer<VigilContext>(new CreateDatabaseIfNotExists<VigilContext>());
         }
         public VigilContext(VigilUser affectedBy, DateTime now)
-            : this()
+            : base()
         {
             this.AffectedBy = affectedBy;
             this.Now = now.ToUniversalTime();
