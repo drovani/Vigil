@@ -6,7 +6,7 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model
 {
-    public class VigilUserStore : UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUserStore<VigilUser, Guid>, IDisposable
+    public class VigilUserStore : UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUserStore<VigilUser, Guid>
     {
         public VigilUserStore()
             : this(new IdentityVigilContext())
@@ -14,5 +14,10 @@ namespace Vigil.Identity.Model
             base.DisposeContext = true;
         }
         public VigilUserStore(DbContext context) : base(context) { }
+    
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
     }
 }

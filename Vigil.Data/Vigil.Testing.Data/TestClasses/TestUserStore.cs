@@ -32,7 +32,7 @@ namespace Vigil.Testing.Data.TestClasses
 
         public Task<VigilUser> FindByNameAsync(string userName)
         {
-            return Task.FromResult<VigilUser>(users.SingleOrDefault(u => String.Equals(u.UserName, userName, StringComparison.InvariantCultureIgnoreCase)));
+            return Task.FromResult<VigilUser>(users.SingleOrDefault(u => String.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase)));
         }
 
         public Task UpdateAsync(VigilUser user)
@@ -42,6 +42,12 @@ namespace Vigil.Testing.Data.TestClasses
         }
 
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
         }
     }
