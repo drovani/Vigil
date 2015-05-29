@@ -8,6 +8,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using Vigil.Data.Core.System;
+using Vigil.Identity.Model;
 using Vigil.Web.Models;
 
 namespace Vigil.Web.Controllers
@@ -15,14 +17,14 @@ namespace Vigil.Web.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private VigilSignInManager _signInManager;
+        private VigilUserManager _userManager;
 
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public AccountController(VigilUserManager userManager, VigilSignInManager signInManager)
         {
             Contract.Requires<ArgumentNullException>(userManager != null);
             Contract.Requires<ArgumentNullException>(signInManager != null);
@@ -31,13 +33,13 @@ namespace Vigil.Web.Controllers
             SignInManager = signInManager;
         }
 
-        public ApplicationSignInManager SignInManager
+        public VigilSignInManager SignInManager
         {
             get
             {
-                Contract.Ensures(Contract.Result<ApplicationSignInManager>() != null);
+                Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
 
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+                return _signInManager ?? HttpContext.GetOwinContext().Get<VigilSignInManager>();
             }
             private set
             {
@@ -46,12 +48,12 @@ namespace Vigil.Web.Controllers
             }
         }
 
-        public ApplicationUserManager UserManager
+        public VigilUserManager UserManager
         {
             get
             {
-                Contract.Ensures(Contract.Result<ApplicationUserManager>() != null);
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                Contract.Ensures(Contract.Result<VigilUserManager>() != null);
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<VigilUserManager>();
             }
             private set
             {
@@ -171,7 +173,7 @@ namespace Vigil.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new VigilUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -195,7 +197,7 @@ namespace Vigil.Web.Controllers
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public async Task<ActionResult> ConfirmEmail(Guid userId, string code)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
 
@@ -312,6 +314,7 @@ namespace Vigil.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
+            Contract.Requires<ArgumentNullException>(Url != null);
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
@@ -410,7 +413,7 @@ namespace Vigil.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new VigilUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -487,6 +490,10 @@ namespace Vigil.Web.Controllers
         private void AddErrors(IdentityResult result)
         {
             Contract.Requires<ArgumentNullException>(result != null);
+            Contract.Requires<ArgumentNullException>(result.Errors != null);
+
+            Contract.Assume(ModelState != null);
+
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error);
@@ -505,11 +512,11 @@ namespace Vigil.Web.Controllers
         internal class ChallengeResult : HttpUnauthorizedResult
         {
             public ChallengeResult(string provider, string redirectUri)
-                : this(provider, redirectUri, null)
+                : this(provider, redirectUri, Guid.Empty)
             {
             }
 
-            public ChallengeResult(string provider, string redirectUri, string userId)
+            public ChallengeResult(string provider, string redirectUri, Guid userId)
             {
                 LoginProvider = provider;
                 RedirectUri = redirectUri;
@@ -518,7 +525,7 @@ namespace Vigil.Web.Controllers
 
             public string LoginProvider { get; set; }
             public string RedirectUri { get; set; }
-            public string UserId { get; set; }
+            public Guid UserId { get; set; }
 
             public override void ExecuteResult(ControllerContext context)
             {
@@ -527,10 +534,11 @@ namespace Vigil.Web.Controllers
                 var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
                 if (UserId != null)
                 {
-                    properties.Dictionary[XsrfKey] = UserId;
+                    properties.Dictionary[XsrfKey] = UserId.ToString();
                 }
                 IOwinContext owinContext = context.HttpContext.GetOwinContext();
                 Contract.Assume(owinContext != null);
+                Contract.Assume(owinContext.Authentication != null);
 
                 owinContext.Authentication.Challenge(properties, LoginProvider);
             }
