@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -13,9 +14,32 @@ namespace Vigil.Identity.Model
 
         public static VigilUserManager Create(IdentityFactoryOptions<VigilUserManager> options, IOwinContext context)
         {
+            Contract.Ensures(Contract.Result<VigilUserManager>() != null);
+
             var manager = new VigilUserManager(new VigilUserStore(context.Get<IdentityVigilContext>()));
 
             return manager;
+        }
+
+        public override Task<IdentityResult> CreateAsync(VigilUser user)
+        {
+            Contract.Ensures(Contract.Result<Task<IdentityResult>>() != null);
+            
+            if (user.Id == Guid.Empty)
+            {
+                user.Id = Guid.NewGuid();
+            }
+            return base.CreateAsync(user);
+        }
+        public override Task<IdentityResult> CreateAsync(VigilUser user, string password)
+        {
+            Contract.Ensures(Contract.Result<Task<IdentityResult>>() != null);
+
+            if (user.Id == Guid.Empty)
+            {
+                user.Id = Guid.NewGuid();
+            }
+            return base.CreateAsync(user, password);
         }
     }
 }

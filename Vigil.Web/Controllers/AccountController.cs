@@ -39,7 +39,12 @@ namespace Vigil.Web.Controllers
             {
                 Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
 
-                return _signInManager ?? HttpContext.GetOwinContext().Get<VigilSignInManager>();
+                IOwinContext owinContext = HttpContext.GetOwinContext();
+                Contract.Assume(owinContext != null);
+                VigilSignInManager manager = owinContext.Get<VigilSignInManager>();
+                Contract.Assume(manager != null);
+
+                return _signInManager ?? manager;
             }
             private set
             {
@@ -216,7 +221,10 @@ namespace Vigil.Web.Controllers
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
-            return View();
+            ViewResult view = View();
+            Contract.Assume(view != null);
+
+            return view;
         }
 
         //
@@ -448,11 +456,14 @@ namespace Vigil.Web.Controllers
         //
         // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
-        public ActionResult ExternalLoginFailure()
+        public ViewResult ExternalLoginFailure()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
-            return View();
+            ViewResult view = View();
+            Contract.Assume(view != null);
+
+            return view;
         }
 
         protected override void Dispose(bool disposing)

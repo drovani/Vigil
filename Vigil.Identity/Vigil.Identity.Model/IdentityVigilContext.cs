@@ -36,6 +36,8 @@ namespace Vigil.Identity.Model
 
         public static IdentityVigilContext Create()
         {
+            Contract.Ensures(Contract.Result<IdentityVigilContext>() != null);
+
             return new IdentityVigilContext();
         }
     }

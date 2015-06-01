@@ -18,7 +18,7 @@ namespace Vigil.Web.Controllers
         private VigilSignInManager _signInManager;
         private VigilUserManager _userManager;
 
-        public Guid UserId { get { return UserId; } }
+        public Guid UserId { get { return Guid.Parse(User.Identity.GetUserId()); } }
 
         public ManageController()
         {
@@ -36,9 +36,9 @@ namespace Vigil.Web.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<VigilSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -364,7 +364,7 @@ namespace Vigil.Web.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -418,6 +418,6 @@ namespace Vigil.Web.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

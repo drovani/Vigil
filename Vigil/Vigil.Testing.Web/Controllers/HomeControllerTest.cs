@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics.Contracts;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vigil.Web;
 using Vigil.Web.Controllers;
 
 namespace Vigil.Testing.Web.Controllers
 {
     [TestClass]
+    [ContractVerification(false)]
     public class HomeControllerTest
     {
         [TestMethod]
