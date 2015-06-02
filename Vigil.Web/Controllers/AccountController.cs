@@ -10,6 +10,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
+using Vigil.Web.Controllers.Results;
 using Vigil.Web.Models;
 
 namespace Vigil.Web.Controllers
@@ -19,11 +20,47 @@ namespace Vigil.Web.Controllers
     {
         private VigilSignInManager _signInManager;
         private VigilUserManager _userManager;
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                Contract.Assume(HttpContext != null);
+                IOwinContext context = HttpContext.GetOwinContext();
+                Contract.Assume(context != null);
+                
+                return context.Authentication;
+            }
+        }
+
+        public VigilSignInManager SignInManager
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
+                return _signInManager ?? GetVigilSignInManager();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+        public VigilUserManager UserManager
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<VigilUserManager>() != null);
+                return _userManager ?? GetVigilUserManager();
+            }
+            private set
+            {
+                Contract.Requires<ArgumentNullException>(value != null);
+                _userManager = value;
+            }
+        }
 
         public AccountController()
         {
         }
-
         public AccountController(VigilUserManager userManager, VigilSignInManager signInManager)
         {
             Contract.Requires<ArgumentNullException>(userManager != null);
@@ -33,56 +70,26 @@ namespace Vigil.Web.Controllers
             SignInManager = signInManager;
         }
 
-        public VigilSignInManager SignInManager
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
-
-                IOwinContext owinContext = HttpContext.GetOwinContext();
-                Contract.Assume(owinContext != null);
-                VigilSignInManager manager = owinContext.Get<VigilSignInManager>();
-                Contract.Assume(manager != null);
-
-                return _signInManager ?? manager;
-            }
-            private set
-            {
-                Contract.Requires<ArgumentNullException>(value != null);
-                _signInManager = value;
-            }
-        }
-
-        public VigilUserManager UserManager
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<VigilUserManager>() != null);
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<VigilUserManager>();
-            }
-            private set
-            {
-                Contract.Requires<ArgumentNullException>(value != null);
-                _userManager = value;
-            }
-        }
-
-        //
-        // GET: /Account/Login
+        /// <summary>GET: /Account/Login
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Assume(View() != null);
 
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
-        //
-        // POST: /Account/Login
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/Login
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -110,8 +117,12 @@ namespace Vigil.Web.Controllers
             }
         }
 
-        //
-        // GET: /Account/VerifyCode
+        /// <summary>GET: /Account/VerifyCode
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="returnUrl"></param>
+        /// <param name="rememberMe"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -125,11 +136,11 @@ namespace Vigil.Web.Controllers
             return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/VerifyCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/VerifyCode
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -157,21 +168,23 @@ namespace Vigil.Web.Controllers
             }
         }
 
-        //
-        // GET: /Account/Register
+        /// <summary>GET: /Account/Register
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult Register()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Assume(View() != null);
 
             return View();
         }
 
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/Register
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -199,8 +212,11 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ConfirmEmail
+        /// <summary>GET: /Account/ConfirmEmail
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(Guid userId, string code)
         {
@@ -214,24 +230,23 @@ namespace Vigil.Web.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-        //
-        // GET: /Account/ForgotPassword
+        /// <summary>GET: /Account/ForgotPassword
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Assume(View() != null);
 
-            ViewResult view = View();
-            Contract.Assume(view != null);
-
-            return view;
+            return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/ForgotPassword
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -257,31 +272,37 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ForgotPasswordConfirmation
+        /// <summary>GET: /Account/ForgotPasswordConfirmation
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Assume(View() != null);
 
             return View();
         }
 
-        //
-        // GET: /Account/ResetPassword
+        /// <summary>GET: /Account/ResetPassword
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
+            ViewResult view = code == null ? View("Error") : View();
+            Contract.Assume(view != null);
 
-            return code == null ? View("Error") : View();
+            return view;
         }
 
-        //
-        // POST: /Account/ResetPassword
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/ResetPassword
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -305,22 +326,25 @@ namespace Vigil.Web.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
+        /// <summary>GET: /Account/ResetPasswordConfirmation
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Assume(View() != null);
 
             return View();
         }
 
-        //
-        // POST: /Account/ExternalLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
+        /// <summary>POST: /Account/ExternalLogin
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+        public ChallengeResult ExternalLogin(string provider, string returnUrl)
         {
             Contract.Requires<ArgumentNullException>(Url != null);
             Contract.Ensures(Contract.Result<ActionResult>() != null);
@@ -328,8 +352,11 @@ namespace Vigil.Web.Controllers
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
-        //
-        // GET: /Account/SendCode
+        /// <summary>GET: /Account/SendCode
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <param name="rememberMe"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
@@ -345,11 +372,11 @@ namespace Vigil.Web.Controllers
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/SendCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/SendCode
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> SendCode(SendCodeViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -367,8 +394,10 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
+        /// <summary>GET: /Account/ExternalLoginCallback
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
@@ -399,11 +428,12 @@ namespace Vigil.Web.Controllers
             }
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/ExternalLoginConfirmation
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -439,10 +469,10 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Account/LogOff
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
@@ -453,12 +483,13 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
+        /// <summary>GET: /Account/ExternalLoginFailure
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ViewResult ExternalLoginFailure()
         {
-            Contract.Ensures(Contract.Result<ActionResult>() != null);
+            EnsuresActionResultIsNotNull();
 
             ViewResult view = View();
             Contract.Assume(view != null);
@@ -486,18 +517,6 @@ namespace Vigil.Web.Controllers
             base.Dispose(disposing);
         }
 
-        #region Helpers
-        // Used for XSRF protection when adding external logins
-        private const string XsrfKey = "XsrfId";
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
-
         private void AddErrors(IdentityResult result)
         {
             Contract.Requires<ArgumentNullException>(result != null);
@@ -520,40 +539,33 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        internal class ChallengeResult : HttpUnauthorizedResult
+        private VigilUserManager GetVigilUserManager()
         {
-            public ChallengeResult(string provider, string redirectUri)
-                : this(provider, redirectUri, Guid.Empty)
-            {
-            }
+            Contract.Ensures(Contract.Result<VigilUserManager>() != null);
 
-            public ChallengeResult(string provider, string redirectUri, Guid userId)
-            {
-                LoginProvider = provider;
-                RedirectUri = redirectUri;
-                UserId = userId;
-            }
+            IOwinContext owinContext = HttpContext.GetOwinContext();
+            Contract.Assume(owinContext != null);
+            VigilUserManager manager = owinContext.Get<VigilUserManager>();
+            Contract.Assume(manager != null);
 
-            public string LoginProvider { get; set; }
-            public string RedirectUri { get; set; }
-            public Guid UserId { get; set; }
-
-            public override void ExecuteResult(ControllerContext context)
-            {
-                Contract.Assume(context != null);
-
-                var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
-                if (UserId != null)
-                {
-                    properties.Dictionary[XsrfKey] = UserId.ToString();
-                }
-                IOwinContext owinContext = context.HttpContext.GetOwinContext();
-                Contract.Assume(owinContext != null);
-                Contract.Assume(owinContext.Authentication != null);
-
-                owinContext.Authentication.Challenge(properties, LoginProvider);
-            }
+            return manager;
         }
-        #endregion
+        private VigilSignInManager GetVigilSignInManager()
+        {
+            Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
+
+            IOwinContext owinContext = HttpContext.GetOwinContext();
+            Contract.Assume(owinContext != null);
+            VigilSignInManager manager = owinContext.Get<VigilSignInManager>();
+            Contract.Assume(manager != null);
+            return manager;
+        }
+
+        [ContractAbbreviator]
+        private void EnsuresActionResultIsNotNull()
+        {
+            Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Assume(View() != null);
+        }
     }
 }

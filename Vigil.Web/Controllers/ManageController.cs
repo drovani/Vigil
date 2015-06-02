@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Vigil.Identity.Model;
+using Vigil.Web.Controllers.Results;
 using Vigil.Web.Models;
 
 namespace Vigil.Web.Controllers
@@ -54,8 +55,10 @@ namespace Vigil.Web.Controllers
             }
         }
 
-        //
-        // GET: /Manage/Index
+        /// <summary>GET: /Manage/Index
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -80,10 +83,12 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Manage/RemoveLogin
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/RemoveLogin
+        /// </summary>
+        /// <param name="loginProvider"></param>
+        /// <param name="providerKey"></param>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -106,17 +111,20 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("ManageLogins", new { Message = message });
         }
 
-        //
-        // GET: /Manage/AddPhoneNumber
+        /// <summary>GET: /Manage/AddPhoneNumber
+        /// </summary>
+        /// <returns></returns>
+        [Pure]
         public ActionResult AddPhoneNumber()
         {
             return View();
         }
 
-        //
-        // POST: /Manage/AddPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/AddPhoneNumber
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -139,10 +147,10 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
         }
 
-        //
-        // POST: /Manage/EnableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/EnableTwoFactorAuthentication
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuthentication()
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -156,10 +164,10 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("Index", "Manage");
         }
 
-        //
-        // POST: /Manage/DisableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/DisableTwoFactorAuthentication
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableTwoFactorAuthentication()
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -173,8 +181,10 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("Index", "Manage");
         }
 
-        //
-        // GET: /Manage/VerifyPhoneNumber
+        /// <summary>GET: /Manage/VerifyPhoneNumber
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -184,10 +194,11 @@ namespace Vigil.Web.Controllers
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
 
-        //
-        // POST: /Manage/VerifyPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/VerifyPhoneNumber
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -211,8 +222,9 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Manage/RemovePhoneNumber
+        /// <summary>GET: /Manage/RemovePhoneNumber
+        /// </summary>
+        /// <returns></returns>
         public async Task<ActionResult> RemovePhoneNumber()
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -230,8 +242,9 @@ namespace Vigil.Web.Controllers
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
 
-        //
-        // GET: /Manage/ChangePassword
+        /// <summary>GET: /Manage/ChangePassword
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ChangePassword()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
@@ -239,10 +252,11 @@ namespace Vigil.Web.Controllers
             return View();
         }
 
-        //
-        // POST: /Manage/ChangePassword
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/ChangePassword
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -265,8 +279,9 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Manage/SetPassword
+        /// <summary>GET: /Manage/SetPassword
+        /// </summary>
+        /// <returns></returns>
         public ActionResult SetPassword()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
@@ -274,10 +289,11 @@ namespace Vigil.Web.Controllers
             return View();
         }
 
-        //
-        // POST: /Manage/SetPassword
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/SetPassword
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -301,8 +317,10 @@ namespace Vigil.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Manage/ManageLogins
+        /// <summary>GET: /Manage/ManageLogins
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
@@ -326,25 +344,27 @@ namespace Vigil.Web.Controllers
             });
         }
 
-        //
-        // POST: /Manage/LinkLogin
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>POST: /Manage/LinkLogin
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
             // Request a redirect to the external login provider to link a login for the current user
-            return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), UserId);
+            return new ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), UserId);
         }
 
-        //
-        // GET: /Manage/LinkLoginCallback
+        /// <summary>GET: /Manage/LinkLoginCallback
+        /// </summary>
+        /// <returns></returns>
         public async Task<ActionResult> LinkLoginCallback()
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
 
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, UserId.ToString());
+            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(ChallengeResult.XsrfKey, UserId.ToString());
             if (loginInfo == null)
             {
                 return RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
@@ -363,10 +383,6 @@ namespace Vigil.Web.Controllers
 
             base.Dispose(disposing);
         }
-
-        #region Helpers
-        // Used for XSRF protection when adding external logins
-        private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager
         {
@@ -417,7 +433,5 @@ namespace Vigil.Web.Controllers
             RemovePhoneSuccess,
             Error
         }
-
-        #endregion
     }
 }
