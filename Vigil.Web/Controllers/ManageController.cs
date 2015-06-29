@@ -14,23 +14,20 @@ using Vigil.Web.Models;
 namespace Vigil.Web.Controllers
 {
     [Authorize]
+    [ContractVerification(false)]
     public class ManageController : Controller
     {
         private VigilSignInManager _signInManager;
         private VigilUserManager _userManager;
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
 
         public Guid UserId { get { return Guid.Parse(User.Identity.GetUserId()); } }
-
-        public ManageController()
-        {
-        }
-
-        public ManageController(VigilUserManager userManager, VigilSignInManager signInManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
-
         public VigilSignInManager SignInManager
         {
             get
@@ -42,7 +39,6 @@ namespace Vigil.Web.Controllers
                 _signInManager = value;
             }
         }
-
         public VigilUserManager UserManager
         {
             get
@@ -54,6 +50,16 @@ namespace Vigil.Web.Controllers
                 _userManager = value;
             }
         }
+
+        public ManageController()
+        {
+        }
+        public ManageController(VigilUserManager userManager, VigilSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
 
         /// <summary>GET: /Manage/Index
         /// </summary>
@@ -382,14 +388,6 @@ namespace Vigil.Web.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
         }
 
         private void AddErrors(IdentityResult result)

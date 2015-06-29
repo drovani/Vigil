@@ -16,6 +16,7 @@ using Vigil.Web.Models;
 namespace Vigil.Web.Controllers
 {
     [Authorize]
+    [ContractVerification(false)]
     public class AccountController : Controller
     {
         private VigilSignInManager _signInManager;
@@ -78,10 +79,11 @@ namespace Vigil.Web.Controllers
         public ActionResult Login(string returnUrl)
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            Contract.Assume(View() != null);
+            ViewResult view = View();
+            Contract.Assume(view != null);
 
             ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return view;
         }
 
         /// <summary>POST: /Account/Login
@@ -175,7 +177,6 @@ namespace Vigil.Web.Controllers
         public ActionResult Register()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            Contract.Assume(View() != null);
 
             return View();
         }
@@ -237,7 +238,6 @@ namespace Vigil.Web.Controllers
         public ActionResult ForgotPassword()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            Contract.Assume(View() != null);
 
             return View();
         }
@@ -279,7 +279,6 @@ namespace Vigil.Web.Controllers
         public ActionResult ForgotPasswordConfirmation()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            Contract.Assume(View() != null);
 
             return View();
         }
