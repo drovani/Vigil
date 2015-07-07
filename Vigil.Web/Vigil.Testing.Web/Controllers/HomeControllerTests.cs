@@ -7,7 +7,7 @@ namespace Vigil.Testing.Web.Controllers
 {
     [TestClass]
     [ContractVerification(false)]
-    public class HomeControllerTest
+    public class HomeControllerTests
     {
         [TestMethod]
         public void Index()

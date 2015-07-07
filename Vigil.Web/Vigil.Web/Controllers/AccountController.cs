@@ -79,11 +79,9 @@ namespace Vigil.Web.Controllers
         public ActionResult Login(string returnUrl)
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            ViewResult view = View();
-            Contract.Assume(view != null);
 
             ViewBag.ReturnUrl = returnUrl;
-            return view;
+            return View();
         }
 
         /// <summary>POST: /Account/Login
