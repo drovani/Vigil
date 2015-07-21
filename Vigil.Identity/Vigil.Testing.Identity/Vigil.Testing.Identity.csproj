@@ -149,6 +149,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClasses\InMemoryRoleStore.cs" />
+    <Compile Include="TestClasses\InMemoryUserManager.cs" />
+    <Compile Include="TestClasses\InMemoryUserStore.cs" />
+    <Compile Include="Model\VigilRoleManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -156,6 +160,10 @@
     <None Include="Vigil.Testing.Identity.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Vigil.Data\Vigil.Data.Core\Vigil.Data.Core.csproj">
+      <Project>{19d5bc74-a409-435a-9dd0-18ac8346ff3b}</Project>
+      <Name>Vigil.Data.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Vigil.Identity.Model\Vigil.Identity.Model.csproj">
       <Project>{befe3d30-e2cd-4ed5-b749-b0dd92b883cf}</Project>
       <Name>Vigil.Identity.Model</Name>

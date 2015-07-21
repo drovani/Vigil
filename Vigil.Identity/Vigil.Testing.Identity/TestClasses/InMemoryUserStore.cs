@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
 
-namespace Vigil.Testing.Web.TestClasses
+namespace Vigil.Testing.Identity.TestClasses
 {
     internal class InMemoryUserStore : IQueryableUserStore<VigilUser, Guid>, IUserStore<VigilUser, Guid>
     {
@@ -15,6 +16,8 @@ namespace Vigil.Testing.Web.TestClasses
 
         public InMemoryUserStore(IdentityVigilContext identityVigilContext)
         {
+            Contract.Requires<ArgumentNullException>(identityVigilContext != null);
+
             this.identityVigilContext = identityVigilContext;
         }
 
@@ -25,22 +28,27 @@ namespace Vigil.Testing.Web.TestClasses
 
         public Task CreateAsync(VigilUser user)
         {
+            Contract.Ensures(Contract.Result<Task>() != null);
+            Contract.Assume(user != null);
+
             users[user.Id] = user;
             return Task.FromResult(IdentityResult.Success);
         }
 
         public Task DeleteAsync(VigilUser user)
         {
-            if (user == null || !users.ContainsKey(user.Id))
-            {
-                throw new InvalidOperationException("Unknown user");
-            }
+            Contract.Ensures(Contract.Result<Task>() != null);
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id), "Unknown user");
+
             users.Remove(user.Id);
             return Task.FromResult(IdentityResult.Success);
         }
 
         public Task<VigilUser> FindByIdAsync(Guid userId)
         {
+            Contract.Ensures(Contract.Result<Task<VigilUser>>() != null);
+
             if (users.ContainsKey(userId))
             {
                 return Task.FromResult(users[userId]);
@@ -50,18 +58,32 @@ namespace Vigil.Testing.Web.TestClasses
 
         public Task<VigilUser> FindByNameAsync(string userName)
         {
+            Contract.Ensures(Contract.Result<Task<VigilUser>>() != null);
+
             VigilUser user = Users.SingleOrDefault(u => String.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(user);
         }
 
         public Task UpdateAsync(VigilUser user)
         {
+            Contract.Ensures(Contract.Result<Task>() != null);
+            Contract.Assume(user != null);
+
             users[user.Id] = user;
             return Task.FromResult(IdentityResult.Success);
         }
 
         public void Dispose()
         {
+        }
+
+        [ContractInvariantMethod]
+        [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(users != null);
+            Contract.Invariant(identityVigilContext != null);
         }
     }
 }
