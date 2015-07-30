@@ -9,7 +9,6 @@ namespace Vigil.Data.Core
         VigilUser AffectedBy { get; }
         DateTime Now { get; }
 
-        IDbSet<TEntity> Set<TEntity>() where TEntity : class;
         int SaveChanges();
     }
 }

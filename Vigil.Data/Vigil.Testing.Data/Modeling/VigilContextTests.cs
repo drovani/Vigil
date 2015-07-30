@@ -101,15 +101,6 @@ namespace Vigil.Testing.Data.Modeling
             Assert.AreEqual("[vigil].[VigilRole]", tableName);
         }
 
-        [TestMethod]
-        public void Set_Method_Returns_Valid_Objects()
-        {
-            using (VigilContext context = new VigilContext(testUser, now))
-            {
-                Assert.IsInstanceOfType(context.Set<VigilUser>(), typeof(IDbSet<VigilUser>));
-            }
-        }
-
         private static string GetTableName<TEntity>(DbContext context) where TEntity : class
         {
             ObjectContext objContext = ((IObjectContextAdapter)context).ObjectContext;

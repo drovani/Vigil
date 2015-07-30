@@ -14,10 +14,5 @@ namespace Vigil.Identity.Model
             base.DisposeContext = true;
         }
         public VigilUserStore(DbContext context) : base(context) { }
-    
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
     }
 }

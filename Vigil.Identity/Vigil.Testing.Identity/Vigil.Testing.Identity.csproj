@@ -148,11 +148,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\IdentityVigilContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClasses\InMemoryRoleStore.cs" />
-    <Compile Include="TestClasses\InMemoryUserManager.cs" />
     <Compile Include="TestClasses\InMemoryUserStore.cs" />
     <Compile Include="Model\VigilRoleManagerTests.cs" />
+    <Compile Include="Model\VigilUserManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

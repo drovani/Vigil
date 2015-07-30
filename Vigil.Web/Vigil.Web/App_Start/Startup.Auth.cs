@@ -17,7 +17,7 @@ namespace Vigil.Web
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context, user manager and signin manager to use a single instance per request
-            app.CreatePerOwinContext(IdentityVigilContext.Create);
+            app.CreatePerOwinContext<IdentityVigilContext>(IdentityVigilContext.Create);
             app.CreatePerOwinContext<VigilUserManager>(VigilUserManager.Create);
             app.CreatePerOwinContext<VigilSignInManager>(VigilSignInManager.Create);
 

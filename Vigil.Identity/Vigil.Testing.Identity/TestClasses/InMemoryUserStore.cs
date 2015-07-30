@@ -5,20 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Vigil.Data.Core.System;
-using Vigil.Identity.Model;
 
 namespace Vigil.Testing.Identity.TestClasses
 {
-    internal class InMemoryUserStore : IQueryableUserStore<VigilUser, Guid>, IUserStore<VigilUser, Guid>
+    internal class InMemoryUserStore : IQueryableUserStore<VigilUser, Guid>, IUserStore<VigilUser, Guid>, IUserPasswordStore<VigilUser, Guid>
     {
         private readonly Dictionary<Guid, VigilUser> users = new Dictionary<Guid, VigilUser>();
-        private readonly IdentityVigilContext identityVigilContext;
+        private readonly Dictionary<VigilUser, string> passwords = new Dictionary<VigilUser, string>();
 
-        public InMemoryUserStore(IdentityVigilContext identityVigilContext)
+        public InMemoryUserStore()
         {
-            Contract.Requires<ArgumentNullException>(identityVigilContext != null);
-
-            this.identityVigilContext = identityVigilContext;
         }
 
         public IQueryable<VigilUser> Users
@@ -73,6 +69,26 @@ namespace Vigil.Testing.Identity.TestClasses
             return Task.FromResult(IdentityResult.Success);
         }
 
+        public Task<string> GetPasswordHashAsync(VigilUser user)
+        {
+            if (passwords.ContainsKey(user))
+            {
+                return Task.FromResult(passwords[user]);
+            }
+            return Task.FromResult<string>(null);
+        }
+
+        public Task<bool> HasPasswordAsync(VigilUser user)
+        {
+            return Task.FromResult(passwords.ContainsKey(user));
+        }
+
+        public Task SetPasswordHashAsync(VigilUser user, string passwordHash)
+        {
+            passwords[user] = passwordHash;
+            return Task.FromResult(IdentityResult.Success);
+        }
+        
         public void Dispose()
         {
         }
@@ -83,7 +99,7 @@ namespace Vigil.Testing.Identity.TestClasses
         private void ObjectInvariant()
         {
             Contract.Invariant(users != null);
-            Contract.Invariant(identityVigilContext != null);
         }
+
     }
 }
