@@ -9,7 +9,7 @@ namespace Vigil.Testing.Identity.Model
     public class VigilRoleManagerTests
     {
         [TestMethod]
-        public void VigilRoleManagerTest()
+        public void VigilRoleManager_Constructor_Accepts_RoleStore()
         {
             var rolestore = new InMemoryRoleStore();
             VigilRoleManager vrman = new VigilRoleManager(rolestore);
@@ -19,7 +19,7 @@ namespace Vigil.Testing.Identity.Model
 
         [TestMethod]
         [Ignore]
-        public void CreateTest()
+        public void VigilRoleManager_Static_Create_Returns_Valid_Manager()
         {
             throw new NotImplementedException();
         }

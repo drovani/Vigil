@@ -10,7 +10,7 @@ namespace Vigil.Testing.Identity.Model
     public class VigilUserManagerTests
     {
         [TestMethod]
-        public void VigilUserManagerTest()
+        public void VigilUserManager_Constructor_Accepts_UserStore()
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
             Assert.IsNotNull(vuman);
@@ -18,7 +18,7 @@ namespace Vigil.Testing.Identity.Model
 
         [TestMethod]
         [Ignore]
-        public void CreateTest()
+        public void VigilUserManager_Static_Create_Returns_Valid_Manager()
         {
             throw new NotImplementedException();
         }

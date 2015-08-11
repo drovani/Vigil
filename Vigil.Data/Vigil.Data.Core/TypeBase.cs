@@ -28,6 +28,13 @@ namespace Vigil.Data.Core
             this.TypeName = typeName;
         }
 
+        public string SetTypeName(string typeName)
+        {
+            Contract.Requires<ArgumentNullException>(!String.IsNullOrWhiteSpace(typeName));
+            TypeName = typeName;
+            return TypeName;
+        }
+
         public bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)

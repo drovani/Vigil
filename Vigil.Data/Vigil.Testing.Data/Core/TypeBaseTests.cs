@@ -31,6 +31,29 @@ namespace Vigil.Testing.Data.Core
             TestTypeBase.CreateType(null);
         }
         [TestMethod]
+        public void SetTypeName_Sets_TypeName_Property()
+        {
+            TypeBase tb = TestTypeBase.CreateType("test type");
+            tb.SetTypeName("reset type");
+
+            Assert.AreEqual("reset type", tb.TypeName);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SetTypeName_To_Empty_Throws_Exception()
+        {
+            TypeBase tb = TestTypeBase.CreateType("test type");
+            tb.SetTypeName(String.Empty);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SetTypeName_To_Null_Throws_Exception()
+        {
+            TypeBase tb = TestTypeBase.CreateType("test type");
+            tb.SetTypeName(null);
+        }
+
+        [TestMethod]
         public void MarkDeleted_Sets_Deleted_Properties()
         {
             VigilUser testUser = new VigilUser{ UserName = "Test User"};
