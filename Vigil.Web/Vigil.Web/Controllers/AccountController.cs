@@ -62,13 +62,12 @@ namespace Vigil.Web.Controllers
         public AccountController()
         {
         }
-        public AccountController(VigilUserManager userManager, VigilSignInManager signInManager)
+        public AccountController(VigilSignInManager signInManager)
         {
-            Contract.Requires<ArgumentNullException>(userManager != null);
             Contract.Requires<ArgumentNullException>(signInManager != null);
 
-            UserManager = userManager;
             SignInManager = signInManager;
+            UserManager = signInManager.UserManager as VigilUserManager;
         }
 
         /// <summary>GET: /Account/Login
@@ -529,7 +528,7 @@ namespace Vigil.Web.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (returnUrl != null && Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

@@ -28,10 +28,15 @@ namespace Vigil.Testing.Identity.Model
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
             var user = new VigilUser { UserName = "TestUser" };
+            user.Id = Guid.Empty;
 
             var result = vuman.CreateAsync(user).Result;
-            Assert.AreNotEqual(Guid.Empty, user.Id);
+            var retrievedUser = vuman.FindByNameAsync("TestUser").Result;
+
             Assert.IsTrue(result.Succeeded);
+            Assert.AreNotEqual(Guid.Empty, user.Id);
+            Assert.IsNotNull(retrievedUser);
+            Assert.AreEqual(user, retrievedUser);
         }
 
         [TestMethod]
@@ -51,6 +56,7 @@ namespace Vigil.Testing.Identity.Model
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
             var user = new VigilUser { UserName = "TestUser" };
+            user.Id = Guid.Empty;
 
             var result = vuman.CreateAsync(user, "testPassword.01").Result;
             Assert.AreNotEqual(Guid.Empty, user.Id);

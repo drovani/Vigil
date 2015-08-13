@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core.System;
 
@@ -25,13 +24,16 @@ namespace Vigil.Data.Core
         {
             Contract.Requires<ArgumentNullException>(!String.IsNullOrWhiteSpace(typeName));
 
-            this.TypeName = typeName;
+            this.TypeName = typeName.Trim();
         }
 
         public string SetTypeName(string typeName)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrWhiteSpace(typeName));
-            TypeName = typeName;
+            Contract.Requires<ArgumentNullException>(typeName != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(typeName));
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            TypeName = typeName.Trim();
             return TypeName;
         }
 

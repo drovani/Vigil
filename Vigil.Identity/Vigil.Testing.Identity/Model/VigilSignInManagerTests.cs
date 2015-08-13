@@ -1,5 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Vigil.Data.Core.System;
+using Vigil.Identity.Model;
+using Vigil.Testing.Identity.TestClasses;
 
 namespace Vigil.Testing.Identity.Model
 {
@@ -9,7 +12,8 @@ namespace Vigil.Testing.Identity.Model
         [TestMethod()]
         public void VigilSignInManager_DefaultConstructor()
         {
-            throw new NotImplementedException();
+            var signInMgr = new VigilSignInManager(new VigilUserManager(new InMemoryUserStore()), new InMemoryAuthenticationManager());
+            Assert.IsNotNull(signInMgr);
         }
 
         [TestMethod()]
@@ -21,7 +25,11 @@ namespace Vigil.Testing.Identity.Model
         [TestMethod()]
         public void CreateUserIdentityAsync_Test()
         {
-            throw new NotImplementedException();
+            var signInMgr = new VigilSignInManager(new VigilUserManager(new InMemoryUserStore()), new InMemoryAuthenticationManager());
+            var user = new VigilUser() { UserName = "TestUser", Email = "signinmanager@example.com" };
+            var claimsIdentity = signInMgr.CreateUserIdentityAsync(user).Result;
+
+            Assert.IsNotNull(claimsIdentity);
         }
     }
 }

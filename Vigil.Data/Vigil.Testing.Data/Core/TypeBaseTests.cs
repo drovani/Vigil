@@ -39,7 +39,7 @@ namespace Vigil.Testing.Data.Core
             Assert.AreEqual("reset type", tb.TypeName);
         }
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void SetTypeName_To_Empty_Throws_Exception()
         {
             TypeBase tb = TestTypeBase.CreateType("test type");

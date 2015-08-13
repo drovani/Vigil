@@ -8,14 +8,16 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Testing.Identity.TestClasses
 {
-    internal class InMemoryUserStore : IQueryableUserStore<VigilUser, Guid>, IUserStore<VigilUser, Guid>, IUserPasswordStore<VigilUser, Guid>
+    public class InMemoryUserStore : IQueryableUserStore<VigilUser, Guid>,
+        IUserStore<VigilUser, Guid>,
+        IUserPasswordStore<VigilUser, Guid>,
+        IUserLockoutStore<VigilUser, Guid>,
+        IUserTwoFactorStore<VigilUser, Guid>
     {
         private readonly Dictionary<Guid, VigilUser> users = new Dictionary<Guid, VigilUser>();
         private readonly Dictionary<VigilUser, string> passwords = new Dictionary<VigilUser, string>();
 
-        public InMemoryUserStore()
-        {
-        }
+        public InMemoryUserStore() { }
 
         public IQueryable<VigilUser> Users
         {
@@ -56,7 +58,8 @@ namespace Vigil.Testing.Identity.TestClasses
         {
             Contract.Ensures(Contract.Result<Task<VigilUser>>() != null);
 
-            VigilUser user = Users.SingleOrDefault(u => String.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase));
+            VigilUser user = Users.SingleOrDefault(u => String.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase)
+                                                     || String.Equals(u.Email, userName, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(user);
         }
 
@@ -88,7 +91,83 @@ namespace Vigil.Testing.Identity.TestClasses
             passwords[user] = passwordHash;
             return Task.FromResult(IdentityResult.Success);
         }
-        
+
+        public Task<int> GetAccessFailedCountAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            return Task.FromResult(users[user.Id].AccessFailedCount);
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            return Task.FromResult(users[user.Id].LockoutEnabled);
+        }
+
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            return Task.FromResult<DateTimeOffset>(new DateTimeOffset(users[user.Id].LockoutEndDateUtc ?? DateTime.MinValue, TimeSpan.Zero));
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            return Task.FromResult(++users[user.Id].AccessFailedCount);
+        }
+
+        public Task ResetAccessFailedCountAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            users[user.Id].AccessFailedCount = 0;
+            return Task.FromResult(IdentityResult.Success);
+        }
+
+        public Task SetLockoutEnabledAsync(VigilUser user, bool enabled)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            users[user.Id].LockoutEnabled = enabled;
+            return Task.FromResult(IdentityResult.Success);
+        }
+
+        public Task SetLockoutEndDateAsync(VigilUser user, DateTimeOffset lockoutEnd)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            users[user.Id].LockoutEndDateUtc = lockoutEnd.UtcDateTime;
+            return Task.FromResult(IdentityResult.Success);
+        }
+
+        public Task<bool> GetTwoFactorEnabledAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            return Task.FromResult(users[user.Id].TwoFactorEnabled);
+        }
+
+        public Task SetTwoFactorEnabledAsync(VigilUser user, bool enabled)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            users[user.Id].TwoFactorEnabled = enabled;
+            return Task.FromResult(IdentityResult.Success);
+        }
+
         public void Dispose()
         {
         }
@@ -100,6 +179,5 @@ namespace Vigil.Testing.Identity.TestClasses
         {
             Contract.Invariant(users != null);
         }
-
     }
 }
