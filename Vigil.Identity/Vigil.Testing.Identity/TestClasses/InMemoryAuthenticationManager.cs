@@ -9,6 +9,7 @@ using Microsoft.Owin.Security;
 
 namespace Vigil.Testing.Identity.TestClasses
 {
+    // AuthenticationTypes, 
     using AuthenticateDelegate = Func<string[], Action<IIdentity, IDictionary<string, string>, IDictionary<string, object>, object>, object, Task>;
 
     public class InMemoryAuthenticationManager : IAuthenticationManager

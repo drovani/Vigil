@@ -9,7 +9,7 @@ namespace Vigil.Testing.Identity.Model
     [TestClass()]
     public class VigilSignInManagerTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void VigilSignInManager_DefaultConstructor()
         {
             var signInMgr = new VigilSignInManager(new VigilUserManager(new InMemoryUserStore()), new InMemoryAuthenticationManager());
@@ -22,14 +22,15 @@ namespace Vigil.Testing.Identity.Model
             throw new NotImplementedException();
         }
 
-        [TestMethod()]
-        public void CreateUserIdentityAsync_Test()
+        [TestMethod]
+        public void CreateUserIdentityAsync_Returns_Valid_ClaimsIdentity()
         {
             var signInMgr = new VigilSignInManager(new VigilUserManager(new InMemoryUserStore()), new InMemoryAuthenticationManager());
             var user = new VigilUser() { UserName = "TestUser", Email = "signinmanager@example.com" };
             var claimsIdentity = signInMgr.CreateUserIdentityAsync(user).Result;
 
             Assert.IsNotNull(claimsIdentity);
+            Assert.AreEqual("TestUser", claimsIdentity.Name);
         }
     }
 }

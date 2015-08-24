@@ -171,9 +171,9 @@ namespace Vigil.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        public ActionResult Register()
+        public ViewResult Register()
         {
-            Contract.Ensures(Contract.Result<ActionResult>() != null);
+            Contract.Ensures(Contract.Result<ViewResult>() != null);
 
             return View();
         }

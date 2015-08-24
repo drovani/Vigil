@@ -153,8 +153,11 @@
     <Compile Include="Model\VigilUserStoreTests.cs" />
     <Compile Include="Model\VigilRoleStoreTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClasses\InMemoryAuthenticationHandler.cs" />
     <Compile Include="TestClasses\InMemoryAuthenticationManager.cs" />
+    <Compile Include="TestClasses\InMemoryAuthenticationOptions.cs" />
     <Compile Include="TestClasses\InMemoryRoleStore.cs" />
+    <Compile Include="TestClasses\InMemoryTokenProvider.cs" />
     <Compile Include="TestClasses\InMemoryUserStore.cs" />
     <Compile Include="Model\VigilRoleManagerTests.cs" />
     <Compile Include="Model\VigilUserManagerTests.cs" />

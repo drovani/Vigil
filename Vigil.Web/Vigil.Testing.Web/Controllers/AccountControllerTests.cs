@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vigil.Data.Core.System;
@@ -12,27 +14,35 @@ using Vigil.Web.Models;
 
 namespace Vigil.Testing.Web.Controllers
 {
-    [TestClass()]
+    [TestClass]
+    [ContractVerification(false)]
     public class AccountControllerTests
     {
         private VigilSignInManager signInMgr;
+        private VigilUser validUser = new VigilUser
+        {
+            UserName = "ValidUser",
+            Email = "valid@example.com"
+        };
 
         [TestInitialize]
         public void TestInitialize()
         {
             var uman = new VigilUserManager(new InMemoryUserStore());
             var authman = new InMemoryAuthenticationManager();
+            var tokenProvider = new InMemoryTokenProvider();
+            uman.RegisterTwoFactorProvider("InMemory", tokenProvider);
             signInMgr = new VigilSignInManager(uman, authman);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AccountController_Default_Constructor()
         {
             var ctrl = new AccountController();
             Assert.IsNotNull(ctrl);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AccountController_Explicit_Constructor()
         {
             var ctrl = new AccountController(signInMgr);
@@ -42,14 +52,14 @@ namespace Vigil.Testing.Web.Controllers
             Assert.AreSame(signInMgr.UserManager, ctrl.UserManager);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void AccountController_Explicit_Constructor_Null_UserManager_Throws_Exception()
         {
             new AccountController(null);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void Login_Without_ReturnUrl_Returns_View_And_No_ViewBag_ReturnUrl()
         {
             var ctrl = new AccountController(signInMgr);
@@ -67,7 +77,7 @@ namespace Vigil.Testing.Web.Controllers
             Assert.AreEqual("/Home", ctrl.ViewBag.ReturnUrl);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public async Task Login_POST_Invalid_Model_Returns_View()
         {
             var ctrl = new AccountController(signInMgr);
@@ -87,12 +97,7 @@ namespace Vigil.Testing.Web.Controllers
         public async Task Login_POST_Successful_Login_Without_ReturnUrl_Returns_Redirect_To_Home()
         {
             var ctrl = new AccountController(signInMgr);
-            var createResult = await signInMgr.UserManager.CreateAsync(new VigilUser()
-            {
-                UserName = "TestUser",
-                Email = "valid@example.com"
-            }, "testPassword.01");
-            Assert.IsTrue(createResult.Succeeded);
+            await CreateUserAsync();
 
             var model = new LoginViewModel()
             {
@@ -111,16 +116,11 @@ namespace Vigil.Testing.Web.Controllers
         public async Task Login_POST_LockedOut_Returns_Lockout_View()
         {
             var ctrl = new AccountController(signInMgr);
-            var user = new VigilUser()
-            {
-                UserName = "TestUser",
-                Email = "valid@example.com",
-                LockoutEnabled = true,
-                LockoutEndDateUtc = DateTime.UtcNow.AddDays(1)
-            };
-            var createResult = await signInMgr.UserManager.CreateAsync(user, "testPassword.01");
-            Assert.IsTrue(createResult.Succeeded);
-            Assert.IsTrue(await signInMgr.UserManager.IsLockedOutAsync(user.Id));
+            validUser.LockoutEnabled = true;
+            validUser.LockoutEndDateUtc = DateTime.UtcNow.AddDays(1);
+
+            await CreateUserAsync();
+            Assert.IsTrue(await signInMgr.UserManager.IsLockedOutAsync(validUser.Id));
 
             var model = new LoginViewModel()
             {
@@ -138,14 +138,8 @@ namespace Vigil.Testing.Web.Controllers
         public async Task Login_POST_RequiresVerification_Redirects_To_SendCode_Action()
         {
             var ctrl = new AccountController(signInMgr);
-            var user = new VigilUser()
-            {
-                UserName = "TestUser",
-                Email = "valid@example.com",
-                TwoFactorEnabled = true
-            };
-            var createResult = await signInMgr.UserManager.CreateAsync(user, "testPassword.01");
-            Assert.IsTrue(createResult.Succeeded);
+            validUser.TwoFactorEnabled = true;
+            await CreateUserAsync();
 
             var model = new LoginViewModel()
             {
@@ -156,33 +150,152 @@ namespace Vigil.Testing.Web.Controllers
             ActionResult result = await ctrl.Login(model, null);
 
             Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-            Assert.AreEqual("Account", (result as RedirectToRouteResult).RouteValues["Controller"]);
+            Assert.IsNull((result as RedirectToRouteResult).RouteValues["ReturnUrl"]);
+            Assert.AreEqual(model.RememberMe, (result as RedirectToRouteResult).RouteValues["RememberMe"]);
             Assert.AreEqual("SendCode", (result as RedirectToRouteResult).RouteValues["Action"]);
         }
 
+        [TestMethod]
+        public async Task Login_POST_RequiresVerification_Redirects_To_SendCode_Action_And_Retains_ReturnUrl()
+        {
+            var ctrl = new AccountController(signInMgr);
+            validUser.TwoFactorEnabled = true;
+            await CreateUserAsync();
+
+            var model = new LoginViewModel()
+            {
+                Email = "valid@example.com",
+                Password = "testPassword.01",
+                RememberMe = true
+            };
+            ActionResult result = await ctrl.Login(model, "/Home/Index");
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
+            Assert.AreEqual("/Home/Index", (result as RedirectToRouteResult).RouteValues["ReturnUrl"]);
+            Assert.AreEqual(model.RememberMe, (result as RedirectToRouteResult).RouteValues["RememberMe"]);
+            Assert.AreEqual("SendCode", (result as RedirectToRouteResult).RouteValues["Action"]);
+        }
+
+        [TestMethod]
+        public async Task Login_POST_Using_Incorrect_Password_Returns_View_With_Error()
+        {
+            var ctrl = new AccountController(signInMgr);
+            await CreateUserAsync();
+
+            var model = new LoginViewModel()
+            {
+                Email = "valid@example.com",
+                Password = "incorrectPassword",
+                RememberMe = true
+            };
+            var result = await ctrl.Login(model, null) as ViewResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(ctrl.ModelState.IsValid);
+            Assert.AreEqual("Invalid login attempt.", ctrl.ModelState[""].Errors[0].ErrorMessage);
+            Assert.AreSame(model, result.Model);
+        }
+
+        [TestMethod]
+        public async Task Login_POST_Using_Invalid_Credentials_Returns_View_With_Error()
+        {
+            var ctrl = new AccountController(signInMgr);
+            var model = new LoginViewModel()
+            {
+                Email = "invalid@example.com",
+                Password = "incorrectPassword",
+                RememberMe = true
+            };
+            var result = await ctrl.Login(model, null) as ViewResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsFalse(ctrl.ModelState.IsValid);
+            Assert.AreEqual("Invalid login attempt.", ctrl.ModelState[""].Errors[0].ErrorMessage);
+            Assert.AreSame(model, result.Model);
+        }
+
+        [TestMethod]
+        public async Task VerifyCode_With_Verified_User_Returns_ViewResult_With_VerifyCodeViewModel()
+        {
+            var ctrl = new AccountController(signInMgr);
+            await CreateUserAsync();
+
+            var result = await ctrl.VerifyCode("InMemory", null, false) as ViewResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result.Model, typeof(VerifyCodeViewModel));
+            Assert.AreEqual("InMemory", (result.Model as VerifyCodeViewModel).Provider);
+        }
+
+        [TestMethod]
+        public async Task VerifyCode_Without_Verified_User_Returns_Error_View()
+        {
+            var ctrl = new AccountController(signInMgr);
+            await CreateUserAsync();
+
+            // somehow get signInMgr.HasBeenVerifiedAsync() to return false
+
+            var result = await ctrl.VerifyCode("InMemory", null, false) as ViewResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Error", result.ViewName);
+        }
+
+        [TestMethod]
+        public async Task VerifyCode_POST_Invalid_ModelState_Returns_View()
+        {
+            var ctrl = new AccountController(signInMgr);
+            var model = new VerifyCodeViewModel();
+
+            var result = await ctrl.VerifyCode(model) as ViewResult;
+
+            Assert.IsFalse(ctrl.ModelState.IsValid);
+            Assert.IsNotNull(result);
+            Assert.AreSame(model, result.Model);
+        }
+
         [TestMethod()]
-        public void VerifyCode_Test()
+        [Ignore]
+        public void VerifyCode_POST_Successful_Login_Without_ReturnUrl_Redirect_To_Home()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void VerifyCode_Test1()
+        [Ignore]
+        public void VerifyCode_POST_LockedOut_Redirects_To_Lockout()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void Register_Test()
+        [Ignore]
+        public void VerifyCode_POST_Failure_Returns_View_With_Error()
         {
             throw new NotImplementedException();
         }
 
-        [TestMethod()]
-        public void Register_Test1()
+        [TestMethod]
+        public void Register_Returns_View()
         {
-            throw new NotImplementedException();
+            var ctrl = new AccountController();
+            ViewResult result = ctrl.Register();
+
+            Assert.IsNotNull(result);
         }
+
+        [TestMethod()]
+        public async Task Register_POST_Invalid_Model_Returns_View()
+        {
+            var ctrl = new AccountController(signInMgr);
+            var model = new RegisterViewModel();
+            ViewResult result = await ctrl.Register(model) as ViewResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreSame(model, result.Model);
+        }
+
+
 
         [TestMethod()]
         public void ConfirmEmail_Test()
@@ -266,6 +379,13 @@ namespace Vigil.Testing.Web.Controllers
         public void ExternalLoginFailure_Test()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<IdentityResult> CreateUserAsync()
+        {
+            var result = await signInMgr.UserManager.CreateAsync(validUser, "testPassword.01");
+            Assert.IsTrue(result.Succeeded);
+            return result;
         }
     }
 }
