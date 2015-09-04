@@ -28,7 +28,7 @@ namespace Vigil.Web.Controllers
                 Contract.Assume(HttpContext != null);
                 IOwinContext context = HttpContext.GetOwinContext();
                 Contract.Assume(context != null);
-                
+
                 return context.Authentication;
             }
         }
@@ -220,7 +220,7 @@ namespace Vigil.Web.Controllers
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
 
-            if (userId == null || code == null)
+            if (code == null)
             {
                 return View("Error");
             }
@@ -288,10 +288,8 @@ namespace Vigil.Web.Controllers
         public ActionResult ResetPassword(string code)
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            ViewResult view = code == null ? View("Error") : View();
-            Contract.Assume(view != null);
 
-            return view;
+            return code == null ? View("Error") : View();
         }
 
         /// <summary>POST: /Account/ResetPassword
