@@ -12,7 +12,8 @@ namespace Vigil.Testing.Identity.TestClasses
         IUserStore<VigilUser, Guid>,
         IUserPasswordStore<VigilUser, Guid>,
         IUserLockoutStore<VigilUser, Guid>,
-        IUserTwoFactorStore<VigilUser, Guid>
+        IUserTwoFactorStore<VigilUser, Guid>,
+        IUserEmailStore<VigilUser, Guid>
     {
         private readonly Dictionary<Guid, VigilUser> users = new Dictionary<Guid, VigilUser>();
         private readonly Dictionary<VigilUser, string> passwords = new Dictionary<VigilUser, string>();
@@ -178,6 +179,51 @@ namespace Vigil.Testing.Identity.TestClasses
         private void ObjectInvariant()
         {
             Contract.Invariant(users != null);
+        }
+
+        public Task<VigilUser> FindByEmailAsync(string email)
+        {
+            Contract.Ensures(Contract.Result<Task<VigilUser>>() != null);
+
+            return Task.FromResult(Users.SingleOrDefault(u => u.Email.ToLowerInvariant() == email.ToLowerInvariant()));
+        }
+
+        public Task<string> GetEmailAsync(VigilUser user)
+        {
+            Contract.Assume(user != null);
+
+            if (users.ContainsKey(user.Id))
+            {
+                return Task.FromResult(users[user.Id].Email);
+            }
+            else return Task.FromResult<string>(null);
+        }
+
+        public Task<bool> GetEmailConfirmedAsync(VigilUser user)
+        {
+            if (users.ContainsKey(user.Id))
+            {
+                return Task.FromResult(users[user.Id].EmailConfirmed);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task SetEmailAsync(VigilUser user, string email)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            users[user.Id].Email = email;
+            return Task.FromResult(IdentityResult.Success);
+        }
+
+        public Task SetEmailConfirmedAsync(VigilUser user, bool confirmed)
+        {
+            Contract.Assume(user != null);
+            Contract.Assume(users.ContainsKey(user.Id));
+
+            users[user.Id].EmailConfirmed = confirmed;
+            return Task.FromResult(IdentityResult.Success);
         }
     }
 }

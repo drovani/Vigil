@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
@@ -16,10 +18,24 @@ namespace Vigil.Testing.Identity.Model
             Assert.IsNotNull(signInMgr);
         }
 
-        [TestMethod()]
+        /// <summary>Tests the VigilSignInManager.Create static method.
+        /// <remarks>Uses the context.GetUserManager to obtain the VigilUserManager
+        /// and the context.Authentication to obtain the IAuthenticationManager
+        /// needed for the explicit constructor.
+        /// </remarks>
+        /// </summary>
+        [Ignore]
+        [TestMethod]
         public void Create_Test()
         {
-            throw new NotImplementedException();
+            IdentityFactoryOptions<VigilSignInManager> options = new IdentityFactoryOptions<VigilSignInManager>();
+            IOwinContext context = null;
+
+            var signInManager = VigilSignInManager.Create(options, context);
+
+            Assert.IsNotNull(signInManager);
+            Assert.AreSame(context.Get<VigilUserManager>(), signInManager.UserManager);
+            Assert.AreSame(context.Authentication, signInManager.AuthenticationManager);
         }
 
         [TestMethod]

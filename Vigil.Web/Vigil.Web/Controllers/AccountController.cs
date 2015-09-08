@@ -21,18 +21,20 @@ namespace Vigil.Web.Controllers
     {
         private VigilSignInManager _signInManager;
         private VigilUserManager _userManager;
+        private IAuthenticationManager _authenticationManager;
+
         private IAuthenticationManager AuthenticationManager
         {
             get
             {
-                Contract.Assume(HttpContext != null);
-                IOwinContext context = HttpContext.GetOwinContext();
-                Contract.Assume(context != null);
-
-                return context.Authentication;
+                Contract.Ensures(Contract.Result<IAuthenticationManager>() != null);
+                return _authenticationManager ?? HttpContext.GetOwinContext().Authentication;
+            }
+            set
+            {
+                _authenticationManager = value;
             }
         }
-
         public VigilSignInManager SignInManager
         {
             get
@@ -62,12 +64,15 @@ namespace Vigil.Web.Controllers
         public AccountController()
         {
         }
-        public AccountController(VigilSignInManager signInManager)
+        public AccountController(VigilSignInManager signInManager, VigilUserManager userManager, IAuthenticationManager authenticationManager)
         {
             Contract.Requires<ArgumentNullException>(signInManager != null);
+            Contract.Requires<ArgumentNullException>(userManager != null);
+            Contract.Requires<ArgumentNullException>(authenticationManager != null);
 
             SignInManager = signInManager;
-            UserManager = signInManager.UserManager as VigilUserManager;
+            UserManager = userManager;
+            AuthenticationManager = authenticationManager;
         }
 
         /// <summary>GET: /Account/Login
@@ -327,7 +332,6 @@ namespace Vigil.Web.Controllers
         public ActionResult ResetPasswordConfirmation()
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
-            Contract.Assume(View() != null);
 
             return View();
         }
@@ -471,8 +475,6 @@ namespace Vigil.Web.Controllers
         {
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
-            Contract.Assume(this.AuthenticationManager != null);
-
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }
@@ -483,12 +485,7 @@ namespace Vigil.Web.Controllers
         [AllowAnonymous]
         public ViewResult ExternalLoginFailure()
         {
-            EnsuresActionResultIsNotNull();
-
-            ViewResult view = View();
-            Contract.Assume(view != null);
-
-            return view;
+            return View();
         }
 
         protected override void Dispose(bool disposing)
@@ -538,9 +535,7 @@ namespace Vigil.Web.Controllers
             Contract.Ensures(Contract.Result<VigilUserManager>() != null);
 
             IOwinContext owinContext = HttpContext.GetOwinContext();
-            Contract.Assume(owinContext != null);
             VigilUserManager manager = owinContext.Get<VigilUserManager>();
-            Contract.Assume(manager != null);
 
             return manager;
         }
@@ -549,17 +544,8 @@ namespace Vigil.Web.Controllers
             Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
 
             IOwinContext owinContext = HttpContext.GetOwinContext();
-            Contract.Assume(owinContext != null);
             VigilSignInManager manager = owinContext.Get<VigilSignInManager>();
-            Contract.Assume(manager != null);
             return manager;
-        }
-
-        [ContractAbbreviator]
-        private void EnsuresActionResultIsNotNull()
-        {
-            Contract.Ensures(Contract.Result<ActionResult>() != null);
-            Contract.Assume(View() != null);
         }
     }
 }
