@@ -1,29 +1,34 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
 using Vigil.Testing.Identity.TestClasses;
+using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
-    [TestClass]
     public class VigilUserManagerTests
     {
-        [TestMethod]
+        [Fact]
         public void VigilUserManager_Constructor_Accepts_UserStore()
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
-            Assert.IsNotNull(vuman);
+            Assert.NotNull(vuman);
         }
 
-        [TestMethod]
-        [Ignore]
+        [Fact(Skip="Requires an IOwinContext implementation to obtain IdentityVigilContext.")]
         public void VigilUserManager_Static_Create_Returns_Valid_Manager()
         {
-            throw new NotImplementedException();
+            IdentityFactoryOptions<VigilUserManager> options = new IdentityFactoryOptions<VigilUserManager>();
+            IOwinContext context = null;
+
+            var userManager = VigilUserManager.Create(options, context);
+
+            Assert.NotNull(userManager);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateAsync_Sets_Empty_Id()
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
@@ -33,13 +38,13 @@ namespace Vigil.Testing.Identity.Model
             var result = vuman.CreateAsync(user).Result;
             var retrievedUser = vuman.FindByNameAsync("TestUser").Result;
 
-            Assert.IsTrue(result.Succeeded);
-            Assert.AreNotEqual(Guid.Empty, user.Id);
-            Assert.IsNotNull(retrievedUser);
-            Assert.AreEqual(user, retrievedUser);
+            Assert.True(result.Succeeded);
+            Assert.NotEqual(Guid.Empty, user.Id);
+            Assert.NotNull(retrievedUser);
+            Assert.Equal(user, retrievedUser);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateAsync_Preserves_Specified_Id()
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
@@ -47,11 +52,11 @@ namespace Vigil.Testing.Identity.Model
             var user = new VigilUser {Id = newguid, UserName = "TestUser" };
 
             var result = vuman.CreateAsync(user).Result;
-            Assert.AreEqual(newguid, user.Id);
-            Assert.IsTrue(result.Succeeded);
+            Assert.Equal(newguid, user.Id);
+            Assert.True(result.Succeeded);
         }
         
-        [TestMethod]
+        [Fact]
         public void CreateAsync_With_Password_Sets_Empty_Id()
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
@@ -59,11 +64,11 @@ namespace Vigil.Testing.Identity.Model
             user.Id = Guid.Empty;
 
             var result = vuman.CreateAsync(user, "testPassword.01").Result;
-            Assert.AreNotEqual(Guid.Empty, user.Id);
-            Assert.IsTrue(result.Succeeded);
+            Assert.NotEqual(Guid.Empty, user.Id);
+            Assert.True(result.Succeeded);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateAsync_With_Password_Preserves_Specified_Id()
         {
             var vuman = new VigilUserManager(new InMemoryUserStore());
@@ -71,8 +76,8 @@ namespace Vigil.Testing.Identity.Model
             var user = new VigilUser { Id = newguid, UserName = "TestUser" };
 
             var result = vuman.CreateAsync(user, "testPassword.01").Result;
-            Assert.AreEqual(newguid, user.Id);
-            Assert.IsTrue(result.Succeeded);
+            Assert.Equal(newguid, user.Id);
+            Assert.True(result.Succeeded);
         }
     }
 }

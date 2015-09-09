@@ -1,20 +1,17 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics.Contracts;
 using Vigil.Data.Core.Attributes;
+using Xunit;
 
 namespace Vigil.Testing.Data.Core
 {
-    [TestClass]
+    [ContractVerification(false)]
     public class CodeCoverageUnitTests
     {
-        [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "Vigil.Data.Core.Attributes.NotImplementedAttribute")]
+        [Fact]
         public void NotImplementedAttribute_Throws_NotImplementedException()
         {
-            new NotImplementedAttribute();
-
-            Assert.Fail("Constructor should have throw Not Implemented Exception.");
+            Assert.Throws<NotImplementedException>(() => new NotImplementedAttribute());
         }
     }
 }

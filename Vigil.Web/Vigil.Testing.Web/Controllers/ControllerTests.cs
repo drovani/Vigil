@@ -2,7 +2,6 @@
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Vigil.Testing.Web.Controllers
 {

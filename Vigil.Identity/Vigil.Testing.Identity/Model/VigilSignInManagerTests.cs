@@ -1,31 +1,25 @@
 ﻿using System;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
 using Vigil.Testing.Identity.TestClasses;
+using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
-    [TestClass()]
     public class VigilSignInManagerTests
     {
-        [TestMethod]
+        [Fact]
         public void VigilSignInManager_DefaultConstructor()
         {
             var signInMgr = new VigilSignInManager(new VigilUserManager(new InMemoryUserStore()), new InMemoryAuthenticationManager());
-            Assert.IsNotNull(signInMgr);
+            Assert.NotNull(signInMgr);
         }
 
         /// <summary>Tests the VigilSignInManager.Create static method.
-        /// <remarks>Uses the context.GetUserManager to obtain the VigilUserManager
-        /// and the context.Authentication to obtain the IAuthenticationManager
-        /// needed for the explicit constructor.
-        /// </remarks>
         /// </summary>
-        [Ignore]
-        [TestMethod]
+        [Fact(Skip="Requires an IOwinContext implementation to obtain VigilUserManager and IAuthenticationManager.")]
         public void Create_Test()
         {
             IdentityFactoryOptions<VigilSignInManager> options = new IdentityFactoryOptions<VigilSignInManager>();
@@ -33,20 +27,20 @@ namespace Vigil.Testing.Identity.Model
 
             var signInManager = VigilSignInManager.Create(options, context);
 
-            Assert.IsNotNull(signInManager);
-            Assert.AreSame(context.Get<VigilUserManager>(), signInManager.UserManager);
-            Assert.AreSame(context.Authentication, signInManager.AuthenticationManager);
+            Assert.NotNull(signInManager);
+            Assert.Same(context.Get<VigilUserManager>(), signInManager.UserManager);
+            Assert.Same(context.Authentication, signInManager.AuthenticationManager);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateUserIdentityAsync_Returns_Valid_ClaimsIdentity()
         {
             var signInMgr = new VigilSignInManager(new VigilUserManager(new InMemoryUserStore()), new InMemoryAuthenticationManager());
             var user = new VigilUser() { UserName = "TestUser", Email = "signinmanager@example.com" };
             var claimsIdentity = signInMgr.CreateUserIdentityAsync(user).Result;
 
-            Assert.IsNotNull(claimsIdentity);
-            Assert.AreEqual("TestUser", claimsIdentity.Name);
+            Assert.NotNull(claimsIdentity);
+            Assert.Equal("TestUser", claimsIdentity.Name);
         }
     }
 }

@@ -1,27 +1,32 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Vigil.Identity.Model;
 using Vigil.Testing.Identity.TestClasses;
+using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
-    [TestClass]
     public class VigilRoleManagerTests
     {
-        [TestMethod]
+        [Fact]
         public void VigilRoleManager_Constructor_Accepts_RoleStore()
         {
             var rolestore = new InMemoryRoleStore();
             VigilRoleManager vrman = new VigilRoleManager(rolestore);
 
-            Assert.IsNotNull(vrman);
+            Assert.NotNull(vrman);
         }
 
-        [TestMethod]
-        [Ignore]
+        [Fact(Skip = "Requires an IOwinContext implementation to obtain IdentityVigilContext.")]
         public void VigilRoleManager_Static_Create_Returns_Valid_Manager()
         {
-            throw new NotImplementedException();
+            IdentityFactoryOptions<VigilRoleManager> options = new IdentityFactoryOptions<VigilRoleManager>();
+            IOwinContext context = null;
+
+            var roleManager = VigilRoleManager.Create(options, context);
+
+            Assert.NotNull(roleManager);
         }
     }
 }

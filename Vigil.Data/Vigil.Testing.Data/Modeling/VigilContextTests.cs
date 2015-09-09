@@ -2,29 +2,25 @@
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
-using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vigil.Data.Core.System;
 using Vigil.Data.Modeling;
+using Xunit;
 
 namespace Vigil.Testing.Data.Modeling
 {
-    [TestClass]
-    [ContractVerification(false)]
     public class VigilContextTests
     {
-        VigilUser testUser;
-        DateTime now;
+        private readonly VigilUser testUser;
+        private readonly DateTime now;
 
-        [TestInitialize]
-        public void TestInitialize()
+        public VigilContextTests()
         {
             testUser = new VigilUser { UserName = "TestUser" };
             now = new DateTime(2015, 4, 23, 13, 33, 12, DateTimeKind.Utc);
         }
 
-        [TestMethod]
+        [Fact]
         public void Initialize_And_Create_Database_Cause_Database_To_Exists()
         {
             using (VigilContext context = new VigilContext(testUser, now))
@@ -32,21 +28,21 @@ namespace Vigil.Testing.Data.Modeling
                 Database.SetInitializer<VigilContext>(new DropCreateDatabaseAlways<VigilContext>());
                 context.Database.Initialize(true);
 
-                Assert.IsTrue(context.Database.Exists());
+                Assert.True(context.Database.Exists());
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Explicit_Constructor_Sets_AffectedBy_And_Now()
         {
             using (VigilContext context = new VigilContext(testUser, now))
             {
-                Assert.AreEqual(testUser, context.AffectedBy);
-                Assert.AreEqual(now, context.Now);
+                Assert.Equal(testUser, context.AffectedBy);
+                Assert.Equal(now, context.Now);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Validate_VigilUser_TableName_Is_Correct()
         {
             string tableName;
@@ -54,10 +50,10 @@ namespace Vigil.Testing.Data.Modeling
             {
                 tableName = GetTableName<VigilUser>(context);
             }
-            Assert.AreEqual("[vigil].[VigilUser]", tableName);
+            Assert.Equal("[vigil].[VigilUser]", tableName);
         }
 
-        [TestMethod]
+        [Fact]
         public void Validate_VigilUserClaim_TableName_Is_Correct()
         {
             string tableName;
@@ -65,10 +61,9 @@ namespace Vigil.Testing.Data.Modeling
             {
                 tableName = GetTableName<VigilUserClaim>(context);
             }
-            Assert.AreEqual("[vigil].[VigilUserClaim]", tableName);
+            Assert.Equal("[vigil].[VigilUserClaim]", tableName);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Login"), TestMethod]
         public void Validate_VigilUserLogin_TableName_Is_Correct()
         {
             string tableName;
@@ -76,10 +71,10 @@ namespace Vigil.Testing.Data.Modeling
             {
                 tableName = GetTableName<VigilUserLogin>(context);
             }
-            Assert.AreEqual("[vigil].[VigilUserLogin]", tableName);
+            Assert.Equal("[vigil].[VigilUserLogin]", tableName);
         }
 
-        [TestMethod]
+        [Fact]
         public void Validate_VigilUserRole_TableName_Is_Correct()
         {
             string tableName;
@@ -87,10 +82,10 @@ namespace Vigil.Testing.Data.Modeling
             {
                 tableName = GetTableName<VigilUserRole>(context);
             }
-            Assert.AreEqual("[vigil].[VigilUserRole]", tableName);
+            Assert.Equal("[vigil].[VigilUserRole]", tableName);
         }
 
-        [TestMethod]
+        [Fact]
         public void Validate_VigilRole_TableName_Is_Correct()
         {
             string tableName;
@@ -98,7 +93,7 @@ namespace Vigil.Testing.Data.Modeling
             {
                 tableName = GetTableName<VigilRole>(context);
             }
-            Assert.AreEqual("[vigil].[VigilRole]", tableName);
+            Assert.Equal("[vigil].[VigilRole]", tableName);
         }
 
         private static string GetTableName<TEntity>(DbContext context) where TEntity : class
