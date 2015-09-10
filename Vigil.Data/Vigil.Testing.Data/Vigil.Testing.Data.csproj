@@ -146,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="codeCoverage.runsettings" />
     <None Include="packages.config" />
     <None Include="Vigil.Testing.Data.snk" />
   </ItemGroup>

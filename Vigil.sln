@@ -1,23 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Data", "Vigil Data", "{F6BA71D2-01D8-4C33-8542-45B13A2CD5A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Core", ".\Vigil.Data\Vigil.Data.Core\Vigil.Data.Core.csproj", "{19D5BC74-A409-435A-9DD0-18AC8346FF3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Core", "Vigil.Data\Vigil.Data.Core\Vigil.Data.Core.csproj", "{19D5BC74-A409-435A-9DD0-18AC8346FF3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Modeling", ".\Vigil.Data\Vigil.Data.Modeling\Vigil.Data.Modeling.csproj", "{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Modeling", "Vigil.Data\Vigil.Data.Modeling\Vigil.Data.Modeling.csproj", "{D6F9B9C3-7537-448D-A2B2-3FFC13CF95EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Services", ".\Vigil.Data\Vigil.Data.Services\Vigil.Data.Services.csproj", "{12290054-BB9A-41F2-97E1-F6D64FFE36E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Data.Services", "Vigil.Data\Vigil.Data.Services\Vigil.Data.Services.csproj", "{12290054-BB9A-41F2-97E1-F6D64FFE36E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Data", ".\Vigil.Data\Vigil.Testing.Data\Vigil.Testing.Data.csproj", "{DF5B52C3-6153-4984-B75A-F314C30C5E8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Data", "Vigil.Data\Vigil.Testing.Data\Vigil.Testing.Data.csproj", "{DF5B52C3-6153-4984-B75A-F314C30C5E8E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Identity", "Vigil Identity", "{BB9E0097-D1C2-4B03-8D60-F2CA4A43F24F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Identity.Model", ".\Vigil.Identity\Vigil.Identity.Model\Vigil.Identity.Model.csproj", "{BEFE3D30-E2CD-4ED5-B749-B0DD92B883CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Identity.Model", "Vigil.Identity\Vigil.Identity.Model\Vigil.Identity.Model.csproj", "{BEFE3D30-E2CD-4ED5-B749-B0DD92B883CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Identity", ".\Vigil.Identity\Vigil.Testing.Identity\Vigil.Testing.Identity.csproj", "{10832EE5-1D5C-4D7C-A2D8-C16A5D06548D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Identity", "Vigil.Identity\Vigil.Testing.Identity\Vigil.Testing.Identity.csproj", "{10832EE5-1D5C-4D7C-A2D8-C16A5D06548D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Web", "Vigil Web", "{49871C20-88F1-49EF-BCF0-5071F4C0D2D8}"
 EndProject
@@ -28,9 +28,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B4FDF4
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Web", ".\Vigil.Web\Vigil.Web\Vigil.Web.csproj", "{B6B6C07C-AA2C-43A2-BCC9-D4F86E90951A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Web", "Vigil.Web\Vigil.Web\Vigil.Web.csproj", "{B6B6C07C-AA2C-43A2-BCC9-D4F86E90951A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Web", ".\Vigil.Web\Vigil.Testing.Web\Vigil.Testing.Web.csproj", "{6E509972-C128-44D6-9257-65172888CD79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Web", "Vigil.Web\Vigil.Testing.Web\Vigil.Testing.Web.csproj", "{6E509972-C128-44D6-9257-65172888CD79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A1302D1-F6F5-4B2D-AEC1-49A41F6B8225}"
+	ProjectSection(SolutionItems) = preProject
+		codeCoverage.runsettings = codeCoverage.runsettings
+		VigilCodeAnalysis.ruleset = VigilCodeAnalysis.ruleset
+		VigilTestsCodeAnalysis.ruleset = VigilTestsCodeAnalysis.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

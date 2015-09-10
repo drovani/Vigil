@@ -13,7 +13,7 @@
           <CodeCoverage>
             <ModulePaths>
               <Exclude>
-                <ModulePath>.*Vigil\.Testing\.Data\.dll$</ModulePath>
+                <ModulePath>.*Vigil\.Testing\..*\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
           </CodeCoverage>

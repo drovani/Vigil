@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Moq;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
 using Vigil.Testing.Identity.TestClasses;
@@ -19,6 +22,8 @@ namespace Vigil.Testing.Web.Controllers
     [ContractVerification(false)]
     public class AccountControllerTests : ControllerTests
     {
+        private readonly Mock<IPrincipal> MockUser = new Mock<IPrincipal>();
+
         private readonly VigilSignInManager signInManager;
         private readonly VigilUser validUser = new VigilUser
         {
@@ -847,6 +852,7 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task ExternalLoginConfirmation_POST_Invalid_Model_Returns_View_With_Model()
         {
+            MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(true);
             var ctrl = GetAccountController();
             await CreateUserAsync();
             ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel();
@@ -996,7 +1002,16 @@ namespace Vigil.Testing.Web.Controllers
 
         private AccountController GetAccountController()
         {
-            return new AccountController(signInManager, signInManager.UserManager as VigilUserManager, signInManager.AuthenticationManager);
+            var ctrl = new AccountController(signInManager, signInManager.UserManager as VigilUserManager, signInManager.AuthenticationManager);
+
+            var contextMock = new Mock<HttpContextBase>();
+            contextMock.SetupGet(ctx => ctx.User).Returns(MockUser.Object);
+            var controllerContextMock = new Mock<ControllerContext>();
+            controllerContextMock.SetupGet(con => con.HttpContext).Returns(contextMock.Object);
+
+            ctrl.ControllerContext = controllerContextMock.Object;
+
+            return ctrl;
         }
     }
 }
