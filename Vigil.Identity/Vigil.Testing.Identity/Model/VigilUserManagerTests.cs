@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Vigil.Data.Core.System;
@@ -8,6 +9,7 @@ using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
+    [ContractVerification(false)]
     public class VigilUserManagerTests
     {
         [Fact]

@@ -10,7 +10,7 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model
 {
-    public class VigilSignInManager : SignInManager<VigilUser, Guid>
+    public class VigilSignInManager : SignInManager<VigilUser, Guid>, IVigilSignInManager
     {
         public VigilSignInManager(VigilUserManager userManager, IAuthenticationManager authenticationManager) :
             base(userManager, authenticationManager)
@@ -19,10 +19,10 @@ namespace Vigil.Identity.Model
             Contract.Requires<ArgumentNullException>(authenticationManager != null);
         }
 
-        public static VigilSignInManager Create(IdentityFactoryOptions<VigilSignInManager> options, IOwinContext context)
+        public static IVigilSignInManager Create(IdentityFactoryOptions<IVigilSignInManager> options, IOwinContext context)
         {
             Contract.Requires<ArgumentNullException>(context != null);
-            Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
+            Contract.Ensures(Contract.Result<IVigilSignInManager>() != null);
 
             VigilUserManager manager = context.GetUserManager<VigilUserManager>();
 

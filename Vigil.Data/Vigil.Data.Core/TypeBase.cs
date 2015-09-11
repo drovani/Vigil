@@ -22,7 +22,8 @@ namespace Vigil.Data.Core
 
         protected TypeBase(string typeName)
         {
-            Contract.Requires<ArgumentNullException>(!String.IsNullOrWhiteSpace(typeName));
+            Contract.Requires<ArgumentNullException>(typeName != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(typeName.Trim()));
 
             this.TypeName = typeName.Trim();
         }
@@ -30,7 +31,7 @@ namespace Vigil.Data.Core
         public string SetTypeName(string typeName)
         {
             Contract.Requires<ArgumentNullException>(typeName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(typeName));
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(typeName.Trim()));
             Contract.Ensures(Contract.Result<string>() != null);
 
             TypeName = typeName.Trim();

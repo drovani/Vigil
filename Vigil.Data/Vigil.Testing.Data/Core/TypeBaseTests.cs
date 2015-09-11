@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using Vigil.Data.Core;
 using Vigil.Data.Core.System;
 using Vigil.Testing.Data.TestClasses;
@@ -19,7 +18,12 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Passing_Empty_TypeName_Throws_Exception()
         {
-            Assert.Throws<ArgumentNullException>(() => TestTypeBase.CreateType(String.Empty));
+            Assert.Throws<ArgumentException>(() => TestTypeBase.CreateType(String.Empty));
+        }
+        [Fact]
+        public void Passing_Whitespace_TypeName_Throws_Exception()
+        {
+            Assert.Throws<ArgumentException>(() => TestTypeBase.CreateType("  "));
         }
         [Fact]
         public void Passing_Null_TypeName_Throws_Exception()

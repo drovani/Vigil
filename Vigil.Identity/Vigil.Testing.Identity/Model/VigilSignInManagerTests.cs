@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Vigil.Data.Core.System;
@@ -8,6 +9,7 @@ using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
+    [ContractVerification(false)]
     public class VigilSignInManagerTests
     {
         [Fact]
@@ -22,7 +24,7 @@ namespace Vigil.Testing.Identity.Model
         [Fact(Skip="Requires an IOwinContext implementation to obtain VigilUserManager and IAuthenticationManager.")]
         public void Create_Test()
         {
-            IdentityFactoryOptions<VigilSignInManager> options = new IdentityFactoryOptions<VigilSignInManager>();
+            IdentityFactoryOptions<IVigilSignInManager> options = new IdentityFactoryOptions<IVigilSignInManager>();
             IOwinContext context = null;
 
             var signInManager = VigilSignInManager.Create(options, context);

@@ -19,7 +19,7 @@ namespace Vigil.Web
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext<IdentityVigilContext>(IdentityVigilContext.Create);
             app.CreatePerOwinContext<VigilUserManager>(VigilUserManager.Create);
-            app.CreatePerOwinContext<VigilSignInManager>(VigilSignInManager.Create);
+            app.CreatePerOwinContext<IVigilSignInManager>(VigilSignInManager.Create);
 
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider

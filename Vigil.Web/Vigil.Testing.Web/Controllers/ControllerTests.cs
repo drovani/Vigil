@@ -5,6 +5,7 @@ using System.Web.Mvc;
 
 namespace Vigil.Testing.Web.Controllers
 {
+    [ContractVerification(false)]
     public abstract class ControllerTests
     {
         protected bool BindModel<TController, TModel>(TController ctrl, TModel model) where TController : Controller

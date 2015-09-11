@@ -19,7 +19,7 @@ namespace Vigil.Web.Controllers
     [ContractVerification(false)]
     public class AccountController : Controller
     {
-        private VigilSignInManager _signInManager;
+        private IVigilSignInManager _signInManager;
         private VigilUserManager _userManager;
         private IAuthenticationManager _authenticationManager;
 
@@ -35,11 +35,11 @@ namespace Vigil.Web.Controllers
                 _authenticationManager = value;
             }
         }
-        public VigilSignInManager SignInManager
+        public IVigilSignInManager SignInManager
         {
             get
             {
-                Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
+                Contract.Ensures(Contract.Result<IVigilSignInManager>() != null);
                 return _signInManager ?? GetVigilSignInManager();
             }
             private set
@@ -64,12 +64,8 @@ namespace Vigil.Web.Controllers
         public AccountController()
         {
         }
-        public AccountController(VigilSignInManager signInManager, VigilUserManager userManager, IAuthenticationManager authenticationManager)
+        public AccountController(VigilUserManager userManager, IVigilSignInManager signInManager, IAuthenticationManager authenticationManager)
         {
-            Contract.Requires<ArgumentNullException>(signInManager != null);
-            Contract.Requires<ArgumentNullException>(userManager != null);
-            Contract.Requires<ArgumentNullException>(authenticationManager != null);
-
             SignInManager = signInManager;
             UserManager = userManager;
             AuthenticationManager = authenticationManager;
@@ -361,7 +357,7 @@ namespace Vigil.Web.Controllers
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
 
             var userId = await SignInManager.GetVerifiedUserIdAsync();
-            if (userId == null)
+            if (userId == Guid.Empty)
             {
                 return View("Error");
             }
@@ -539,12 +535,12 @@ namespace Vigil.Web.Controllers
 
             return manager;
         }
-        private VigilSignInManager GetVigilSignInManager()
+        private IVigilSignInManager GetVigilSignInManager()
         {
-            Contract.Ensures(Contract.Result<VigilSignInManager>() != null);
+            Contract.Ensures(Contract.Result<IVigilSignInManager>() != null);
 
             IOwinContext owinContext = HttpContext.GetOwinContext();
-            VigilSignInManager manager = owinContext.Get<VigilSignInManager>();
+            IVigilSignInManager manager = owinContext.Get<IVigilSignInManager>();
             return manager;
         }
     }
