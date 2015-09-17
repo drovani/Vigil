@@ -14,6 +14,10 @@ namespace Vigil.Testing.Data.TestClasses
 
         internal static TestTypeBase CreateType(string typeName)
         {
+            Contract.Requires<ArgumentNullException>(typeName != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(typeName.Trim()));
+            Contract.Ensures(Contract.Result<TestTypeBase>() != null);
+
             return new TestTypeBase(typeName);
         }
     }

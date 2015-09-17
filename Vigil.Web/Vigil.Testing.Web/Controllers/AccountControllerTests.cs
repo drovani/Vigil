@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -14,7 +14,6 @@ using Microsoft.QualityTools.Testing.Fakes;
 using Moq;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
-using Vigil.Testing.Identity.TestClasses;
 using Vigil.Web.Controllers;
 using Vigil.Web.Controllers.Results;
 using Vigil.Web.Models;
@@ -144,6 +143,12 @@ namespace Vigil.Testing.Web.Controllers
         public async Task Login_POST_RequiresVerification_Redirects_To_SendCode_Action()
         {
             var ctrl = GetAccountController();
+            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(
+                                                It.Is<string>(s => s == "valid@example.com"),
+                                                It.Is<string>(s => s == "testPassword.01"),
+                                                It.IsAny<bool>(),
+                                                It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.RequiresVerification);
 
             var model = new LoginViewModel()
             {
@@ -188,32 +193,14 @@ namespace Vigil.Testing.Web.Controllers
         }
 
         [Fact]
-        public async Task Login_POST_Using_Incorrect_Password_Returns_View_With_Error()
-        {
-            var ctrl = GetAccountController();
-            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                             .ReturnsAsync(SignInStatus.Failure);
-            var model = new LoginViewModel()
-            {
-                Email = "valid@example.com",
-                Password = "incorrectPassword",
-                RememberMe = true
-            };
-            bool isModelStateValid = BindModel(ctrl, model);
-
-            ViewResult result = await ctrl.Login(model, null) as ViewResult;
-
-            Assert.True(isModelStateValid);
-            Assert.NotNull(result);
-            Assert.False(ctrl.ModelState.IsValid);
-            Assert.Equal("Invalid login attempt.", ctrl.ModelState[""].Errors[0].ErrorMessage);
-            Assert.Same(model, result.Model);
-        }
-
-        [Fact]
         public async Task Login_POST_Using_Incorrect_Credentials_Returns_View_With_Error()
         {
             var ctrl = GetAccountController();
+            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(It.Is<string>(s => s == "invalid@example.com"),
+                                                                     It.Is<string>(s => s == "incorrectPassword"),
+                                                                     It.IsAny<bool>(),
+                                                                     It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.Failure);
             var model = new LoginViewModel()
             {
                 Email = "invalid@example.com",
@@ -427,7 +414,7 @@ namespace Vigil.Testing.Web.Controllers
         public async Task ForgotPassword_POST_User_Does_Not_Exist_Returns_ForgotPasswordConfirmation_View()
         {
             var ctrl = GetAccountController();
-            MockUserManager.Setup(mum => mum.FindByNameAsync(It.IsAny<string>()))
+            MockUserManager.Setup(mum => mum.FindByNameAsync(It.Is<string>(s => s == "notfound@example.com")))
                            .ReturnsAsync(null);
             var model = new ForgotPasswordViewModel
             {
@@ -446,13 +433,14 @@ namespace Vigil.Testing.Web.Controllers
         public async Task ForgotPassword_POST_Email_Not_Confirmed_Returns_View_With_Model()
         {
             var ctrl = GetAccountController();
-            MockUserManager.Setup(mum => mum.FindByNameAsync(It.IsAny<string>()))
-                           .ReturnsAsync(new VigilUser());
-            MockUserManager.Setup(mum => mum.IsEmailConfirmedAsync(It.IsAny<Guid>()))
-                           .ReturnsAsync(false);
+            var user = new VigilUser();
+            MockUserManager.Setup(mum => mum.FindByEmailAsync(It.Is<string>(s => s == "confirmed@example.com")))
+                           .ReturnsAsync(user);
+            MockUserManager.Setup(mum => mum.IsEmailConfirmedAsync(It.Is<Guid>(g => g.Equals(user.Id))))
+                           .ReturnsAsync(true);
             var model = new ForgotPasswordViewModel
             {
-                Email = "notconfirmed@example.com"
+                Email = "confirmed@example.com"
             };
             bool isModelStateValid = BindModel(ctrl, model);
 
@@ -467,13 +455,14 @@ namespace Vigil.Testing.Web.Controllers
         public async Task ForgotPassword_POST_User_Found_By_Email_Exists_And_NotConfirmed_Returns_ForgotPasswordConfirmation_View()
         {
             var ctrl = GetAccountController();
-            MockUserManager.Setup(mum => mum.FindByNameAsync(It.IsAny<string>()))
-                           .ReturnsAsync(new VigilUser());
-            MockUserManager.Setup(mum => mum.IsEmailConfirmedAsync(It.IsAny<Guid>()))
+            var user = new VigilUser();
+            MockUserManager.Setup(mum => mum.FindByEmailAsync(It.Is<string>(s => s == "notconfirmed@example.com")))
+                           .ReturnsAsync(user);
+            MockUserManager.Setup(mum => mum.IsEmailConfirmedAsync(It.Is<Guid>(g => g.Equals(user.Id))))
                            .ReturnsAsync(false);
             var model = new ForgotPasswordViewModel
             {
-                Email = "confirmed@example.com"
+                Email = "notconfirmed@example.com"
             };
             bool isModelStateValid = BindModel(ctrl, model);
 
@@ -613,25 +602,22 @@ namespace Vigil.Testing.Web.Controllers
             Assert.NotNull(result);
         }
 
-        /// <summary>Tests the AccountController.ExternalLogin with an "InMemory" provider.
-        /// </summary>
-        [Fact(Skip = "Requires a UrlHelper on the AccountController.")]
+        [Fact]
         public void ExternalLogin_Returns_ChallengeResult()
         {
-            var ctrl = new AccountController();
+            var ctrl = GetAccountController();
+            var urlhelper = new Mock<UrlHelper>();
+            urlhelper.Setup(url => url.Action(It.Is<string>(s => s == "ExternalLoginCallback"),
+                                              It.Is<string>(s => s == "Account"),
+                                              It.IsAny<object>()))
+                     .Returns("/Account/ExternalLoginCallback/?ReturnUrl=/Home/Index");
+            ctrl.Url = urlhelper.Object;
 
             ChallengeResult result = ctrl.ExternalLogin("InMemory", "/Home/Index");
 
             Assert.Equal("InMemory", result.LoginProvider);
             Assert.Equal("/Account/ExternalLoginCallback/?ReturnUrl=/Home/Index", result.RedirectUri);
             Assert.Equal(Guid.Empty, result.UserId);
-        }
-
-        [Fact]
-        public async Task SendCode_When_No_Users_Verified_Throws_InvalidOperationException()
-        {
-            var ctrl = GetAccountController();
-            await Assert.ThrowsAsync<InvalidOperationException>(() => ctrl.SendCode(null, false));
         }
 
         [Fact]
@@ -653,7 +639,7 @@ namespace Vigil.Testing.Web.Controllers
             var ctrl = GetAccountController();
             MockSignInManager.Setup(msim => msim.GetVerifiedUserIdAsync())
                              .ReturnsAsync(Guid.NewGuid());
-            MockUserManager.Setup(mum => mum.GetValidTwoFactorProvidersAsync(Guid.NewGuid()))
+            MockUserManager.Setup(mum => mum.GetValidTwoFactorProvidersAsync(It.IsAny<Guid>()))
                            .ReturnsAsync(new List<string>() { "Test Factor" });
 
             ViewResult result = await ctrl.SendCode(null, false) as ViewResult;
@@ -663,19 +649,18 @@ namespace Vigil.Testing.Web.Controllers
             Assert.NotNull(model);
             Assert.Null(model.ReturnUrl);
             Assert.False(model.RememberMe);
-            Assert.Same(1, model.Providers.Count);
+            Assert.Equal(1, model.Providers.Count);
         }
 
         [Fact]
         public async Task SendCode_POST_Invalid_ModelState_Returns_View()
         {
-            var ctrl = new AccountController();
+            var ctrl = GetAccountController();
             var model = new SendCodeViewModel();
-            bool isModelStateValid = BindModel(ctrl, model);
+            ctrl.ModelState.AddModelError("TestError", "Test Error to invalidate ModelState.");
 
             ViewResult result = await ctrl.SendCode(model) as ViewResult;
 
-            Assert.False(isModelStateValid);
             Assert.False(ctrl.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.NotEqual("Error", result.ViewName);
@@ -685,7 +670,7 @@ namespace Vigil.Testing.Web.Controllers
         public async Task SendCode_POST_Unable_To_SendTwoFactorCode_Returns_Error_View()
         {
             var ctrl = GetAccountController();
-            MockSignInManager.Setup(msim => msim.SendTwoFactorCodeAsync(It.IsAny<string>()))
+            MockSignInManager.Setup(msim => msim.SendTwoFactorCodeAsync(It.Is<string>(s => s == "InMemory")))
                              .ReturnsAsync(false);
             var model = new SendCodeViewModel()
             {
@@ -705,7 +690,7 @@ namespace Vigil.Testing.Web.Controllers
         public async Task SendCode_POST_Code_Sent_Returns_RedirectToAction_VerifyCode()
         {
             var ctrl = GetAccountController();
-            MockSignInManager.Setup(msim => msim.SendTwoFactorCodeAsync(It.IsAny<string>()))
+            MockSignInManager.Setup(msim => msim.SendTwoFactorCodeAsync(It.Is<string>(s => s == "InMemory")))
                              .ReturnsAsync(true);
             var model = new SendCodeViewModel()
             {
@@ -719,10 +704,10 @@ namespace Vigil.Testing.Web.Controllers
             Assert.True(ctrl.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Equal("VerifyCode", result.RouteValues["Action"]);
-            Assert.Equal("Account", result.RouteValues["Controller"]);
-            Assert.Equal("Provider", "InMemory");
-            Assert.Equal("RememberMe", "false");
-            Assert.Null("ReturnUrl");
+            Assert.Null(result.RouteValues["Controller"]);
+            Assert.Equal("InMemory", result.RouteValues["Provider"]);
+            Assert.Equal(false, result.RouteValues["RememberMe"]);
+            Assert.Null(result.RouteValues["ReturnUrl"]);
         }
 
         [Fact]
@@ -1014,7 +999,6 @@ namespace Vigil.Testing.Web.Controllers
             controllerContextMock.SetupGet(con => con.HttpContext).Returns(contextMock.Object);
 
             ctrl.ControllerContext = controllerContextMock.Object;
-
             return ctrl;
         }
     }

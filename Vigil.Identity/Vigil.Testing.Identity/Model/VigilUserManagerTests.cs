@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using Moq;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
-using Vigil.Testing.Identity.TestClasses;
 using Xunit;
 
 namespace Vigil.Testing.Identity.Model
@@ -15,17 +17,18 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void VigilUserManager_Constructor_Accepts_UserStore()
         {
-            var vuman = new VigilUserManager(new InMemoryUserStore());
+            var vuman = new VigilUserManager(Mock.Of<IUserStore<VigilUser, Guid>>());
             Assert.NotNull(vuman);
         }
 
-        [Fact(Skip="Requires an IOwinContext implementation to obtain IdentityVigilContext.")]
+        [Fact]
         public void VigilUserManager_Static_Create_Returns_Valid_Manager()
         {
             IdentityFactoryOptions<VigilUserManager> options = new IdentityFactoryOptions<VigilUserManager>();
-            IOwinContext context = null;
+            var context = new Mock<IOwinContext>();
+            context.Setup(c => c.Get<IdentityVigilContext>(GlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName)).Returns(new IdentityVigilContext());
 
-            var userManager = VigilUserManager.Create(options, context);
+            var userManager = VigilUserManager.Create(options, context.Object);
 
             Assert.NotNull(userManager);
         }
@@ -33,9 +36,14 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void CreateAsync_Sets_Empty_Id()
         {
-            var vuman = new VigilUserManager(new InMemoryUserStore());
             var user = new VigilUser { UserName = "TestUser" };
             user.Id = Guid.Empty;
+            var store = new Mock<IUserStore<VigilUser, Guid>>();
+            store.Setup(st => st.CreateAsync(It.IsAny<VigilUser>()))
+                 .Returns(Task.FromResult(IdentityResult.Success));
+            store.Setup(st => st.FindByNameAsync(It.Is<string>(s => s == "TestUser")))
+                 .ReturnsAsync(user);
+            var vuman = new VigilUserManager(store.Object);
 
             var result = vuman.CreateAsync(user).Result;
             var retrievedUser = vuman.FindByNameAsync("TestUser").Result;
@@ -49,7 +57,7 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void CreateAsync_Preserves_Specified_Id()
         {
-            var vuman = new VigilUserManager(new InMemoryUserStore());
+            var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>());
             var newguid = Guid.NewGuid();
             var user = new VigilUser {Id = newguid, UserName = "TestUser" };
 
@@ -61,7 +69,7 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void CreateAsync_With_Password_Sets_Empty_Id()
         {
-            var vuman = new VigilUserManager(new InMemoryUserStore());
+            var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>());
             var user = new VigilUser { UserName = "TestUser" };
             user.Id = Guid.Empty;
 
@@ -73,7 +81,7 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void CreateAsync_With_Password_Preserves_Specified_Id()
         {
-            var vuman = new VigilUserManager(new InMemoryUserStore());
+            var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>());
             var newguid = Guid.NewGuid();
             var user = new VigilUser { Id = newguid, UserName = "TestUser" };
 

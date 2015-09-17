@@ -26,7 +26,8 @@ namespace Vigil.Identity.Model
         public override Task<IdentityResult> CreateAsync(VigilUser user)
         {
             Contract.Ensures(Contract.Result<Task<IdentityResult>>() != null);
-            
+
+            Contract.Assume(user != null);
             if (user.Id == Guid.Empty)
             {
                 user.Id = Guid.NewGuid();
@@ -37,6 +38,7 @@ namespace Vigil.Identity.Model
         {
             Contract.Ensures(Contract.Result<Task<IdentityResult>>() != null);
 
+            Contract.Assume(user != null);
             if (user.Id == Guid.Empty)
             {
                 user.Id = Guid.NewGuid();
