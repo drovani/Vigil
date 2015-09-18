@@ -7,7 +7,7 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model
 {
-    public class VigilRoleStore : RoleStore<VigilRole, Guid, VigilUserRole>, IQueryableRoleStore<VigilRole, Guid>, IRoleStore<VigilRole, Guid>
+    public class VigilRoleStore : RoleStore<VigilRole, Guid, VigilUserRole>
     {
         public VigilRoleStore()
             : base(new IdentityVigilContext())

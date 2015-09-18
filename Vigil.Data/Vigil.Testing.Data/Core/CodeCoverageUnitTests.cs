@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Attributes;
+using Vigil.Data.Core;
 using Xunit;
 
 namespace Vigil.Testing.Data.Core
 {
-    [ContractVerification(false)]
+    [System.Diagnostics.Contracts.ContractVerification(false)]
     public class CodeCoverageUnitTests
     {
         [Fact]

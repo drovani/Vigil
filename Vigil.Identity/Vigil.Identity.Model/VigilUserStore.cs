@@ -6,7 +6,7 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model
 {
-    public class VigilUserStore : UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUserStore<VigilUser, Guid>
+    public class VigilUserStore : UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>
     {
         public VigilUserStore()
             : this(new IdentityVigilContext())

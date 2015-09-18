@@ -11,14 +11,14 @@ using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
-    [ContractVerification(false)]
+    [System.Diagnostics.Contracts.ContractVerification(false)]
     public class VigilSignInManagerTests
     {
         [Fact]
         public void VigilSignInManager_DefaultConstructor()
         {
             var context = new Mock<IOwinContext>();
-            context.Setup(c => c.Get<IdentityVigilContext>(GlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
+            context.Setup(c => c.Get<IdentityVigilContext>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
                    .Returns(new IdentityVigilContext());
 
             var signInMgr = new VigilSignInManager(new VigilUserManager(Mock.Of<IUserStore<VigilUser, Guid>>()), Mock.Of<IAuthenticationManager>());
@@ -26,15 +26,14 @@ namespace Vigil.Testing.Identity.Model
         }
 
         [Fact]
-        public void Create_Test()
+        public void Create_Static_Method_Returns_New_VigilSignInManager()
         {
             var context = new Mock<IOwinContext>();
-            context.Setup(c => c.Get<VigilUserManager>(GlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName))
+            context.Setup(c => c.Get<VigilUserManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName))
                    .Returns(new VigilUserManager(Mock.Of<IUserStore<VigilUser, Guid>>()));
             context.SetupGet(c => c.Authentication).Returns(Mock.Of<IAuthenticationManager>());
-            IdentityFactoryOptions<IVigilSignInManager> options = new IdentityFactoryOptions<IVigilSignInManager>();
 
-            var signInManager = VigilSignInManager.Create(options, context.Object);
+            var signInManager = VigilSignInManager.Create(context.Object);
 
             Assert.NotNull(signInManager);
             Assert.Same(context.Object.Get<VigilUserManager>(), signInManager.UserManager);

@@ -24,7 +24,7 @@ namespace Vigil.Data.Modeling
             this.Now = now.ToUniversalTime();
         }
 
-        [ContractVerification(false)]
+        [System.Diagnostics.Contracts.ContractVerification(false)]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Contract.Assume(modelBuilder != null);

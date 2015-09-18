@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Fakes;
-using Microsoft.QualityTools.Testing.Fakes;
 using Moq;
+using Moq.Protected;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
+using Vigil.Testing.Identity;
 using Vigil.Web.Controllers;
 using Vigil.Web.Controllers.Results;
 using Vigil.Web.Models;
@@ -21,8 +21,8 @@ using Xunit;
 
 namespace Vigil.Testing.Web.Controllers
 {
-    [ContractVerification(false)]
-    public class AccountControllerTests : ControllerTests
+    [System.Diagnostics.Contracts.ContractVerification(false)]
+    public partial class AccountControllerTests
     {
         private readonly Mock<IPrincipal> MockUser;
         private readonly Mock<VigilUserManager> MockUserManager;
@@ -84,7 +84,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "testPassword.01",
                 RememberMe = false
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.Login(model, null) as ViewResult;
 
@@ -95,10 +95,12 @@ namespace Vigil.Testing.Web.Controllers
         }
 
         [Fact]
-        public async Task Login_POST_Successful_Login_Without_ReturnUrl_Returns_Redirect_To_Home()
+        public async Task Login_POST_Successful_Login_Without_ReturnUrl_Returns_RedirectToRouteResult_To_Home()
         {
             var ctrl = GetAccountController();
-            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
+            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(It.Is<string>(s => s == "valid@example.com"),
+                                                                    It.Is<string>(s => s == "testPassword.01"),
+                                                                    It.IsAny<bool>(), It.IsAny<bool>()))
                              .ReturnsAsync(SignInStatus.Success);
             var model = new LoginViewModel()
             {
@@ -106,7 +108,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "testPassword.01",
                 RememberMe = false
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.Login(model, null) as RedirectToRouteResult;
 
@@ -117,6 +119,60 @@ namespace Vigil.Testing.Web.Controllers
             Assert.Equal("Index", result.RouteValues["Action"]);
         }
 
+        [Fact]
+        public async Task Login_POST_Successful_Login_With_NonLocalUrl_Returns_RedirectToRouteResult_To_Home()
+        {
+            var ctrl = GetAccountController();
+            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(It.Is<string>(s => s == "valid@example.com"),
+                                                                    It.Is<string>(s => s == "testPassword.01"),
+                                                                    It.IsAny<bool>(), It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.Success);
+            var mockUrlHelper = new Mock<UrlHelper>();
+            mockUrlHelper.Setup(muh => muh.IsLocalUrl(It.Is<string>(s => s == "notlocal.example.com"))).Returns(false);
+            ctrl.Url = mockUrlHelper.Object;
+            var model = new LoginViewModel()
+            {
+                Email = "valid@example.com",
+                Password = "testPassword.01",
+                RememberMe = false
+            };
+            bool isModelStateValid = ctrl.BindModel(model);
+
+            RedirectToRouteResult result = await ctrl.Login(model, "notlocal.example.com") as RedirectToRouteResult;
+
+            Assert.True(isModelStateValid);
+            Assert.NotNull(result);
+            Assert.True(ctrl.ModelState.IsValid);
+            Assert.Equal("Home", result.RouteValues["Controller"]);
+            Assert.Equal("Index", result.RouteValues["Action"]);
+        }
+
+        [Fact]
+        public async Task Login_POST_Successful_Login_With_LocalUrl_Returns_RedirectResult_To_Url()
+        {
+            var ctrl = GetAccountController();
+            MockSignInManager.Setup(msim => msim.PasswordSignInAsync(It.Is<string>(s => s == "valid@example.com"),
+                                                                    It.Is<string>(s => s == "testPassword.01"),
+                                                                    It.IsAny<bool>(), It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.Success);
+            var mockUrlHelper = new Mock<UrlHelper>();
+            mockUrlHelper.Setup(muh => muh.IsLocalUrl(It.Is<string>(s => s == "/Account/Login"))).Returns(true);
+            ctrl.Url = mockUrlHelper.Object;
+            var model = new LoginViewModel()
+            {
+                Email = "valid@example.com",
+                Password = "testPassword.01",
+                RememberMe = false
+            };
+            bool isModelStateValid = ctrl.BindModel(model);
+
+            RedirectResult result = await ctrl.Login(model, "/Account/Login") as RedirectResult;
+
+            Assert.True(isModelStateValid);
+            Assert.NotNull(result);
+            Assert.True(ctrl.ModelState.IsValid);
+            Assert.Equal("/Account/Login", result.Url);
+        }
         [Fact]
         public async Task Login_POST_LockedOut_Returns_Lockout_View()
         {
@@ -129,7 +185,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "testPassword.01",
                 RememberMe = false
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.Login(model, null) as ViewResult;
 
@@ -149,14 +205,13 @@ namespace Vigil.Testing.Web.Controllers
                                                 It.IsAny<bool>(),
                                                 It.IsAny<bool>()))
                              .ReturnsAsync(SignInStatus.RequiresVerification);
-
             var model = new LoginViewModel()
             {
                 Email = "valid@example.com",
                 Password = "testPassword.01",
                 RememberMe = false
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.Login(model, null) as RedirectToRouteResult;
 
@@ -180,7 +235,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "testPassword.01",
                 RememberMe = true
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.Login(model, "/Home/Index") as RedirectToRouteResult;
 
@@ -207,7 +262,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "incorrectPassword",
                 RememberMe = true
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.Login(model, null) as ViewResult;
 
@@ -251,7 +306,7 @@ namespace Vigil.Testing.Web.Controllers
         {
             var ctrl = GetAccountController();
             var model = new VerifyCodeViewModel();
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.VerifyCode(model) as ViewResult;
 
@@ -272,7 +327,7 @@ namespace Vigil.Testing.Web.Controllers
                 Provider = "InMemory",
                 Code = "correctCode"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.VerifyCode(model) as RedirectToRouteResult;
 
@@ -294,7 +349,7 @@ namespace Vigil.Testing.Web.Controllers
                 Provider = "InMemory",
                 Code = "anyCode"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.VerifyCode(model) as ViewResult;
 
@@ -314,7 +369,7 @@ namespace Vigil.Testing.Web.Controllers
                 Provider = "InMemory",
                 Code = "InvalidCode"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.VerifyCode(model) as ViewResult;
 
@@ -338,7 +393,7 @@ namespace Vigil.Testing.Web.Controllers
         {
             var ctrl = GetAccountController();
             var model = new RegisterViewModel();
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.Register(model) as ViewResult;
 
@@ -400,7 +455,7 @@ namespace Vigil.Testing.Web.Controllers
         {
             var ctrl = GetAccountController();
             var model = new ForgotPasswordViewModel();
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ForgotPassword(model) as ViewResult;
 
@@ -420,7 +475,7 @@ namespace Vigil.Testing.Web.Controllers
             {
                 Email = "notfound@example.com"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ForgotPassword(model) as ViewResult;
 
@@ -442,7 +497,7 @@ namespace Vigil.Testing.Web.Controllers
             {
                 Email = "confirmed@example.com"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ForgotPassword(model) as ViewResult;
 
@@ -464,7 +519,7 @@ namespace Vigil.Testing.Web.Controllers
             {
                 Email = "notconfirmed@example.com"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ForgotPassword(model) as ViewResult;
 
@@ -510,7 +565,7 @@ namespace Vigil.Testing.Web.Controllers
         {
             var ctrl = new AccountController();
             var model = new ResetPasswordViewModel();
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ResetPassword(model) as ViewResult;
 
@@ -531,7 +586,7 @@ namespace Vigil.Testing.Web.Controllers
                 ConfirmPassword = "newPassword.01",
                 Email = "notvalid@example.com"
             };
-            var isModelStateValid = BindModel(ctrl, model);
+            var isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.ResetPassword(model) as RedirectToRouteResult;
 
@@ -557,7 +612,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "newPassword.01",
                 Email = "valid@example.com"
             };
-            var isModelStateValid = BindModel(ctrl, model);
+            var isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ResetPassword(model) as ViewResult;
 
@@ -581,7 +636,7 @@ namespace Vigil.Testing.Web.Controllers
                 Password = "newPassword.01",
                 Email = "valid@example.com"
             };
-            var isModelStateValid = BindModel(ctrl, model);
+            var isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.ResetPassword(model) as RedirectToRouteResult;
 
@@ -676,7 +731,7 @@ namespace Vigil.Testing.Web.Controllers
             {
                 SelectedProvider = "InMemory"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.SendCode(model) as ViewResult;
 
@@ -696,7 +751,7 @@ namespace Vigil.Testing.Web.Controllers
             {
                 SelectedProvider = "InMemory"
             };
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             RedirectToRouteResult result = await ctrl.SendCode(model) as RedirectToRouteResult;
 
@@ -725,90 +780,65 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task EternalLoginCallback_Failure_Returns_ExternalLoginConfirmation_View_With_User_Email()
         {
-            using (ShimsContext.Create())
-            {
-                var ctrl = GetAccountController();
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "valid@example.com",
-                    Login = new UserLoginInfo("TestExternal", "TestProvderKey")
-                });
-                MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
-                                 .ReturnsAsync(SignInStatus.Failure);
+            var ctrl = GetAccountController();
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "failure@example.com");
+            MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.Failure);
 
-                ViewResult result = await ctrl.ExternalLoginCallback(null) as ViewResult;
-                ExternalLoginConfirmationViewModel model = result.Model as ExternalLoginConfirmationViewModel;
+            ViewResult result = await ctrl.ExternalLoginCallback(null) as ViewResult;
+            ExternalLoginConfirmationViewModel model = result.Model as ExternalLoginConfirmationViewModel;
 
-                Assert.NotNull(result);
-                Assert.Equal("ExternalLoginConfirmation", result.ViewName);
-                Assert.NotNull(model);
-                Assert.Equal("valid@example.com", model.Email);
-            }
+            Assert.NotNull(result);
+            Assert.Equal("ExternalLoginConfirmation", result.ViewName);
+            Assert.NotNull(model);
+            Assert.Equal("failure@example.com", model.Email);
         }
 
         [Fact]
         public async Task ExternalLoginCallback_RequiresVerification_Returns_RedirectToRouteResult_To_SendCode()
         {
-            using (ShimsContext.Create())
-            {
-                var ctrl = GetAccountController();
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "valid@example.com",
-                });
-                MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
-                                 .ReturnsAsync(SignInStatus.RequiresVerification);
+            var ctrl = GetAccountController();
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "requiresverification@example.com");
+            MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.RequiresVerification);
 
-                RedirectToRouteResult result = await ctrl.ExternalLoginCallback(null) as RedirectToRouteResult;
+            RedirectToRouteResult result = await ctrl.ExternalLoginCallback(null) as RedirectToRouteResult;
 
-                Assert.NotNull(result);
-                Assert.Null(result.RouteValues["Controller"]);
-                Assert.Equal("SendCode", result.RouteValues["Action"]);
-                Assert.Null(result.RouteValues["ReturnUrl"]);
-                Assert.Equal(false, result.RouteValues["RememberMe"]);
-            }
+            Assert.NotNull(result);
+            Assert.Null(result.RouteValues["Controller"]);
+            Assert.Equal("SendCode", result.RouteValues["Action"]);
+            Assert.Null(result.RouteValues["ReturnUrl"]);
+            Assert.Equal(false, result.RouteValues["RememberMe"]);
         }
 
         [Fact]
         public async Task ExternalLoginCallback_LockedOut_Returns_Lockout_View()
         {
-            using (ShimsContext.Create())
-            {
-                var ctrl = GetAccountController();
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "valid@example.com",
-                });
-                MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
-                                 .ReturnsAsync(SignInStatus.LockedOut);
+            var ctrl = GetAccountController();
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "lockedout@example.com");
+            MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.LockedOut);
 
-                ViewResult result = await ctrl.ExternalLoginCallback(null) as ViewResult;
+            ViewResult result = await ctrl.ExternalLoginCallback(null) as ViewResult;
 
-                Assert.NotNull(result);
-                Assert.Equal("Lockout", result.ViewName);
-            }
+            Assert.NotNull(result);
+            Assert.Equal("Lockout", result.ViewName);
         }
 
         [Fact]
         public async Task ExternalLoginCallback_Success_Without_ReturnUrl_Returns_RedirectToRouteResult_To_Home()
         {
-            using (ShimsContext.Create())
-            {
+            var ctrl = GetAccountController();
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "success@example.com");
+            MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
+                             .ReturnsAsync(SignInStatus.Success);
 
-                var ctrl = GetAccountController();
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "valid@example.com",
-                });
-                MockSignInManager.Setup(msim => msim.ExternalSignInAsync(It.IsAny<ExternalLoginInfo>(), It.IsAny<bool>()))
-                                 .ReturnsAsync(SignInStatus.Success);
+            RedirectToRouteResult result = await ctrl.ExternalLoginCallback(null) as RedirectToRouteResult;
 
-                RedirectToRouteResult result = await ctrl.ExternalLoginCallback(null) as RedirectToRouteResult;
+            Assert.NotNull(result);
+            Assert.Equal("Home", result.RouteValues["Controller"]);
+            Assert.Equal("Index", result.RouteValues["Action"]);
 
-                Assert.NotNull(result);
-                Assert.Equal("Home", result.RouteValues["Controller"]);
-                Assert.Equal("Index", result.RouteValues["Action"]);
-            }
         }
         [Fact]
         public async Task ExternalLoginConfirmation_POST_User_Is_Authenticated_Returns_RedirectToRouteResult_To_Manage()
@@ -829,7 +859,7 @@ namespace Vigil.Testing.Web.Controllers
             var ctrl = GetAccountController();
             MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
             ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel();
-            bool isModelStateValid = BindModel(ctrl, model);
+            bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
 
@@ -842,114 +872,89 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task ExternalLoginConfirmation_POST_Valid_Model_No_External_Login_Info_Returns_ExternalLoginFailure_View()
         {
-            using (ShimsContext.Create())
+            var ctrl = GetAccountController();
+            MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
+            ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
             {
-                var ctrl = GetAccountController();
-                MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult<ExternalLoginInfo>(null);
-                ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
-                {
-                    Email = "valid@example.com"
-                };
-                bool isModelStateValid = BindModel(ctrl, model);
+                Email = "valid@example.com"
+            };
+            bool isModelStateValid = ctrl.BindModel(model);
 
-                ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
+            ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
 
-                Assert.True(isModelStateValid);
-                Assert.NotNull(result);
-                Assert.Equal("ExternalLoginFailure", result.ViewName);
-            }
+            Assert.True(isModelStateValid);
+            Assert.NotNull(result);
+            Assert.Equal("ExternalLoginFailure", result.ViewName);
         }
 
         [Fact]
         public async Task ExternalLoginConfirmation_POST_Valid_Model_Create_User_Failure_Invalidates_ModelState_And_Returns_View()
         {
-            using (ShimsContext.Create())
+            var ctrl = GetAccountController();
+            MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "valid@example.com");
+            MockUserManager.Setup(mum => mum.CreateAsync(It.IsAny<VigilUser>())).ReturnsAsync(IdentityResult.Failed("Expected UserManager.CreateAsync Failure."));
+            ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
             {
-                var ctrl = GetAccountController();
-                MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "valid@example.com",
-                    Login = new UserLoginInfo("TestExternal", "TestProvderKey")
-                });
-                MockUserManager.Setup(mum => mum.CreateAsync(It.IsAny<VigilUser>())).ReturnsAsync(IdentityResult.Failed("Expected UserManager.CreateAsync Failure."));
-                ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
-                {
-                    Email = "valid@example.com"
-                };
-                bool isModelStateValid = BindModel(ctrl, model);
+                Email = "valid@example.com"
+            };
+            bool isModelStateValid = ctrl.BindModel(model);
 
-                ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
+            ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
 
-                Assert.True(isModelStateValid);
-                Assert.NotNull(result);
-                Assert.False(ctrl.ModelState.IsValid);
-                Assert.NotEqual("ExternalLoginFailure", result.ViewName);
-                Assert.Same(model, result.Model);
-            }
+            Assert.True(isModelStateValid);
+            Assert.NotNull(result);
+            Assert.False(ctrl.ModelState.IsValid);
+            Assert.NotEqual("ExternalLoginFailure", result.ViewName);
+            Assert.Same(model, result.Model);
         }
 
         [Fact]
         public async Task ExternalLoginConfirmation_POST_AddLoginAsync_Failure_Invalidates_ModelState_And_Returns_View()
         {
-            using (ShimsContext.Create())
+            var ctrl = GetAccountController();
+            MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "external@example.com");
+            MockUserManager.Setup(mum => mum.CreateAsync(It.IsAny<VigilUser>()))
+                           .ReturnsAsync(IdentityResult.Failed("Expected Failure"));
+            ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
             {
-                var ctrl = GetAccountController();
-                MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "valid@example.com",
-                    Login = new UserLoginInfo("TestExternal", "TestProvderKey")
-                });
-                MockUserManager.Setup(mum => mum.CreateAsync(It.IsAny<VigilUser>()))
-                               .ReturnsAsync(IdentityResult.Failed("Expected Failure"));
-                ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
-                {
-                    Email = "external@example.com"
-                };
-                bool isModelStateValid = BindModel(ctrl, model);
+                Email = "external@example.com"
+            };
+            bool isModelStateValid = ctrl.BindModel(model);
 
-                ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
+            ViewResult result = await ctrl.ExternalLoginConfirmation(model, null) as ViewResult;
 
-                Assert.True(isModelStateValid);
-                Assert.NotNull(result);
-                Assert.False(ctrl.ModelState.IsValid);
-                Assert.NotEqual("ExternalLoginFailure", result.ViewName);
-                Assert.Same(model, result.Model);
-            }
+            Assert.True(isModelStateValid);
+            Assert.NotNull(result);
+            Assert.False(ctrl.ModelState.IsValid);
+            Assert.NotEqual("ExternalLoginFailure", result.ViewName);
+            Assert.Same(model, result.Model);
         }
 
         [Fact]
         public async Task ExternalLoginConfirmation_POST_Successful_User_Creation_And_Login_And_SignIn_Returns_RedirectToRouteResult_Home()
         {
-            using (ShimsContext.Create())
+            var ctrl = GetAccountController();
+            ArrangeGetExternalLoginInfoAsyncMethod("TestUser", "external@example.com");
+            MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
+            MockUserManager.Setup(mam => mam.CreateAsync(It.IsAny<VigilUser>()))
+                           .ReturnsAsync(IdentityResult.Success);
+            MockUserManager.Setup(mam => mam.AddLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
+                           .ReturnsAsync(IdentityResult.Success);
+            ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
             {
-                var ctrl = GetAccountController();
-                MockUser.SetupGet(mu => mu.Identity.IsAuthenticated).Returns(false);
-                ShimAuthenticationManagerExtensions.GetExternalLoginInfoAsyncIAuthenticationManager = (manager) => Task.FromResult(new ExternalLoginInfo()
-                {
-                    Email = "external@example.com",
-                    Login = new UserLoginInfo("TestExternal", "TestProvderKey")
-                });
-                MockUserManager.Setup(mam => mam.CreateAsync(It.IsAny<VigilUser>()))
-                               .ReturnsAsync(IdentityResult.Success);
-                MockUserManager.Setup(mam => mam.AddLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
-                               .ReturnsAsync(IdentityResult.Success);
-                ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel()
-                {
-                    Email = "external@example.com"
-                };
-                bool isModelStateValid = BindModel(ctrl, model);
+                Email = "external@example.com"
+            };
+            bool isModelStateValid = ctrl.BindModel(model);
 
-                RedirectToRouteResult result = await ctrl.ExternalLoginConfirmation(model, null) as RedirectToRouteResult;
+            RedirectToRouteResult result = await ctrl.ExternalLoginConfirmation(model, null) as RedirectToRouteResult;
 
-                Assert.True(isModelStateValid);
-                Assert.NotNull(result);
-                Assert.True(ctrl.ModelState.IsValid);
-                Assert.Equal("Home", result.RouteValues["Controller"]);
-                Assert.Equal("Index", result.RouteValues["Action"]);
-            }
+            Assert.True(isModelStateValid);
+            Assert.NotNull(result);
+            Assert.True(ctrl.ModelState.IsValid);
+            Assert.Equal("Home", result.RouteValues["Controller"]);
+            Assert.Equal("Index", result.RouteValues["Action"]);
         }
 
         [Fact]
@@ -989,17 +994,92 @@ namespace Vigil.Testing.Web.Controllers
             Assert.NotEqual("Error", result.ViewName);
         }
 
+        [Fact]
+        public void Dispose_When_Disposing_Disposes_UserManager_And_SignInManager()
+        {
+            MockUserManager.Protected().Setup("Dispose", ItExpr.IsAny<bool>())
+                .Verifiable();
+
+            using (AccountController ctrl = GetAccountController()) { }
+
+            MockUserManager.Protected().Verify("Dispose", Times.AtLeastOnce(), ItExpr.IsAny<bool>());
+            MockSignInManager.As<IDisposable>().Verify(msim => msim.Dispose());
+        }
+
+        [Fact]
+        public void VigilUserManager_Property_Gets_Manager_From_OwinContext_When_Not_Explicitly_Specified()
+        {
+            // HttpContext.GetOwinContext() is an extension method that calls context.Items[OwinEnvironmentKey] which passes that to a new OwinContext(environment);
+            // owinContext.Get<VigilUserManager>() is an extension method that calls IOwinContext.Get<VigilUserManager>(string)
+            // Thus, adding the dictionary for the Owin Environment, and adding the VigilUserManager to that dictionary results in everything mocked up just properly.
+
+            var ctrl = new AccountController();
+            var mockHttpContext = new Mock<HttpContextBase>();
+            var mockOwinContext = new Mock<IOwinContext>();
+            var owinEnvironment = new Dictionary<string, object>();
+            owinEnvironment.Add(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName, MockUserManager.Object);
+            mockOwinContext.Setup(oc => oc.Get<VigilUserManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName))
+                           .Returns(MockUserManager.Object);
+            mockHttpContext.Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
+                           .Returns(owinEnvironment);
+
+            var mockControllerContext = new Mock<ControllerContext>();
+            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
+            ctrl.ControllerContext = mockControllerContext.Object;
+
+            Assert.Same(MockUserManager.Object, ctrl.UserManager);
+        }
+
+        [Fact]
+        public void IVigilSignInManager_Property_Gets_Manager_From_OwinContext_When_Not_Explicitly_Specified()
+        {
+            // HttpContext.GetOwinContext() is an extension method that calls context.Items[OwinEnvironmentKey] which passes that to a new OwinContext(environment);
+            // owinContext.Get<IVigilSignInManager>() is an extension method that calls IOwinContext.Get<IVigilSignInManager>(string)
+            // Thus, adding the dictionary for the Owin Environment, and adding the IVigilSignInManager to that dictionary results in everything mocked up just properly.
+
+            var ctrl = new AccountController();
+            var mockHttpContext = new Mock<HttpContextBase>();
+            var mockOwinContext = new Mock<IOwinContext>();
+            var owinEnvironment = new Dictionary<string, object>();
+            owinEnvironment.Add(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IVigilSignInManager).AssemblyQualifiedName, MockSignInManager.Object);
+            mockOwinContext.Setup(oc => oc.Get<IVigilSignInManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IVigilSignInManager).AssemblyQualifiedName))
+                           .Returns(MockSignInManager.Object);
+            mockHttpContext.Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
+                           .Returns(owinEnvironment);
+
+            var mockControllerContext = new Mock<ControllerContext>();
+            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
+            ctrl.ControllerContext = mockControllerContext.Object;
+
+            Assert.Same(MockSignInManager.Object, ctrl.SignInManager);
+        }
+
         private AccountController GetAccountController()
         {
             var ctrl = new AccountController(MockUserManager.Object, MockSignInManager.Object, MockAuthenticationManager.Object);
 
-            var contextMock = new Mock<HttpContextBase>();
-            contextMock.SetupGet(ctx => ctx.User).Returns(MockUser.Object);
-            var controllerContextMock = new Mock<ControllerContext>();
-            controllerContextMock.SetupGet(con => con.HttpContext).Returns(contextMock.Object);
+            var mockHttpContext = new Mock<HttpContextBase>();
+            mockHttpContext.SetupGet(ctx => ctx.User).Returns(MockUser.Object);
+            var mockControllerContext = new Mock<ControllerContext>();
+            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
 
-            ctrl.ControllerContext = controllerContextMock.Object;
+            ctrl.ControllerContext = mockControllerContext.Object;
             return ctrl;
+        }
+
+        private void ArrangeGetExternalLoginInfoAsyncMethod(string nameIdentifierValue, string emailValue)
+        {
+            // AuthenticationManager.GetExternalLoginInfoAsync() is an extension method that calls IAuthenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.ExternalCookie)
+            // and creates the ExternalLoginInfo object from the AuthenticateResult returned from that method.
+            var mockClaimsIdentity = new Mock<ClaimsIdentity>();
+            mockClaimsIdentity.Setup(mci => mci.FindFirst(It.Is<string>(s => s == ClaimTypes.NameIdentifier)))
+                          .Returns(new Claim(ClaimTypes.NameIdentifier, nameIdentifierValue));
+            mockClaimsIdentity.SetupGet(mci => mci.Name)
+                          .Returns(nameIdentifierValue);
+            mockClaimsIdentity.Setup(mci => mci.FindFirst(It.Is<string>(s => s == ClaimTypes.Email)))
+                          .Returns(new Claim(ClaimTypes.Email, emailValue));
+            MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.ExternalCookie)))
+                                     .ReturnsAsync(new AuthenticateResult(mockClaimsIdentity.Object, new AuthenticationProperties(), new AuthenticationDescription()));
         }
     }
 }

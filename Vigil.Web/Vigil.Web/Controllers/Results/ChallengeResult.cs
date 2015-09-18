@@ -32,7 +32,7 @@ namespace Vigil.Web.Controllers.Results
             Contract.Assume(context != null);
 
             var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
-            if (UserId != null)
+            if (UserId != Guid.Empty)
             {
                 properties.Dictionary[XsrfKey] = UserId.ToString();
             }

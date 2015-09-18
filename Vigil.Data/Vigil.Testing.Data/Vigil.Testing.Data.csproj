@@ -143,8 +143,8 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Modeling\VigilContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClasses\TestIdentity.cs" />
     <Compile Include="Core\CodeCoverageUnitTests.cs" />
+    <Compile Include="TestClasses\TestIdentity.cs" />
     <Compile Include="TestClasses\TestTypeBase.cs" />
     <Compile Include="TestClasses\TestUserStore.cs" />
   </ItemGroup>

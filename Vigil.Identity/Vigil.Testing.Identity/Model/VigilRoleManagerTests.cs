@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Vigil.Testing.Identity.Model
 {
-    [ContractVerification(false)]
+    [System.Diagnostics.Contracts.ContractVerification(false)]
     public class VigilRoleManagerTests
     {
         [Fact]
@@ -25,7 +25,7 @@ namespace Vigil.Testing.Identity.Model
         public void VigilRoleManager_Static_Create_Returns_Valid_Manager()
         {
             var context = new Mock<IOwinContext>();
-            context.Setup(c => c.Get<IdentityVigilContext>(GlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
+            context.Setup(c => c.Get<IdentityVigilContext>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
                    .Returns(new IdentityVigilContext());
             IdentityFactoryOptions<VigilRoleManager> options = new IdentityFactoryOptions<VigilRoleManager>();
 

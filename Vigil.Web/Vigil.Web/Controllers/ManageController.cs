@@ -17,22 +17,28 @@ namespace Vigil.Web.Controllers
     [ContractVerification(false)]
     public class ManageController : Controller
     {
-        private VigilSignInManager _signInManager;
+        private IVigilSignInManager _signInManager;
         private VigilUserManager _userManager;
-        private IAuthenticationManager AuthenticationManager
+        private IAuthenticationManager _authenticationManager;
+
+        protected IAuthenticationManager AuthenticationManager
         {
             get
             {
-                return HttpContext.GetOwinContext().Authentication;
+                return _authenticationManager ?? HttpContext.GetOwinContext().Authentication;
+            }
+            private set
+            {
+                _authenticationManager = value;
             }
         }
 
         public Guid UserId { get { return Guid.Parse(User.Identity.GetUserId()); } }
-        public VigilSignInManager SignInManager
+        public IVigilSignInManager SignInManager
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<VigilSignInManager>();
+                return _signInManager ?? HttpContext.GetOwinContext().Get<IVigilSignInManager>();
             }
             private set
             {
@@ -54,10 +60,11 @@ namespace Vigil.Web.Controllers
         public ManageController()
         {
         }
-        public ManageController(VigilUserManager userManager, VigilSignInManager signInManager)
+        public ManageController(VigilUserManager userManager, IVigilSignInManager signInManager, IAuthenticationManager authenticationManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            AuthenticationManager = authenticationManager;
         }
 
 

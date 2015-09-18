@@ -14,6 +14,7 @@
             <ModulePaths>
               <Exclude>
                 <ModulePath>.*Vigil\.Testing\..*\.dll$</ModulePath>
+                <ModulePath>.*xunit\..*\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
           </CodeCoverage>

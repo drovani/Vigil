@@ -19,7 +19,7 @@ namespace Vigil.Identity.Model
             Contract.Requires<ArgumentNullException>(authenticationManager != null);
         }
 
-        public static IVigilSignInManager Create(IdentityFactoryOptions<IVigilSignInManager> options, IOwinContext context)
+        public static IVigilSignInManager Create(IOwinContext context)
         {
             Contract.Requires<ArgumentNullException>(context != null);
             Contract.Ensures(Contract.Result<IVigilSignInManager>() != null);

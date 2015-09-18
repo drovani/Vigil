@@ -12,9 +12,8 @@ namespace Vigil.Identity.Model
     {
         public VigilUserManager(IUserStore<VigilUser, Guid> store) : base(store) { }
 
-        public static VigilUserManager Create(IdentityFactoryOptions<VigilUserManager> options, IOwinContext context)
+        public static VigilUserManager Create(IOwinContext context)
         {
-            Contract.Requires<ArgumentNullException>(options != null);
             Contract.Requires<ArgumentNullException>(context != null);
             Contract.Ensures(Contract.Result<VigilUserManager>() != null);
 

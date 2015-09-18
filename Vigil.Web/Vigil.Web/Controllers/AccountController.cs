@@ -23,7 +23,7 @@ namespace Vigil.Web.Controllers
         private VigilUserManager _userManager;
         private IAuthenticationManager _authenticationManager;
 
-        private IAuthenticationManager AuthenticationManager
+        protected IAuthenticationManager AuthenticationManager
         {
             get
             {
@@ -42,7 +42,7 @@ namespace Vigil.Web.Controllers
                 Contract.Ensures(Contract.Result<IVigilSignInManager>() != null);
                 return _signInManager ?? GetVigilSignInManager();
             }
-            private set
+            protected set
             {
                 _signInManager = value;
             }
@@ -54,7 +54,7 @@ namespace Vigil.Web.Controllers
                 Contract.Ensures(Contract.Result<VigilUserManager>() != null);
                 return _userManager ?? GetVigilUserManager();
             }
-            private set
+            protected set
             {
                 Contract.Requires<ArgumentNullException>(value != null);
                 _userManager = value;

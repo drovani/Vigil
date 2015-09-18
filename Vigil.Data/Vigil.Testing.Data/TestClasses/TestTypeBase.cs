@@ -4,7 +4,7 @@ using Vigil.Data.Core;
 
 namespace Vigil.Testing.Data.TestClasses
 {
-    [ContractVerification(false)]
+    [System.Diagnostics.Contracts.ContractVerification(false)]
     internal class TestTypeBase : TypeBase
     {
         protected TestTypeBase(string typeName)

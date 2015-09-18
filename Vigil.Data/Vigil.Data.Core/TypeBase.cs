@@ -28,7 +28,7 @@ namespace Vigil.Data.Core
             this.TypeName = typeName.Trim();
         }
 
-        public string SetTypeName(string typeName)
+        public virtual string SetTypeName(string typeName)
         {
             Contract.Requires<ArgumentNullException>(typeName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(typeName.Trim()));
@@ -38,7 +38,7 @@ namespace Vigil.Data.Core
             return TypeName;
         }
 
-        public bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn)
+        public virtual bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {
@@ -50,7 +50,7 @@ namespace Vigil.Data.Core
         }
 
 
-        public bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn)
+        public virtual bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn)
         {
             ModifiedBy = modifiedBy;
             ModifiedOn = modifiedOn.ToUniversalTime();

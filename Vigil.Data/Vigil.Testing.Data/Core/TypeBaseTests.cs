@@ -1,7 +1,7 @@
 ﻿using System;
+using Moq;
 using Vigil.Data.Core;
 using Vigil.Data.Core.System;
-using Vigil.Testing.Data.TestClasses;
 using Xunit;
 
 namespace Vigil.Testing.Data.Core
@@ -11,29 +11,14 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Constructor_Sets_TypeName_Property()
         {
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
 
             Assert.Equal("test type", tb.TypeName);
         }
         [Fact]
-        public void Passing_Empty_TypeName_Throws_Exception()
-        {
-            Assert.Throws<ArgumentException>(() => TestTypeBase.CreateType(String.Empty));
-        }
-        [Fact]
-        public void Passing_Whitespace_TypeName_Throws_Exception()
-        {
-            Assert.Throws<ArgumentException>(() => TestTypeBase.CreateType("  "));
-        }
-        [Fact]
-        public void Passing_Null_TypeName_Throws_Exception()
-        {
-            Assert.Throws<ArgumentNullException>(() => TestTypeBase.CreateType(null));
-        }
-        [Fact]
         public void SetTypeName_Sets_TypeName_Property()
         {
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
             tb.SetTypeName("reset type");
 
             Assert.Equal("reset type", tb.TypeName);
@@ -41,13 +26,13 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void SetTypeName_To_Empty_Throws_Exception()
         {
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
             Assert.Throws<ArgumentException>(() => tb.SetTypeName(String.Empty));
         }
         [Fact]
         public void SetTypeName_To_Null_Throws_Exception()
         {
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
             Assert.Throws<ArgumentNullException>(() => tb.SetTypeName(null));
         }
 
@@ -56,7 +41,7 @@ namespace Vigil.Testing.Data.Core
         {
             VigilUser testUser = new VigilUser { UserName = "Test User" };
             DateTime now = new DateTime(2015, 5, 12, 12, 17, 00, DateTimeKind.Utc);
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
             bool marked = tb.MarkDeleted(testUser, now);
 
             Assert.True(marked);
@@ -68,7 +53,7 @@ namespace Vigil.Testing.Data.Core
         {
             VigilUser testUser = new VigilUser { UserName = "Test User" };
             DateTime now = new DateTime(2015, 5, 12, 12, 17, 00, DateTimeKind.Utc);
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
             bool initialMarked = tb.MarkDeleted(testUser, now);
             bool triedAgain = tb.MarkDeleted(testUser, now.AddDays(1));
 
@@ -82,7 +67,7 @@ namespace Vigil.Testing.Data.Core
         {
             VigilUser testUser = new VigilUser { UserName = "Test User" };
             DateTime now = new DateTime(2015, 5, 12, 12, 17, 00, DateTimeKind.Utc);
-            TypeBase tb = TestTypeBase.CreateType("test type");
+            TypeBase tb = Mock.Of<TypeBase>();
             tb.MarkModified(testUser, now);
 
             Assert.Equal(now, tb.ModifiedOn);
