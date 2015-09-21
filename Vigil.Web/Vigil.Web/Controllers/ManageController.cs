@@ -393,6 +393,11 @@ namespace Vigil.Web.Controllers
                 _userManager.Dispose();
                 _userManager = null;
             }
+            if (disposing && _signInManager != null)
+            {
+                _signInManager.Dispose();
+                _signInManager = null;
+            }
 
             base.Dispose(disposing);
         }

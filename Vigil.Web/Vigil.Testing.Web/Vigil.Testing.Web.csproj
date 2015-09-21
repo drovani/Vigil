@@ -219,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountControllerTests.cs" />
+    <Compile Include="Controllers\TestManageController.cs" />
     <Compile Include="ControllerTestExtensions.cs" />
     <Compile Include="Controllers\HomeControllerTests.cs" />
     <Compile Include="Controllers\Results\ChallengeResultTests.cs" />
