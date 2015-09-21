@@ -4,11 +4,10 @@ using Xunit;
 
 namespace Vigil.Testing.Data.Core
 {
-    [System.Diagnostics.Contracts.ContractVerification(false)]
-    public class CodeCoverageUnitTests
+    public class NotImplementedAttributeTests
     {
         [Fact]
-        public void NotImplementedAttribute_Throws_NotImplementedException()
+        public void NotImplementedAttribute_Constructor_Throw_NotImplementedException()
         {
             Assert.Throws<NotImplementedException>(() => new NotImplementedAttribute());
         }

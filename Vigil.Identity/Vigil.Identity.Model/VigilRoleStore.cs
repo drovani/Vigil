@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core.System;
 

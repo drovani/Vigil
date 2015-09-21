@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.Entity;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core.System;
 

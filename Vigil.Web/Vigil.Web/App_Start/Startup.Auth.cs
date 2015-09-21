@@ -3,11 +3,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.Google;
 using Owin;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
-using Vigil.Web.Models;
 
 namespace Vigil.Web
 {

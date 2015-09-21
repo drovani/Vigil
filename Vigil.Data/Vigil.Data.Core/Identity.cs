@@ -14,6 +14,11 @@ namespace Vigil.Data.Core
             Id = Guid.NewGuid();
         }
 
+        protected Identity(Guid id)
+        {
+            this.Id = id;
+        }
+
         /// <summary>Compares two Vigil.Data.Core.Identity classes for equality by Id.
         /// </summary>
         /// <param name="other">The Vigil.Data.Core.Identity class to compare Id values.</param>

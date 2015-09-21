@@ -10,8 +10,8 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Identity_Equality_Fails_For_Unequal_Ids()
         {
-            Identity a = Mock.Of<Identity>();
-            Identity b = Mock.Of<Identity>();
+            Identity a = new Mock<Identity>(Guid.NewGuid()).Object;
+            Identity b = new Mock<Identity>(Guid.NewGuid()).Object;
 
             Assert.False(a.Equals(b));
         }
@@ -28,10 +28,11 @@ namespace Vigil.Testing.Data.Core
         public void Identity_Equality_Passes_For_Equal_Id_Values()
         {
             Guid id = Guid.NewGuid();
-            Identity a = Mock.Of<Identity>();
-            Identity b = Mock.Of<Identity>();
 
-            Assert.True(a.Equals(b));
+            Identity source = new Mock<Identity>(id).Object;
+            Identity other = new Mock<Identity>(id).Object;
+
+            Assert.True(source.Equals(other));
         }
     }
 }

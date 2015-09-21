@@ -3,7 +3,6 @@ using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
-using Vigil.Data.Core;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model

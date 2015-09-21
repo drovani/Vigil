@@ -33,6 +33,7 @@ namespace Vigil.Data.Core.System
         /// <returns>A new ChangeLog instance.</returns>
         public static ChangeLog CreateLog<TSource, TProperty>(Guid identifier, Expression<Func<TSource, TProperty>> property, TProperty oldValue, TProperty newValue)
         {
+            Contract.Requires<ArgumentOutOfRangeException>(!identifier.Equals(Guid.Empty));
             Contract.Requires<ArgumentNullException>(property != null);
             Contract.Ensures(Contract.Result<ChangeLog>() != null);
 

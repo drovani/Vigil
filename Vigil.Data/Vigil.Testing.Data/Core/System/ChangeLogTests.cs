@@ -6,32 +6,37 @@ using Xunit;
 
 namespace Vigil.Testing.Data.Core.System
 {
+    [global::System.Diagnostics.Contracts.ContractVerification(false)]
     public class ChangeLogTests
     {
         [Fact]
         public void CreateLog_With_Invalid_Expression_Throws_Exception()
         {
-            Identity mockedIdentity = Mock.Of<Identity>();
-            Guid newGuid = Guid.NewGuid();
-            Mock.Get(mockedIdentity).SetupGet(mi => mi.Id).Returns(newGuid);
+            Identity testIdentity = new Mock<Identity>(Guid.NewGuid())
+            {
+                CallBase = true
+            }.Object;
 
-            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<Identity, Guid>(mockedIdentity.Id, i => new Guid(), Guid.Empty, mockedIdentity.Id));
+            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<Identity, Guid>(testIdentity.Id, i => new Guid(), Guid.Empty, testIdentity.Id));
         }
         [Fact]
         public void CreateLog_With_Invalid_MemberExpression_Throws_Exception()
         {
-            Identity mockedIdentity = Mock.Of<Identity>();
-            Guid newGuid = Guid.NewGuid();
-            Mock.Get(mockedIdentity).SetupGet(mi => mi.Id).Returns(newGuid);
+            Identity testIdentity = new Mock<Identity>(Guid.NewGuid())
+            {
+                CallBase = true
+            }.Object;
 
-            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<Identity, Guid>(mockedIdentity.Id, i => Guid.Empty, Guid.Empty, mockedIdentity.Id));
+            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<Identity, Guid>(testIdentity.Id, i => Guid.Empty, Guid.Empty, testIdentity.Id));
         }
         [Fact]
         public void Passing_Null_Values_Saves_Null_Values()
         {
-            TypeBase mockedTypeBase = Mock.Of<TypeBase>();
-            Mock.Get(mockedTypeBase).SetupGet(tb => tb.TypeName).Returns("Test Type");
-            ChangeLog log = ChangeLog.CreateLog<TypeBase, DateTime?>(mockedTypeBase, t => t.DeletedOn, null, null);
+            TypeBase testTypeBase = new Mock<TypeBase>("Test Type")
+            {
+                CallBase = true
+            }.Object;
+            ChangeLog log = ChangeLog.CreateLog<TypeBase, DateTime?>(testTypeBase, t => t.DeletedOn, null, null);
 
             Assert.Null(log.OldValue);
             Assert.Null(log.NewValue);
@@ -39,31 +44,33 @@ namespace Vigil.Testing.Data.Core.System
         [Fact]
         public void CreateLog_By_Identifier_Sets_Properties_Correctly()
         {
-            Identity ident = Mock.Of<Identity>();
-            Guid newGuid = Guid.NewGuid();
-            Mock.Get(ident).SetupGet(mi => mi.Id).Returns(newGuid);
+            Identity testIdentity = new Mock<Identity>(Guid.NewGuid())
+            {
+                CallBase = true
+            }.Object;
 
-            ChangeLog log = ChangeLog.CreateLog<Identity, Guid>(ident.Id, i => i.Id, Guid.Empty, ident.Id);
-            Assert.Equal(ident.Id, log.SourceId);
+            ChangeLog log = ChangeLog.CreateLog<Identity, Guid>(testIdentity.Id, i => i.Id, Guid.Empty, testIdentity.Id);
+            Assert.Equal(testIdentity.Id, log.SourceId);
             Assert.Equal("Identity", log.ModelName);
             Assert.Equal("Id", log.PropertyName);
             Assert.Equal(Guid.Empty.ToString(), log.OldValue);
-            Assert.Equal(newGuid.ToString(), log.NewValue);
+            Assert.Equal(testIdentity.Id.ToString(), log.NewValue);
         }
 
         [Fact]
         public void CreateLog_By_Entity_Sets_Properties_Correctly()
         {
-            Identity ident = Mock.Of<Identity>();
-            Guid newGuid = Guid.NewGuid();
-            Mock.Get(ident).SetupGet(mi => mi.Id).Returns(newGuid);
+            Identity testIdentity = new Mock<Identity>(Guid.NewGuid())
+            {
+                CallBase = true
+            }.Object;
 
-            ChangeLog log = ChangeLog.CreateLog<Identity, Guid>(ident, i => i.Id, Guid.Empty, ident.Id);
-            Assert.Equal(ident.Id, log.SourceId);
+            ChangeLog log = ChangeLog.CreateLog<Identity, Guid>(testIdentity, i => i.Id, Guid.Empty, testIdentity.Id);
+            Assert.Equal(testIdentity.Id, log.SourceId);
             Assert.Equal("Identity", log.ModelName);
             Assert.Equal("Id", log.PropertyName);
             Assert.Equal(Guid.Empty.ToString(), log.OldValue);
-            Assert.Equal(ident.Id.ToString(), log.NewValue);
+            Assert.Equal(testIdentity.Id.ToString(), log.NewValue);
         }
     }
 }
