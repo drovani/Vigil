@@ -4,7 +4,8 @@ using System.Web.Mvc;
 
 namespace Vigil.Web
 {
-    public class FilterConfig
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static class FilterConfig
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {

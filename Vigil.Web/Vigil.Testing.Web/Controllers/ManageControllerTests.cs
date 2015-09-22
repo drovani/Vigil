@@ -61,11 +61,42 @@ namespace Vigil.Testing.Web.Controllers
             Assert.Same(MockUserManager.Object, ctrl.UserManager);
         }
 
-        [Fact]
-        public async Task Index_Returns_View_With_IndexViewModel_Model()
+        [Theory]
+        [InlineData(ManageController.ManageMessageId.ChangePasswordSuccess, "Your password has been changed.")]
+        [InlineData(ManageController.ManageMessageId.SetPasswordSuccess, "Your password has been set.")]
+        [InlineData(ManageController.ManageMessageId.SetTwoFactorSuccess, "Your two-factor authentication provider has been set.")]
+        [InlineData(ManageController.ManageMessageId.Error, "An error has occurred.")]
+        [InlineData(ManageController.ManageMessageId.AddPhoneSuccess, "Your phone number was added.")]
+        [InlineData(ManageController.ManageMessageId.RemovePhoneSuccess, "Your phone number was removed.")]
+        [InlineData(null, "")]
+        public async Task Index_With_Various_Messages_Returns_View_With_IndexViewModel_Model(ManageController.ManageMessageId message, string text)
         {
             var ctrl = GetManageController();
-            MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>())).ReturnsAsync(new VigilUser() { Id = Guid.Parse(MockUser.Object.Identity.GetUserId()) });
+            MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>())).ReturnsAsync(new VigilUser() { Id = Guid.Parse(MockUser.Object.Identity.GetUserId()), PasswordHash = "TestHash" });
+            MockUserManager.Setup(mum => mum.GetPhoneNumberAsync(It.IsAny<Guid>())).ReturnsAsync("3125550123");
+            MockUserManager.Setup(mum => mum.GetTwoFactorEnabledAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+            MockUserManager.Setup(mum => mum.GetLoginsAsync(It.IsAny<Guid>())).ReturnsAsync(new List<UserLoginInfo>());
+            MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie)))
+                                     .ReturnsAsync(new AuthenticateResult(null, new AuthenticationProperties(), new AuthenticationDescription()));
+
+            ViewResult result = await ctrl.Index(message) as ViewResult;
+            IndexViewModel model = result.Model as IndexViewModel;
+
+            Assert.NotNull(result);
+            Assert.NotNull(model);
+            Assert.Equal(true, model.HasPassword);
+            Assert.Equal("3125550123", model.PhoneNumber);
+            Assert.Equal(false, model.TwoFactor);
+            Assert.Equal(0, model.Logins.Count);
+            Assert.Equal(false, model.BrowserRemembered);
+            Assert.Equal(text, ctrl.ViewBag.StatusMessage);
+        }
+
+        [Fact]
+        public async Task Index_Without_User_Returns_View_With_IndexViewModel_Model()
+        {
+            var ctrl = GetManageController();
+            MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>())).ReturnsAsync(null);
             MockUserManager.Setup(mum => mum.GetPhoneNumberAsync(It.IsAny<Guid>())).ReturnsAsync("3125550123");
             MockUserManager.Setup(mum => mum.GetTwoFactorEnabledAsync(It.IsAny<Guid>())).ReturnsAsync(false);
             MockUserManager.Setup(mum => mum.GetLoginsAsync(It.IsAny<Guid>())).ReturnsAsync(new List<UserLoginInfo>());
@@ -291,7 +322,7 @@ namespace Vigil.Testing.Web.Controllers
         }
 
         [Fact]
-        public async Task VerifyPhoneNumber_POST_With_Failed_ChangePhoneNumberAsync_Invalidates_ModelState_And_Resturns_View_With_Same_Model()
+        public async Task VerifyPhoneNumber_POST_With_Failed_ChangePhoneNumberAsync_Invalidates_ModelState_And_Returns_View_With_Same_Model()
         {
             MockUserManager.Setup(mum => mum.ChangePhoneNumberAsync(It.IsAny<Guid>(), It.Is<string>(s => s == "3125550123"), It.Is<string>(s => s == "TestCode")))
                            .ReturnsAsync(IdentityResult.Failed("Invalid Code"));
@@ -300,7 +331,7 @@ namespace Vigil.Testing.Web.Controllers
                 PhoneNumber = "3125550123",
                 Code = "TestCode"
             };
-            var ctrl = new ManageController();
+            var ctrl = GetManageController();
             bool isModelStateValid = ctrl.BindModel(model);
 
             ViewResult result = await ctrl.VerifyPhoneNumber(model) as ViewResult;
@@ -421,13 +452,14 @@ namespace Vigil.Testing.Web.Controllers
         }
 
         [Fact]
-        public async Task ChangePassword_POST_With_Successfull_ChangePasswordAsync_Calls_SignInAsync_And_Returns_RedirectToAction_Index()
+        public async Task ChangePassword_POST_With_Successful_ChangePasswordAsync_Calls_SignInAsync_And_Returns_RedirectToAction_Index()
         {
             MockUserManager.Setup(mum => mum.ChangePasswordAsync(It.IsAny<Guid>(), It.Is<string>(s => s == "oldPassword.01"), It.Is<string>(s => s == "newPassword.01")))
                            .ReturnsAsync(IdentityResult.Success);
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>()))
                            .ReturnsAsync(new VigilUser());
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                             .Returns(Task.FromResult(IdentityResult.Success))
                              .Verifiable();
             ChangePasswordViewModel model = new ChangePasswordViewModel()
             {
@@ -495,13 +527,14 @@ namespace Vigil.Testing.Web.Controllers
         }
 
         [Fact]
-        public async Task SetPassword_POST_With_Valid_Model_And_Successfull_AddPasswordAsync_Returns_RedirectToAction_Index_With_Success_Message()
+        public async Task SetPassword_POST_With_Valid_Model_And_Successful_AddPasswordAsync_Returns_RedirectToAction_Index_With_Success_Message()
         {
             MockUserManager.Setup(mum => mum.AddPasswordAsync(It.IsAny<Guid>(), It.Is<string>(s => s == "newPassword.01")))
                            .ReturnsAsync(IdentityResult.Success);
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>()))
                            .ReturnsAsync(new VigilUser());
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                             .Returns(Task.FromResult(IdentityResult.Success))
                              .Verifiable();
             SetPasswordViewModel model = new SetPasswordViewModel()
             {
@@ -514,7 +547,7 @@ namespace Vigil.Testing.Web.Controllers
             RedirectToRouteResult result = await ctrl.SetPassword(model) as RedirectToRouteResult;
 
             Assert.True(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.True(ctrl.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
             Assert.Equal(ManageController.ManageMessageId.SetPasswordSuccess, result.RouteValues["Message"]);
@@ -534,8 +567,11 @@ namespace Vigil.Testing.Web.Controllers
             Assert.Equal("Error", result.ViewName);
         }
 
-        [Fact]
-        public async Task ManageLogins_When_User_Found_Returns_View_With_ManageLoginsViewModel_Model()
+        [Theory]
+        [InlineData(ManageController.ManageMessageId.RemoveLoginSuccess, "The external login was removed.")]
+        [InlineData(ManageController.ManageMessageId.Error, "An error has occurred.")]
+        [InlineData(null, "")]
+        public async Task ManageLogins_For_Various_Messages_When_User_Found_Returns_View_With_ManageLoginsViewModel_Model(ManageController.ManageMessageId message, string text)
         {
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>()))
                            .ReturnsAsync(new VigilUser());
@@ -545,13 +581,45 @@ namespace Vigil.Testing.Web.Controllers
                            .Returns(new List<AuthenticationDescription>());
             var ctrl = GetManageController();
 
-            ViewResult result = await ctrl.ManageLogins(null) as ViewResult;
+            ViewResult result = await ctrl.ManageLogins(message) as ViewResult;
             ManageLoginsViewModel model = result.Model as ManageLoginsViewModel;
 
             Assert.NotNull(result);
             Assert.NotNull(model);
             Assert.Equal(0, model.CurrentLogins.Count);
             Assert.Equal(0, model.OtherLogins.Count);
+            Assert.Equal(text, ctrl.ViewBag.StatusMessage);
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public async Task ManageLogins_For_Various_ShowRemoveButton_Cases_When_User_Found_Returns_View_With_ManageLoginsViewModel_Model(bool hasPasswordHash, bool hasManyUserLogins)
+        {
+            List<UserLoginInfo> logins = new List<UserLoginInfo>();
+            if (hasManyUserLogins)
+            {
+                logins.Add(new UserLoginInfo("TestProvider", "TestKey"));
+                logins.Add(new UserLoginInfo("AnotherTestProvider", "AnotherTestKey"));
+            }
+
+            MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new VigilUser() { PasswordHash = hasPasswordHash ? "TestHash" : null });
+            MockUserManager.Setup(mum => mum.GetLoginsAsync(It.IsAny<Guid>()))
+                           .ReturnsAsync(logins);
+            MockAuthenticationManager.Setup(mam => mam.GetAuthenticationTypes(It.IsAny<Func<AuthenticationDescription, bool>>()))
+                           .Returns(new List<AuthenticationDescription>());
+            var ctrl = GetManageController();
+
+            ViewResult result = await ctrl.ManageLogins(null) as ViewResult;
+            ManageLoginsViewModel model = result.Model as ManageLoginsViewModel;
+
+            Assert.NotNull(result);
+            Assert.NotNull(model);
+            Assert.Equal(logins.Count, model.CurrentLogins.Count);
+            Assert.Equal(0, model.OtherLogins.Count);
+            Assert.Equal(hasPasswordHash || hasManyUserLogins, ctrl.ViewBag.ShowRemoveButton);
         }
 
         [Fact]
@@ -561,7 +629,7 @@ namespace Vigil.Testing.Web.Controllers
             var mockUrlHelper = new Mock<UrlHelper>();
             mockUrlHelper.Setup(muh => muh.Action(It.Is<string>(s => s == "LinkLoginCallback"), It.Is<string>(s => s == "Manage")))
                          .Returns("/Manage/LinkLoginCallback");
-
+            ctrl.Url = mockUrlHelper.Object;
             ChallengeResult result = ctrl.LinkLogin("TestProvider") as ChallengeResult;
 
             Assert.NotNull(result);
@@ -607,6 +675,28 @@ namespace Vigil.Testing.Web.Controllers
             Assert.NotNull(result);
             Assert.Equal("ManageLogins", result.RouteValues["Action"]);
             Assert.Equal(ManageController.ManageMessageId.Error, result.RouteValues["Message"]);
+        }
+
+        [Fact]
+        public async Task LinkLoginCallback_When_GetExternalLoginInfoAsync_Succeeds_And_AddLoginAsync_Succeeds_Returns_RedirectToAction_ManageLogins_With_No_Message()
+        {
+            var ctrl = GetManageController();
+            // AuthenticationManager.GetExternalLoginInfoAsync(string, string) -> returns null
+            MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.ExternalCookie)))
+                                     .ReturnsAsync(new AuthenticateResult(MockUser.Object.Identity, new AuthenticationProperties(
+                                     new Dictionary<string, string>()
+                                         {
+                                             { ChallengeResult.XsrfKey, ctrl.UserId.ToString() }
+                                         }
+                                     ), new AuthenticationDescription()));
+            MockUserManager.Setup(mum => mum.AddLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
+                           .ReturnsAsync(IdentityResult.Success);
+
+            RedirectToRouteResult result = await ctrl.LinkLoginCallback() as RedirectToRouteResult;
+
+            Assert.NotNull(result);
+            Assert.Equal("ManageLogins", result.RouteValues["Action"]);
+            Assert.Null(result.RouteValues["Message"]);
         }
 
         [Fact]

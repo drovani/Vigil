@@ -4,7 +4,8 @@ using System.Web.Routing;
 
 namespace Vigil.Web
 {
-    public class RouteConfig
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+    public static class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)
         {

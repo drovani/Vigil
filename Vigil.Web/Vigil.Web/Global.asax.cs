@@ -5,6 +5,7 @@ using System.Web.Routing;
 
 namespace Vigil.Web
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class MvcApplication : System.Web.HttpApplication
     {
         protected void Application_Start()

@@ -192,6 +192,11 @@
       <Name>Vigil.Identity.Model</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </Content>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

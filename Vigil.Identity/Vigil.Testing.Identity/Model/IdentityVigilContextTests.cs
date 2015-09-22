@@ -15,7 +15,7 @@ namespace Vigil.Testing.Identity.Model
         }
 
         [Fact]
-        public void IdentityVigilContext_Explicit_Contructor_Sets_Now_and_AffectedBy()
+        public void IdentityVigilContext_Explicit_Constructor_Sets_Now_And_AffectedBy()
         {
             VigilUser affectedBy = new VigilUser(){ Id = Guid.NewGuid(), UserName = "TestUser" };
             DateTime now = new DateTime(2015, 7, 30, 15, 10, 12, DateTimeKind.Utc);

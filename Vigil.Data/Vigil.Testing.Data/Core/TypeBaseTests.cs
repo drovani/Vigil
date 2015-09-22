@@ -8,7 +8,7 @@ namespace Vigil.Testing.Data.Core
 {
     public class TypeBaseTests
     {
-        protected TypeBase TestTypeBase;
+        private TypeBase TestTypeBase;
 
         public TypeBaseTests()
         {

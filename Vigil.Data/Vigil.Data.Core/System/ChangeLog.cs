@@ -64,6 +64,7 @@ namespace Vigil.Data.Core.System
         public static ChangeLog CreateLog<TSource, TProperty>(TSource source, Expression<Func<TSource, TProperty>> property, TProperty oldValue, TProperty newValue) where TSource : Identity
         {
             Contract.Requires<ArgumentNullException>(source != null);
+            Contract.Requires<ArgumentOutOfRangeException>(!source.Id.Equals(Guid.Empty));
             Contract.Requires<ArgumentNullException>(property != null);
             Contract.Ensures(Contract.Result<ChangeLog>() != null);
 

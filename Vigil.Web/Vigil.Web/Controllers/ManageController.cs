@@ -76,14 +76,7 @@ namespace Vigil.Web.Controllers
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
 
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : "";
+            ViewBag.StatusMessage = GetMessageTest(message);
 
             var model = new IndexViewModel
             {
@@ -338,10 +331,8 @@ namespace Vigil.Web.Controllers
         {
             Contract.Ensures(Contract.Result<Task<ActionResult>>() != null);
 
-            ViewBag.StatusMessage =
-                message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : "";
+            ViewBag.StatusMessage = GetMessageTest(message);
+
             var user = await UserManager.FindByIdAsync(UserId);
             if (user == null)
             {
@@ -388,15 +379,18 @@ namespace Vigil.Web.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _userManager != null)
+            if (disposing)
             {
-                _userManager.Dispose();
-                _userManager = null;
-            }
-            if (disposing && _signInManager != null)
-            {
-                _signInManager.Dispose();
-                _signInManager = null;
+                if (_userManager != null)
+                {
+                    _userManager.Dispose();
+                    _userManager = null;
+                }
+                if (_signInManager != null)
+                {
+                    _signInManager.Dispose();
+                    _signInManager = null;
+                }
             }
 
             base.Dispose(disposing);
@@ -423,18 +417,21 @@ namespace Vigil.Web.Controllers
             return false;
         }
 
-        private bool HasPhoneNumber()
+        protected string GetMessageTest(ManageMessageId? message)
         {
-            var user = UserManager.FindById(UserId);
-            if (user != null)
-            {
-                return user.PhoneNumber != null;
-            }
-            return false;
+            return message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+            : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+            : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
+            : message == ManageMessageId.Error ? "An error has occurred."
+            : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
+            : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+            : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
+            : "";
         }
 
         public enum ManageMessageId
         {
+            NoMessage,
             AddPhoneSuccess,
             ChangePasswordSuccess,
             SetTwoFactorSuccess,
