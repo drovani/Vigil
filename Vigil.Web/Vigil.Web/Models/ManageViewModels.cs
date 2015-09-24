@@ -7,8 +7,14 @@ namespace Vigil.Web.Models
 {
     public class IndexViewModel
     {
+        public IndexViewModel() { }
+        public IndexViewModel(IList<UserLoginInfo> logins)
+        {
+            this.Logins = logins;
+        }
+
         public bool HasPassword { get; set; }
-        public IList<UserLoginInfo> Logins { get; set; }
+        public IList<UserLoginInfo> Logins { get; private set; }
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
@@ -16,8 +22,15 @@ namespace Vigil.Web.Models
 
     public class ManageLoginsViewModel
     {
-        public IList<UserLoginInfo> CurrentLogins { get; set; }
-        public IList<AuthenticationDescription> OtherLogins { get; set; }
+        public ManageLoginsViewModel() { }
+        public ManageLoginsViewModel(IList<UserLoginInfo> currentLogins, IList<AuthenticationDescription> otherLogins)
+        {
+            this.CurrentLogins = currentLogins;
+            this.OtherLogins = otherLogins;
+        }
+
+        public IList<UserLoginInfo> CurrentLogins { get; private set; }
+        public IList<AuthenticationDescription> OtherLogins { get; private set; }
     }
 
     public class FactorViewModel
@@ -80,7 +93,13 @@ namespace Vigil.Web.Models
 
     public class ConfigureTwoFactorViewModel
     {
+        public ConfigureTwoFactorViewModel() { }
+        public ConfigureTwoFactorViewModel(ICollection<System.Web.Mvc.SelectListItem> providers)
+        {
+            this.Providers = providers;
+        }
+
         public string SelectedProvider { get; set; }
-        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
+        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; private set; }
     }
 }

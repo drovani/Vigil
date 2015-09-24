@@ -15,18 +15,6 @@ namespace Vigil.Web.Controllers.Results
         public string RedirectUri { get; set; }
         public Guid UserId { get; set; }
 
-        public ChallengeResult(string provider, string redirectUri)
-            : this(provider, redirectUri, Guid.Empty)
-        {
-        }
-
-        public ChallengeResult(string provider, string redirectUri, Guid userId)
-        {
-            LoginProvider = provider;
-            RedirectUri = redirectUri;
-            UserId = userId;
-        }
-
         public override void ExecuteResult(ControllerContext context)
         {
             Contract.Assume(context != null);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Vigil.Web.Models
@@ -17,8 +18,14 @@ namespace Vigil.Web.Models
 
     public class SendCodeViewModel
     {
+        public SendCodeViewModel() { }
+        public SendCodeViewModel(ICollection<System.Web.Mvc.SelectListItem> providers)
+        {
+            this.Providers = providers;
+        }
+
         public string SelectedProvider { get; set; }
-        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
+        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; private set; }
         public string ReturnUrl { get; set; }
         public bool RememberMe { get; set; }
     }

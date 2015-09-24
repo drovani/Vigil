@@ -8,17 +8,20 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void VigilUserStore_Default_Constructor_Sets_DisposeContext()
         {
-            var ustore = new VigilUserStore();
-            Assert.True(ustore.DisposeContext);
+            using (var ustore = new VigilUserStore())
+            {
+                Assert.True(ustore.DisposeContext);
+            }
         }
 
         [Fact]
         public void VigilUserStore_Constructor_Assigns_Context()
         {
-            var context = new IdentityVigilContext();
-            var ustore = new VigilUserStore(context);
-
-            Assert.Same(context, ustore.Context);
+            using(var context = new IdentityVigilContext())
+            using (var ustore = new VigilUserStore(context))
+            {
+                Assert.Same(context, ustore.Context);
+            }
         }
     }
 }

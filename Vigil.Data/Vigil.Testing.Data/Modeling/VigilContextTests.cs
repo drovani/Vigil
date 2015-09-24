@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Vigil.Testing.Data.Modeling
 {
+    [global::System.Diagnostics.Contracts.ContractVerification(false)]
     public class VigilContextTests
     {
         private readonly VigilUser testUser;

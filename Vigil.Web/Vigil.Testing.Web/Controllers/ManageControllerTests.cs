@@ -21,12 +21,13 @@ using Xunit;
 namespace Vigil.Testing.Web.Controllers
 {
     [System.Diagnostics.Contracts.ContractVerification(false)]
-    public class ManageControllerTests
+    public class ManageControllerTests : IDisposable
     {
         private readonly Mock<IPrincipal> MockUser;
         private readonly Mock<VigilUserManager> MockUserManager;
         private readonly Mock<IVigilSignInManager> MockSignInManager;
         private readonly Mock<IAuthenticationManager> MockAuthenticationManager = new Mock<IAuthenticationManager>();
+        private readonly ManageController Controller;
 
         public ManageControllerTests()
         {
@@ -42,23 +43,29 @@ namespace Vigil.Testing.Web.Controllers
             MockSignInManager = new Mock<IVigilSignInManager>();
             MockSignInManager.SetupGet(msim => msim.AuthenticationManager).Returns(MockAuthenticationManager.Object);
             MockSignInManager.SetupGet(msim => msim.UserManager).Returns(MockUserManager.Object);
+
+            Controller = new ManageController(MockUserManager.Object, MockSignInManager.Object, MockAuthenticationManager.Object);
+
+            var mockHttpContext = new Mock<HttpContextBase>();
+            mockHttpContext.SetupGet(ctx => ctx.User).Returns(MockUser.Object);
+            var mockControllerContext = new Mock<ControllerContext>();
+            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
+
+            Controller.ControllerContext = mockControllerContext.Object;
         }
 
         [Fact]
         public void ManageController_Default_Constructor()
         {
-            var ctrl = new ManageController();
-            Assert.NotNull(ctrl);
+            Assert.NotNull(Controller);
         }
 
         [Fact]
         public void ManageController_Explicit_Constructor()
         {
-            var ctrl = GetManageController();
-
-            Assert.NotNull(ctrl);
-            Assert.Same(MockSignInManager.Object, ctrl.SignInManager);
-            Assert.Same(MockUserManager.Object, ctrl.UserManager);
+            Assert.NotNull(Controller);
+            Assert.Same(MockSignInManager.Object, Controller.SignInManager);
+            Assert.Same(MockUserManager.Object, Controller.UserManager);
         }
 
         [Theory]
@@ -71,7 +78,6 @@ namespace Vigil.Testing.Web.Controllers
         [InlineData(null, "")]
         public async Task Index_With_Various_Messages_Returns_View_With_IndexViewModel_Model(ManageController.ManageMessageId message, string text)
         {
-            var ctrl = GetManageController();
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>())).ReturnsAsync(new VigilUser() { Id = Guid.Parse(MockUser.Object.Identity.GetUserId()), PasswordHash = "TestHash" });
             MockUserManager.Setup(mum => mum.GetPhoneNumberAsync(It.IsAny<Guid>())).ReturnsAsync("3125550123");
             MockUserManager.Setup(mum => mum.GetTwoFactorEnabledAsync(It.IsAny<Guid>())).ReturnsAsync(false);
@@ -79,7 +85,7 @@ namespace Vigil.Testing.Web.Controllers
             MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie)))
                                      .ReturnsAsync(new AuthenticateResult(null, new AuthenticationProperties(), new AuthenticationDescription()));
 
-            ViewResult result = await ctrl.Index(message) as ViewResult;
+            ViewResult result = await Controller.Index(message) as ViewResult;
             IndexViewModel model = result.Model as IndexViewModel;
 
             Assert.NotNull(result);
@@ -89,13 +95,12 @@ namespace Vigil.Testing.Web.Controllers
             Assert.Equal(false, model.TwoFactor);
             Assert.Equal(0, model.Logins.Count);
             Assert.Equal(false, model.BrowserRemembered);
-            Assert.Equal(text, ctrl.ViewBag.StatusMessage);
+            Assert.Equal(text, Controller.ViewBag.StatusMessage);
         }
 
         [Fact]
         public async Task Index_Without_User_Returns_View_With_IndexViewModel_Model()
         {
-            var ctrl = GetManageController();
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>())).ReturnsAsync(null);
             MockUserManager.Setup(mum => mum.GetPhoneNumberAsync(It.IsAny<Guid>())).ReturnsAsync("3125550123");
             MockUserManager.Setup(mum => mum.GetTwoFactorEnabledAsync(It.IsAny<Guid>())).ReturnsAsync(false);
@@ -103,7 +108,7 @@ namespace Vigil.Testing.Web.Controllers
             MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie)))
                                      .ReturnsAsync(new AuthenticateResult(null, new AuthenticationProperties(), new AuthenticationDescription()));
 
-            ViewResult result = await ctrl.Index(null) as ViewResult;
+            ViewResult result = await Controller.Index(null) as ViewResult;
             IndexViewModel model = result.Model as IndexViewModel;
 
             Assert.NotNull(result);
@@ -118,11 +123,10 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task RemoveLogin_POST_When_RemoveLoginAsync_Fails_Returns_RedirectToRouteResult_With_Error_Message()
         {
-            var ctrl = GetManageController();
             MockUserManager.Setup(mum => mum.RemoveLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
                            .ReturnsAsync(IdentityResult.Failed("Failed"));
 
-            RedirectToRouteResult result = await ctrl.RemoveLogin(String.Empty, String.Empty) as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.RemoveLogin(String.Empty, String.Empty) as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("ManageLogins", result.RouteValues["Action"]);
@@ -132,12 +136,12 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task RemoveLogin_POST_When_RemoveLoginAsync_Succeeds_Returns_RedirectToRouteResult_With_Success_Message()
         {
-            var ctrl = GetManageController();
             MockUserManager.Setup(mum => mum.RemoveLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
                            .ReturnsAsync(IdentityResult.Success);
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>()))
                            .ReturnsAsync(new VigilUser() { Id = Guid.Parse(MockUser.Object.Identity.GetUserId()) });
-            RedirectToRouteResult result = await ctrl.RemoveLogin("TestProvider", "TestKey") as RedirectToRouteResult;
+
+            RedirectToRouteResult result = await Controller.RemoveLogin("TestProvider", "TestKey") as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("ManageLogins", result.RouteValues["Action"]);
@@ -147,9 +151,7 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public void AddPhoneNumber_Returns_View()
         {
-            var ctrl = new ManageController();
-
-            ViewResult result = ctrl.AddPhoneNumber() as ViewResult;
+            ViewResult result = Controller.AddPhoneNumber() as ViewResult;
 
             Assert.NotNull(result);
         }
@@ -157,14 +159,13 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task AddPhoneNumber_POST_With_Invalid_Model_Returns_View_With_Same_Model()
         {
-            var ctrl = new ManageController();
             AddPhoneNumberViewModel model = new AddPhoneNumberViewModel();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.AddPhoneNumber(model) as ViewResult;
+            ViewResult result = await Controller.AddPhoneNumber(model) as ViewResult;
 
             Assert.False(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -172,7 +173,6 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task AddPhoneNumber_POST_With_Valid_Model_Sends_Code_Returns_RedirectToAction_VerifyPhoneNumber()
         {
-            var ctrl = GetManageController();
             MockUserManager.Setup(mum => mum.GenerateChangePhoneNumberTokenAsync(It.IsAny<Guid>(), It.Is<string>(s => s == "3125550123")))
                            .ReturnsAsync("TestToken");
             var mockSmsService = new Mock<IIdentityMessageService>();
@@ -180,17 +180,16 @@ namespace Vigil.Testing.Web.Controllers
                            .Returns(Task.FromResult(IdentityResult.Success))
                            .Verifiable();
             MockUserManager.Object.SmsService = mockSmsService.Object;
-
             AddPhoneNumberViewModel model = new AddPhoneNumberViewModel()
-            {
-                Number = "3125550123"
-            };
-            bool isModelStateValid = ctrl.BindModel(model);
+{
+    Number = "3125550123"
+};
+            bool isModelStateValid = Controller.BindModel(model);
 
-            RedirectToRouteResult result = await ctrl.AddPhoneNumber(model) as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.AddPhoneNumber(model) as RedirectToRouteResult;
 
             Assert.True(isModelStateValid);
-            Assert.True(ctrl.ModelState.IsValid);
+            Assert.True(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Equal("VerifyPhoneNumber", result.RouteValues["Action"]);
             Assert.Equal("3125550123", result.RouteValues["PhoneNumber"]);
@@ -206,9 +205,8 @@ namespace Vigil.Testing.Web.Controllers
                            .ReturnsAsync(null);
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
                              .Verifiable();
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.EnableTwoFactorAuthentication() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.EnableTwoFactorAuthentication() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
@@ -226,9 +224,8 @@ namespace Vigil.Testing.Web.Controllers
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
                              .Returns(Task.FromResult(IdentityResult.Success))
                              .Verifiable();
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.EnableTwoFactorAuthentication() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.EnableTwoFactorAuthentication() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
@@ -245,9 +242,8 @@ namespace Vigil.Testing.Web.Controllers
                            .ReturnsAsync(null);
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
                              .Verifiable();
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.DisableTwoFactorAuthentication() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.DisableTwoFactorAuthentication() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
@@ -265,9 +261,8 @@ namespace Vigil.Testing.Web.Controllers
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
                              .Returns(Task.FromResult(IdentityResult.Success))
                              .Verifiable();
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.DisableTwoFactorAuthentication() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.DisableTwoFactorAuthentication() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
@@ -280,9 +275,8 @@ namespace Vigil.Testing.Web.Controllers
         {
             MockUserManager.Setup(mum => mum.GenerateChangePhoneNumberTokenAsync(It.IsAny<Guid>(), It.Is<string>(s => s == null)))
                            .ReturnsAsync("TestCode");
-            var ctrl = GetManageController();
 
-            ViewResult result = await ctrl.VerifyPhoneNumber(phoneNumber: null) as ViewResult;
+            ViewResult result = await Controller.VerifyPhoneNumber(phoneNumber: null) as ViewResult;
             VerifyPhoneNumberViewModel model = result.Model as VerifyPhoneNumberViewModel;
 
             Assert.NotNull(result);
@@ -295,9 +289,8 @@ namespace Vigil.Testing.Web.Controllers
         {
             MockUserManager.Setup(mum => mum.GenerateChangePhoneNumberTokenAsync(It.IsAny<Guid>(), It.Is<string>(s => s == "3125550123")))
                            .ReturnsAsync("TestCode");
-            var ctrl = GetManageController();
 
-            ViewResult result = await ctrl.VerifyPhoneNumber(phoneNumber: "3125550123") as ViewResult;
+            ViewResult result = await Controller.VerifyPhoneNumber(phoneNumber: "3125550123") as ViewResult;
             VerifyPhoneNumberViewModel model = result.Model as VerifyPhoneNumberViewModel;
 
             Assert.NotNull(result);
@@ -310,13 +303,12 @@ namespace Vigil.Testing.Web.Controllers
         public async Task VerifyPhoneNumber_POST_With_Invalid_Model_Returns_View_With_Same_Model()
         {
             VerifyPhoneNumberViewModel model = new VerifyPhoneNumberViewModel();
-            var ctrl = new ManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.VerifyPhoneNumber(model) as ViewResult;
+            ViewResult result = await Controller.VerifyPhoneNumber(model) as ViewResult;
 
             Assert.False(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -331,13 +323,12 @@ namespace Vigil.Testing.Web.Controllers
                 PhoneNumber = "3125550123",
                 Code = "TestCode"
             };
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.VerifyPhoneNumber(model) as ViewResult;
+            ViewResult result = await Controller.VerifyPhoneNumber(model) as ViewResult;
 
             Assert.True(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -357,13 +348,12 @@ namespace Vigil.Testing.Web.Controllers
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.Is<bool>(b => b == false), It.Is<bool>(b => b == false)))
                              .Returns(Task.FromResult(IdentityResult.Success))
                              .Verifiable();
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            RedirectToRouteResult result = await ctrl.VerifyPhoneNumber(model) as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.VerifyPhoneNumber(model) as RedirectToRouteResult;
 
             Assert.True(isModelStateValid);
-            Assert.True(ctrl.ModelState.IsValid);
+            Assert.True(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
             Assert.Equal(ManageController.ManageMessageId.AddPhoneSuccess, result.RouteValues["Message"]);
@@ -375,9 +365,8 @@ namespace Vigil.Testing.Web.Controllers
         {
             MockUserManager.Setup(mum => mum.SetPhoneNumberAsync(It.IsAny<Guid>(), It.Is<string>(s => s == null)))
                            .ReturnsAsync(IdentityResult.Failed("Failure."));
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.RemovePhoneNumber() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.RemovePhoneNumber() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
@@ -394,9 +383,8 @@ namespace Vigil.Testing.Web.Controllers
             MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.Is<bool>(b => b == false), It.Is<bool>(b => b == false)))
                              .Returns(Task.FromResult(IdentityResult.Success))
                              .Verifiable();
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.RemovePhoneNumber() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.RemovePhoneNumber() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
@@ -407,9 +395,7 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public void ChangePassword_Returns_View()
         {
-            var ctrl = new ManageController();
-
-            ViewResult result = ctrl.ChangePassword() as ViewResult;
+            ViewResult result = Controller.ChangePassword() as ViewResult;
 
             Assert.NotNull(result);
         }
@@ -418,13 +404,12 @@ namespace Vigil.Testing.Web.Controllers
         public async Task ChangePassword_POST_With_Invalid_Model_Returns_View_With_Same_Model()
         {
             ChangePasswordViewModel model = new ChangePasswordViewModel();
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.ChangePassword(model) as ViewResult;
+            ViewResult result = await Controller.ChangePassword(model) as ViewResult;
 
             Assert.False(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -440,13 +425,12 @@ namespace Vigil.Testing.Web.Controllers
                 NewPassword = "newPassword.01",
                 ConfirmPassword = "newPassword.01"
             };
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.ChangePassword(model) as ViewResult;
+            ViewResult result = await Controller.ChangePassword(model) as ViewResult;
 
             Assert.True(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -467,13 +451,12 @@ namespace Vigil.Testing.Web.Controllers
                 NewPassword = "newPassword.01",
                 ConfirmPassword = "newPassword.01"
             };
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            RedirectToRouteResult result = await ctrl.ChangePassword(model) as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.ChangePassword(model) as RedirectToRouteResult;
 
             Assert.True(isModelStateValid);
-            Assert.True(ctrl.ModelState.IsValid);
+            Assert.True(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
             Assert.Equal(ManageController.ManageMessageId.ChangePasswordSuccess, result.RouteValues["Message"]);
@@ -483,9 +466,7 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public void SetPassword_Returns_View()
         {
-            var ctrl = new ManageController();
-
-            ViewResult result = ctrl.SetPassword() as ViewResult;
+            ViewResult result = Controller.SetPassword() as ViewResult;
 
             Assert.NotNull(result);
         }
@@ -494,13 +475,12 @@ namespace Vigil.Testing.Web.Controllers
         public async Task SetPassword_POST_With_Invalid_Model_Returns_View_With_Same_Model()
         {
             SetPasswordViewModel model = new SetPasswordViewModel();
-            var ctrl = new ManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.SetPassword(model) as ViewResult;
+            ViewResult result = await Controller.SetPassword(model) as ViewResult;
 
             Assert.False(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -515,13 +495,12 @@ namespace Vigil.Testing.Web.Controllers
                 NewPassword = "newPassword.01",
                 ConfirmPassword = "newPassword.01"
             };
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            ViewResult result = await ctrl.SetPassword(model) as ViewResult;
+            ViewResult result = await Controller.SetPassword(model) as ViewResult;
 
             Assert.True(isModelStateValid);
-            Assert.False(ctrl.ModelState.IsValid);
+            Assert.False(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Same(model, result.Model);
         }
@@ -541,13 +520,12 @@ namespace Vigil.Testing.Web.Controllers
                 NewPassword = "newPassword.01",
                 ConfirmPassword = "newPassword.01"
             };
-            var ctrl = GetManageController();
-            bool isModelStateValid = ctrl.BindModel(model);
+            bool isModelStateValid = Controller.BindModel(model);
 
-            RedirectToRouteResult result = await ctrl.SetPassword(model) as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.SetPassword(model) as RedirectToRouteResult;
 
             Assert.True(isModelStateValid);
-            Assert.True(ctrl.ModelState.IsValid);
+            Assert.True(Controller.ModelState.IsValid);
             Assert.NotNull(result);
             Assert.Equal("Index", result.RouteValues["Action"]);
             Assert.Equal(ManageController.ManageMessageId.SetPasswordSuccess, result.RouteValues["Message"]);
@@ -559,9 +537,8 @@ namespace Vigil.Testing.Web.Controllers
         {
             MockUserManager.Setup(mum => mum.FindByIdAsync(It.IsAny<Guid>()))
                            .ReturnsAsync(null);
-            var ctrl = GetManageController();
 
-            ViewResult result = await ctrl.ManageLogins(null) as ViewResult;
+            ViewResult result = await Controller.ManageLogins(null) as ViewResult;
 
             Assert.NotNull(result);
             Assert.Equal("Error", result.ViewName);
@@ -579,16 +556,15 @@ namespace Vigil.Testing.Web.Controllers
                            .ReturnsAsync(new List<UserLoginInfo>());
             MockAuthenticationManager.Setup(mam => mam.GetAuthenticationTypes(It.IsAny<Func<AuthenticationDescription, bool>>()))
                            .Returns(new List<AuthenticationDescription>());
-            var ctrl = GetManageController();
 
-            ViewResult result = await ctrl.ManageLogins(message) as ViewResult;
+            ViewResult result = await Controller.ManageLogins(message) as ViewResult;
             ManageLoginsViewModel model = result.Model as ManageLoginsViewModel;
 
             Assert.NotNull(result);
             Assert.NotNull(model);
             Assert.Equal(0, model.CurrentLogins.Count);
             Assert.Equal(0, model.OtherLogins.Count);
-            Assert.Equal(text, ctrl.ViewBag.StatusMessage);
+            Assert.Equal(text, Controller.ViewBag.StatusMessage);
         }
 
         [Theory]
@@ -610,27 +586,25 @@ namespace Vigil.Testing.Web.Controllers
                            .ReturnsAsync(logins);
             MockAuthenticationManager.Setup(mam => mam.GetAuthenticationTypes(It.IsAny<Func<AuthenticationDescription, bool>>()))
                            .Returns(new List<AuthenticationDescription>());
-            var ctrl = GetManageController();
 
-            ViewResult result = await ctrl.ManageLogins(null) as ViewResult;
+            ViewResult result = await Controller.ManageLogins(null) as ViewResult;
             ManageLoginsViewModel model = result.Model as ManageLoginsViewModel;
 
             Assert.NotNull(result);
             Assert.NotNull(model);
             Assert.Equal(logins.Count, model.CurrentLogins.Count);
             Assert.Equal(0, model.OtherLogins.Count);
-            Assert.Equal(hasPasswordHash || hasManyUserLogins, ctrl.ViewBag.ShowRemoveButton);
+            Assert.Equal(hasPasswordHash || hasManyUserLogins, Controller.ViewBag.ShowRemoveButton);
         }
 
         [Fact]
         public void LinkLogin_Returns_ChallengeResult_With_Provider_RedirectUri_And_UserId()
         {
-            var ctrl = GetManageController();
             var mockUrlHelper = new Mock<UrlHelper>();
             mockUrlHelper.Setup(muh => muh.Action(It.Is<string>(s => s == "LinkLoginCallback"), It.Is<string>(s => s == "Manage")))
                          .Returns("/Manage/LinkLoginCallback");
-            ctrl.Url = mockUrlHelper.Object;
-            ChallengeResult result = ctrl.LinkLogin("TestProvider") as ChallengeResult;
+            Controller.Url = mockUrlHelper.Object;
+            ChallengeResult result = Controller.LinkLogin("TestProvider") as ChallengeResult;
 
             Assert.NotNull(result);
             Assert.Equal("TestProvider", result.LoginProvider);
@@ -646,9 +620,8 @@ namespace Vigil.Testing.Web.Controllers
                                      .ReturnsAsync(new AuthenticateResult(null, new AuthenticationProperties(), new AuthenticationDescription()));
             MockUserManager.Setup(mum => mum.AddLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
                            .ReturnsAsync(IdentityResult.Failed("Failed"));
-            var ctrl = GetManageController();
 
-            RedirectToRouteResult result = await ctrl.LinkLoginCallback() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.LinkLoginCallback() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("ManageLogins", result.RouteValues["Action"]);
@@ -658,19 +631,18 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task LinkLoginCallback_When_GetExternalLoginInfoAsync_Succeeds_But_AddLoginAsync_Fails_Returns_RedirectToAction_ManageLogins_With_Error_Message()
         {
-            var ctrl = GetManageController();
             // AuthenticationManager.GetExternalLoginInfoAsync(string, string) -> returns null
             MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.ExternalCookie)))
                                      .ReturnsAsync(new AuthenticateResult(MockUser.Object.Identity, new AuthenticationProperties(
                                      new Dictionary<string, string>()
                                          {
-                                             { ChallengeResult.XsrfKey, ctrl.UserId.ToString() }
+                                             { ChallengeResult.XsrfKey, Controller.UserId.ToString() }
                                          }
                                      ), new AuthenticationDescription()));
             MockUserManager.Setup(mum => mum.AddLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
                            .ReturnsAsync(IdentityResult.Failed("Failed"));
 
-            RedirectToRouteResult result = await ctrl.LinkLoginCallback() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.LinkLoginCallback() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("ManageLogins", result.RouteValues["Action"]);
@@ -680,19 +652,18 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public async Task LinkLoginCallback_When_GetExternalLoginInfoAsync_Succeeds_And_AddLoginAsync_Succeeds_Returns_RedirectToAction_ManageLogins_With_No_Message()
         {
-            var ctrl = GetManageController();
             // AuthenticationManager.GetExternalLoginInfoAsync(string, string) -> returns null
             MockAuthenticationManager.Setup(mam => mam.AuthenticateAsync(It.Is<string>(s => s == DefaultAuthenticationTypes.ExternalCookie)))
                                      .ReturnsAsync(new AuthenticateResult(MockUser.Object.Identity, new AuthenticationProperties(
                                      new Dictionary<string, string>()
                                          {
-                                             { ChallengeResult.XsrfKey, ctrl.UserId.ToString() }
+                                             { ChallengeResult.XsrfKey, Controller.UserId.ToString() }
                                          }
                                      ), new AuthenticationDescription()));
             MockUserManager.Setup(mum => mum.AddLoginAsync(It.IsAny<Guid>(), It.IsAny<UserLoginInfo>()))
                            .ReturnsAsync(IdentityResult.Success);
 
-            RedirectToRouteResult result = await ctrl.LinkLoginCallback() as RedirectToRouteResult;
+            RedirectToRouteResult result = await Controller.LinkLoginCallback() as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.Equal("ManageLogins", result.RouteValues["Action"]);
@@ -705,7 +676,9 @@ namespace Vigil.Testing.Web.Controllers
             MockUserManager.Protected().Setup("Dispose", ItExpr.IsAny<bool>())
                 .Verifiable();
 
-            using (ManageController ctrl = GetManageController()) { }
+            using (ManageController ctrl = new ManageController(MockUserManager.Object, MockSignInManager.Object, MockAuthenticationManager.Object))
+            {
+            }
 
             MockUserManager.Protected().Verify("Dispose", Times.AtLeastOnce(), ItExpr.IsAny<bool>());
             MockSignInManager.As<IDisposable>().Verify(msim => msim.Dispose());
@@ -718,21 +691,23 @@ namespace Vigil.Testing.Web.Controllers
             // owinContext.Get<VigilUserManager>() is an extension method that calls IOwinContext.Get<VigilUserManager>(string)
             // Thus, adding the dictionary for the Owin Environment, and adding the VigilUserManager to that dictionary results in everything mocked up just properly.
 
-            var ctrl = new ManageController();
-            var mockHttpContext = new Mock<HttpContextBase>();
-            var mockOwinContext = new Mock<IOwinContext>();
-            var owinEnvironment = new Dictionary<string, object>();
-            owinEnvironment.Add(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName, MockUserManager.Object);
-            mockOwinContext.Setup(oc => oc.Get<VigilUserManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName))
-                           .Returns(MockUserManager.Object);
-            mockHttpContext.Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
-                           .Returns(owinEnvironment);
+            using (var ctrl = new ManageController())
+            {
+                var mockHttpContext = new Mock<HttpContextBase>();
+                var mockOwinContext = new Mock<IOwinContext>();
+                var owinEnvironment = new Dictionary<string, object>();
+                owinEnvironment.Add(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName, MockUserManager.Object);
+                mockOwinContext.Setup(oc => oc.Get<VigilUserManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(VigilUserManager).AssemblyQualifiedName))
+                               .Returns(MockUserManager.Object);
+                mockHttpContext.Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
+                               .Returns(owinEnvironment);
 
-            var mockControllerContext = new Mock<ControllerContext>();
-            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
-            ctrl.ControllerContext = mockControllerContext.Object;
+                var mockControllerContext = new Mock<ControllerContext>();
+                mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
+                ctrl.ControllerContext = mockControllerContext.Object;
 
-            Assert.Same(MockUserManager.Object, ctrl.UserManager);
+                Assert.Same(MockUserManager.Object, ctrl.UserManager);
+            }
         }
 
         [Fact]
@@ -742,34 +717,40 @@ namespace Vigil.Testing.Web.Controllers
             // owinContext.Get<IVigilSignInManager>() is an extension method that calls IOwinContext.Get<IVigilSignInManager>(string)
             // Thus, adding the dictionary for the Owin Environment, and adding the IVigilSignInManager to that dictionary results in everything mocked up just properly.
 
-            var ctrl = new ManageController();
-            var mockHttpContext = new Mock<HttpContextBase>();
-            var mockOwinContext = new Mock<IOwinContext>();
-            var owinEnvironment = new Dictionary<string, object>();
-            owinEnvironment.Add(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IVigilSignInManager).AssemblyQualifiedName, MockSignInManager.Object);
-            mockOwinContext.Setup(oc => oc.Get<IVigilSignInManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IVigilSignInManager).AssemblyQualifiedName))
-                           .Returns(MockSignInManager.Object);
-            mockHttpContext.Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
-                           .Returns(owinEnvironment);
+            using (var ctrl = new ManageController())
+            {
+                var mockHttpContext = new Mock<HttpContextBase>();
+                var mockOwinContext = new Mock<IOwinContext>();
+                var owinEnvironment = new Dictionary<string, object>();
+                owinEnvironment.Add(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IVigilSignInManager).AssemblyQualifiedName, MockSignInManager.Object);
+                mockOwinContext.Setup(oc => oc.Get<IVigilSignInManager>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IVigilSignInManager).AssemblyQualifiedName))
+                               .Returns(MockSignInManager.Object);
+                mockHttpContext.Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
+                               .Returns(owinEnvironment);
 
-            var mockControllerContext = new Mock<ControllerContext>();
-            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
-            ctrl.ControllerContext = mockControllerContext.Object;
+                var mockControllerContext = new Mock<ControllerContext>();
+                mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
+                ctrl.ControllerContext = mockControllerContext.Object;
 
-            Assert.Same(MockSignInManager.Object, ctrl.SignInManager);
+                Assert.Same(MockSignInManager.Object, ctrl.SignInManager);
+            }
         }
 
-        private ManageController GetManageController()
+        public void Dispose()
         {
-            var ctrl = new ManageController(MockUserManager.Object, MockSignInManager.Object, MockAuthenticationManager.Object);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            var mockHttpContext = new Mock<HttpContextBase>();
-            mockHttpContext.SetupGet(ctx => ctx.User).Returns(MockUser.Object);
-            var mockControllerContext = new Mock<ControllerContext>();
-            mockControllerContext.SetupGet(con => con.HttpContext).Returns(mockHttpContext.Object);
-
-            ctrl.ControllerContext = mockControllerContext.Object;
-            return ctrl;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Controller != null)
+                {
+                    Controller.Dispose();
+                }
+            }
         }
     }
 }

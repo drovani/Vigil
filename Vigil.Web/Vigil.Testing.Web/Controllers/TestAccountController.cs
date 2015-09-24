@@ -26,7 +26,6 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public void AuthenticationManager_Property_Gets_Manager_From_OwinContext_When_Not_Explicitly_Specified()
         {
-            var mockOwinContext = new Mock<IOwinContext>();
             var owinEnvironment = new Dictionary<string, object>();
             Mock.Get(HttpContext).Setup(ctx => ctx.Items[It.Is<string>(s => s == IdentityGlobalConstant.OwinEnvironmentKey)])
                            .Returns(owinEnvironment);

@@ -15,22 +15,27 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void VigilRoleManager_Constructor_Accepts_RoleStore()
         {
-            VigilRoleManager vrman = new VigilRoleManager(Mock.Of<IRoleStore<VigilRole, Guid>>());
-
-            Assert.NotNull(vrman);
+            using (VigilRoleManager vrman = new VigilRoleManager(Mock.Of<IRoleStore<VigilRole, Guid>>()))
+            {
+                Assert.NotNull(vrman);
+            }
         }
 
         [Fact]
         public void VigilRoleManager_Static_Create_Returns_Valid_Manager()
         {
-            var context = new Mock<IOwinContext>();
-            context.Setup(c => c.Get<IdentityVigilContext>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
-                   .Returns(new IdentityVigilContext());
-            IdentityFactoryOptions<VigilRoleManager> options = new IdentityFactoryOptions<VigilRoleManager>();
+            using (var ivContext = new IdentityVigilContext())
+            {
+                var context = new Mock<IOwinContext>();
+                context.Setup(c => c.Get<IdentityVigilContext>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
+                       .Returns(ivContext);
+                IdentityFactoryOptions<VigilRoleManager> options = new IdentityFactoryOptions<VigilRoleManager>();
 
-            VigilRoleManager roleManager = VigilRoleManager.Create(options, context.Object);
-
-            Assert.NotNull(roleManager);
+                using (VigilRoleManager roleManager = VigilRoleManager.Create(options, context.Object))
+                {
+                    Assert.NotNull(roleManager);
+                }
+            }
         }
     }
 }

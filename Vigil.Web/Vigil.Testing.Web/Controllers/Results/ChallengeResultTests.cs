@@ -15,7 +15,12 @@ namespace Vigil.Testing.Web.Controllers.Results
         [Fact]
         public void ExecuteResult_Should_Call_OwinContext_Authentication_Challenge()
         {
-            var challenge = new ChallengeResult("TestProvider", "/", Guid.NewGuid());
+            var challenge = new ChallengeResult()
+            {
+                LoginProvider = "TestProvider",
+                RedirectUri = "/",
+                UserId = Guid.NewGuid()
+            };
             // HttpContext.GetOwinContext() is an extension method that calls context.Items[OwinEnvironmentKey] which passes that to a new OwinContext(environment);
             var mockHttpContext = new Mock<HttpContextBase>();
             IDictionary<string, object> owinEnvironment = new Dictionary<string, object>();

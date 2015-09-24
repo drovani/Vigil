@@ -78,12 +78,11 @@ namespace Vigil.Web.Controllers
 
             ViewBag.StatusMessage = GetMessageTest(message);
 
-            var model = new IndexViewModel
+            var model = new IndexViewModel(await UserManager.GetLoginsAsync(UserId))
             {
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(UserId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(UserId),
-                Logins = await UserManager.GetLoginsAsync(UserId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(UserId.ToString())
             };
             return View(model);
@@ -341,11 +340,7 @@ namespace Vigil.Web.Controllers
             var userLogins = await UserManager.GetLoginsAsync(UserId);
             var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
             ViewBag.ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1;
-            return View(new ManageLoginsViewModel
-            {
-                CurrentLogins = userLogins,
-                OtherLogins = otherLogins
-            });
+            return View(new ManageLoginsViewModel(userLogins, otherLogins));
         }
 
         /// <summary>POST: /Manage/LinkLogin
@@ -358,7 +353,12 @@ namespace Vigil.Web.Controllers
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
             // Request a redirect to the external login provider to link a login for the current user
-            return new ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), UserId);
+            return new ChallengeResult()
+            {
+                LoginProvider = provider,
+                RedirectUri = Url.Action("LinkLoginCallback", "Manage"),
+                UserId = UserId
+            };
         }
 
         /// <summary>GET: /Manage/LinkLoginCallback
@@ -417,7 +417,7 @@ namespace Vigil.Web.Controllers
             return false;
         }
 
-        protected string GetMessageTest(ManageMessageId? message)
+        protected static string GetMessageTest(ManageMessageId? message)
         {
             return message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
             : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."

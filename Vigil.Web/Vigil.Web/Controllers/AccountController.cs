@@ -343,7 +343,11 @@ namespace Vigil.Web.Controllers
             Contract.Requires<ArgumentNullException>(Url != null);
             Contract.Ensures(Contract.Result<ActionResult>() != null);
 
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult()
+            {
+                LoginProvider = provider,
+                RedirectUri = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl })
+            };
         }
 
         /// <summary>GET: /Account/SendCode
@@ -363,7 +367,11 @@ namespace Vigil.Web.Controllers
             }
             var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
             var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
+            return View(new SendCodeViewModel(factorOptions)
+            {
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            });
         }
 
         /// <summary>POST: /Account/SendCode
@@ -517,6 +525,10 @@ namespace Vigil.Web.Controllers
             }
         }
 
+        private ActionResult RedirectToLocal(Uri returnUrl)
+        {
+            return RedirectToLocal(returnUrl != null ? returnUrl.OriginalString : null);
+        }
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (returnUrl != null && Url.IsLocalUrl(returnUrl))

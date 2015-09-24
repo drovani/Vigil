@@ -6,9 +6,10 @@ using Xunit;
 
 namespace Vigil.Testing.Data.Core
 {
+    [global::System.Diagnostics.Contracts.ContractVerification(false)]
     public class TypeBaseTests
     {
-        private TypeBase TestTypeBase;
+        private readonly TypeBase TestTypeBase;
 
         public TypeBaseTests()
         {

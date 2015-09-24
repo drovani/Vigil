@@ -21,7 +21,8 @@ namespace Vigil.Web.Controllers
                 ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => model, typeof(TModel)),
                 ValueProvider = new NameValueCollectionValueProvider(new NameValueCollection(), CultureInfo.InvariantCulture)
             };
-            var binder = new DefaultModelBinder().BindModel(new ControllerContext(), modelBinder);
+            var binder = new DefaultModelBinder();
+            binder.BindModel(new ControllerContext(), modelBinder);
             controller.ModelState.Clear();
             controller.ModelState.Merge(modelBinder.ModelState);
 

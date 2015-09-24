@@ -2,6 +2,7 @@
 <RuleSet Name="Vigil Almost-All Rules" Description="This rule set is a customized reduction of the Microsoft All Rules, removing cases that overlap with Code Contracts." ToolsVersion="12.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1056" Action="None" />
     <Rule Id="CA1062" Action="None" />
   </Rules>
 </RuleSet>

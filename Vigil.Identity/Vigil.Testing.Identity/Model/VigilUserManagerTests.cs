@@ -15,19 +15,27 @@ namespace Vigil.Testing.Identity.Model
         [Fact]
         public void VigilUserManager_Constructor_Accepts_UserStore()
         {
-            var vuman = new VigilUserManager(Mock.Of<IUserStore<VigilUser, Guid>>());
-            Assert.NotNull(vuman);
+            using (var vuman = new VigilUserManager(Mock.Of<IUserStore<VigilUser, Guid>>()))
+            {
+                Assert.NotNull(vuman);
+            }
         }
 
         [Fact]
         public void VigilUserManager_Static_Create_Returns_Valid_Manager()
         {
-            var context = new Mock<IOwinContext>();
-            context.Setup(c => c.Get<IdentityVigilContext>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName)).Returns(new IdentityVigilContext());
+            using (var ivc = new IdentityVigilContext())
+            {
+                var context = new Mock<IOwinContext>();
+                context.Setup(c => c.Get<IdentityVigilContext>(IdentityGlobalConstant.IdentityKeyPrefix + typeof(IdentityVigilContext).AssemblyQualifiedName))
+                    .Returns(ivc);
 
-            var userManager = VigilUserManager.Create(context.Object);
+                using (var userManager = VigilUserManager.Create(context.Object))
+                {
 
-            Assert.NotNull(userManager);
+                    Assert.NotNull(userManager);
+                }
+            }
         }
 
         [Fact]
@@ -40,51 +48,55 @@ namespace Vigil.Testing.Identity.Model
                  .Returns(Task.FromResult(IdentityResult.Success));
             store.Setup(st => st.FindByNameAsync(It.Is<string>(s => s == "TestUser")))
                  .ReturnsAsync(user);
-            var vuman = new VigilUserManager(store.Object);
+            using (var vuman = new VigilUserManager(store.Object))
+            {
+                var result = vuman.CreateAsync(user).Result;
+                var retrievedUser = vuman.FindByNameAsync("TestUser").Result;
 
-            var result = vuman.CreateAsync(user).Result;
-            var retrievedUser = vuman.FindByNameAsync("TestUser").Result;
-
-            Assert.True(result.Succeeded);
-            Assert.NotEqual(Guid.Empty, user.Id);
-            Assert.NotNull(retrievedUser);
-            Assert.Equal(user, retrievedUser);
+                Assert.True(result.Succeeded);
+                Assert.NotEqual(Guid.Empty, user.Id);
+                Assert.NotNull(retrievedUser);
+                Assert.Equal(user, retrievedUser);
+            }
         }
 
         [Fact]
         public void CreateAsync_Preserves_Specified_Id()
         {
-            var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>());
             var newguid = Guid.NewGuid();
-            var user = new VigilUser {Id = newguid, UserName = "TestUser" };
-
-            var result = vuman.CreateAsync(user).Result;
-            Assert.Equal(newguid, user.Id);
-            Assert.True(result.Succeeded);
+            var user = new VigilUser { Id = newguid, UserName = "TestUser" };
+            using (var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>()))
+            {
+                var result = vuman.CreateAsync(user).Result;
+                Assert.Equal(newguid, user.Id);
+                Assert.True(result.Succeeded);
+            }
         }
-        
+
         [Fact]
         public void CreateAsync_With_Password_Sets_Empty_Id()
         {
-            var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>());
             var user = new VigilUser { UserName = "TestUser" };
             user.Id = Guid.Empty;
-
-            var result = vuman.CreateAsync(user, "testPassword.01").Result;
-            Assert.NotEqual(Guid.Empty, user.Id);
-            Assert.True(result.Succeeded);
+            using (var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>()))
+            {
+                var result = vuman.CreateAsync(user, "testPassword.01").Result;
+                Assert.NotEqual(Guid.Empty, user.Id);
+                Assert.True(result.Succeeded);
+            }
         }
 
         [Fact]
         public void CreateAsync_With_Password_Preserves_Specified_Id()
         {
-            var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>());
             var newguid = Guid.NewGuid();
             var user = new VigilUser { Id = newguid, UserName = "TestUser" };
-
-            var result = vuman.CreateAsync(user, "testPassword.01").Result;
-            Assert.Equal(newguid, user.Id);
-            Assert.True(result.Succeeded);
+            using (var vuman = new VigilUserManager(Mock.Of<IUserPasswordStore<VigilUser, Guid>>()))
+            {
+                var result = vuman.CreateAsync(user, "testPassword.01").Result;
+                Assert.Equal(newguid, user.Id);
+                Assert.True(result.Succeeded);
+            }
         }
     }
 }

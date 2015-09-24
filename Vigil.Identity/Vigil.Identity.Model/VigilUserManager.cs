@@ -31,7 +31,9 @@ namespace Vigil.Identity.Model
             {
                 user.Id = Guid.NewGuid();
             }
-            return base.CreateAsync(user);
+            var task = base.CreateAsync(user);
+            Contract.Assume(task != null);
+            return task;
         }
         public override Task<IdentityResult> CreateAsync(VigilUser user, string password)
         {
@@ -42,7 +44,9 @@ namespace Vigil.Identity.Model
             {
                 user.Id = Guid.NewGuid();
             }
-            return base.CreateAsync(user, password);
+            var task = base.CreateAsync(user, password);
+            Contract.Assume(task != null);
+            return task;
         }
     }
 }

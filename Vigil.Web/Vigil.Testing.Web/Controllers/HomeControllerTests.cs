@@ -8,10 +8,12 @@ namespace Vigil.Testing.Web.Controllers
         [Fact]
         public void Index_Returns_View()
         {
-            HomeController ctrl = new HomeController();
-            var result = ctrl.Index();
+            using (HomeController ctrl = new HomeController())
+            {
+                var result = ctrl.Index();
 
-            Assert.NotNull(result);
+                Assert.NotNull(result);
+            }
         }
     }
 }
