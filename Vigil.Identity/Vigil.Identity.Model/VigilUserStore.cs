@@ -7,6 +7,7 @@ namespace Vigil.Identity.Model
 {
     public class VigilUserStore : UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public VigilUserStore()
             : this(new IdentityVigilContext())
         {

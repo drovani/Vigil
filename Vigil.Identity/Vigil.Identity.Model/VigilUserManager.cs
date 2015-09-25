@@ -12,6 +12,7 @@ namespace Vigil.Identity.Model
     {
         public VigilUserManager(IUserStore<VigilUser, Guid> store) : base(store) { }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static VigilUserManager Create(IOwinContext context)
         {
             Contract.Requires<ArgumentNullException>(context != null);

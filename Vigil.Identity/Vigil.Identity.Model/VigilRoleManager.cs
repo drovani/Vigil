@@ -15,6 +15,7 @@ namespace Vigil.Identity.Model
             Contract.Requires<ArgumentNullException>(roleStore != null);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static VigilRoleManager Create(IdentityFactoryOptions<VigilRoleManager> options, IOwinContext context)
         {
             Contract.Requires<ArgumentNullException>(options != null);

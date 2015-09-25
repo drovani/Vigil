@@ -525,10 +525,6 @@ namespace Vigil.Web.Controllers
             }
         }
 
-        private ActionResult RedirectToLocal(Uri returnUrl)
-        {
-            return RedirectToLocal(returnUrl != null ? returnUrl.OriginalString : null);
-        }
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (returnUrl != null && Url.IsLocalUrl(returnUrl))

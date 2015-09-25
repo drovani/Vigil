@@ -90,16 +90,4 @@ namespace Vigil.Web.Models
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
     }
-
-    public class ConfigureTwoFactorViewModel
-    {
-        public ConfigureTwoFactorViewModel() { }
-        public ConfigureTwoFactorViewModel(ICollection<System.Web.Mvc.SelectListItem> providers)
-        {
-            this.Providers = providers;
-        }
-
-        public string SelectedProvider { get; set; }
-        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; private set; }
-    }
 }

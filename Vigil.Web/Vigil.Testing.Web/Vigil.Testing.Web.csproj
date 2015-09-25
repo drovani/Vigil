@@ -233,6 +233,7 @@
     <Compile Include="Controllers\ManageControllerTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModelsTests.cs" />
+    <Compile Include="Models\ManageViewModelsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

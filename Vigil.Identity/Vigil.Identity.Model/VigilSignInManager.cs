@@ -19,6 +19,7 @@ namespace Vigil.Identity.Model
             Contract.Requires<ArgumentNullException>(authenticationManager != null);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public static IVigilSignInManager Create(IOwinContext context)
         {
             Contract.Requires<ArgumentNullException>(context != null);

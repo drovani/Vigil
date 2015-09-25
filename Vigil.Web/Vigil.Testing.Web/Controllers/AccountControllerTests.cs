@@ -399,6 +399,51 @@ namespace Vigil.Testing.Web.Controllers
         }
 
         [Fact]
+        public async Task Register_POST_Valid_Model_Failed_CreateAsync_Returns_View_With_Errors()
+        {
+            MockUserManager.Setup(mum => mum.CreateAsync(It.IsAny<VigilUser>(), It.IsAny<string>()))
+                           .ReturnsAsync(IdentityResult.Failed("Failed."));
+            var model = new RegisterViewModel()
+            {
+                Email = "valid@example.com",
+                Password = "password.01",
+                ConfirmPassword = "password.01"
+            };
+            bool isModelStateValid = Controller.BindModel(model);
+
+            ViewResult result = await Controller.Register(model) as ViewResult;
+
+            Assert.True(isModelStateValid);
+            Assert.False(Controller.ModelState.IsValid);
+            Assert.NotNull(result);
+            Assert.Same(model, result.Model);
+        }
+
+        [Fact]
+        public async Task Register_POST_Valid_Model_Succeeded_CreateAsync_Returns_RedirectToAction_Index()
+        {
+            MockUserManager.Setup(mum => mum.CreateAsync(It.IsAny<VigilUser>(), It.IsAny<string>()))
+                           .ReturnsAsync(IdentityResult.Success);
+            MockSignInManager.Setup(msim => msim.SignInAsync(It.IsAny<VigilUser>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                           .Returns(Task.FromResult(IdentityResult.Success));
+            var model = new RegisterViewModel()
+            {
+                Email = "valid@example.com",
+                Password = "password.01",
+                ConfirmPassword = "password.01"
+            };
+            bool isModelStateValid = Controller.BindModel(model);
+
+            RedirectToRouteResult result = await Controller.Register(model) as RedirectToRouteResult;
+
+            Assert.True(isModelStateValid);
+            Assert.True(Controller.ModelState.IsValid);
+            Assert.NotNull(result);
+            Assert.Equal("Home", result.RouteValues["Controller"]);
+            Assert.Equal("Index", result.RouteValues["Action"]);
+        }
+
+        [Fact]
         public async Task ConfirmEmail_Without_Code_Returns_Error_View()
         {
             ViewResult result = await Controller.ConfirmEmail(Guid.Empty, null) as ViewResult;
