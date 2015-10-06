@@ -5,9 +5,9 @@ namespace Vigil.Data.Modeling.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Vigil.Data.Modeling.VigilContext>
+    internal sealed class VigilDbConfiguration : DbMigrationsConfiguration<VigilContext>
     {
-        public Configuration()
+        public VigilDbConfiguration()
         {
             AutomaticMigrationsEnabled = false;
         }
