@@ -1,9 +1,9 @@
 namespace Vigil.Data.Modeling.Migrations
 {
     using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
+    using Vigil.Data.Core.System;
+    using Vigil.Identity.Model;
 
     internal sealed class VigilDbConfiguration : DbMigrationsConfiguration<VigilContext>
     {
@@ -12,20 +12,35 @@ namespace Vigil.Data.Modeling.Migrations
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Vigil.Data.Modeling.VigilContext context)
+        protected override void Seed(VigilContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var adminRole = new VigilRole { Name = "System Administrators", RoleType = VigilRoleType.Administrator };
+            var adminUser = new VigilUser
+            {
+                UserName = "vigilAdmin@example.com",
+                Email = "vigiladmin@example.com",
+                EmailConfirmed = true,
+                PasswordHash = HashPassword(context, "vAdmin.01"),
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            context.Set<VigilRole>().AddOrUpdate(vr => vr.Name,
+                adminRole,
+                new VigilRole { Name = "Accounting", RoleType = VigilRoleType.PowerRole },
+                new VigilRole { Name = "External Vendor", RoleType = VigilRoleType.RestrictedRole },
+                new VigilRole { Name = "Standard Users", RoleType = VigilRoleType.DefaultRole }
+            );
+            context.Set<VigilUser>().AddOrUpdate(vu => vu.UserName,
+                adminUser
+            );
+        }
+
+        private string HashPassword(VigilContext context, string password)
+        {
+            using (VigilUserManager uman = new VigilUserManager(new VigilUserStore(context)))
+            {
+                return uman.PasswordHasher.HashPassword(password);
+            }
         }
     }
 }

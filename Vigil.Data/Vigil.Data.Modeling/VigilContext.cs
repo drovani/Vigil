@@ -13,7 +13,8 @@ namespace Vigil.Data.Modeling
         public VigilUser AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
-        public VigilContext():base("VigilContextConnection")
+        public VigilContext()
+            : base("VigilContextConnection")
         {
             Database.SetInitializer<VigilContext>(new NullDatabaseInitializer<VigilContext>());
         }

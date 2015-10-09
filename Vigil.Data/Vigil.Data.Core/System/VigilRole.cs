@@ -6,6 +6,12 @@ namespace Vigil.Data.Core.System
 {
     public class VigilRole : IdentityRole<Guid, VigilUserRole>, IRole<Guid>
     {
+        public VigilRole()
+            : base()
+        {
+            Id = Guid.NewGuid();
+        }
+
         public string Description { get; set; }
         public virtual VigilRoleType RoleType { get; set; }
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core;
@@ -12,8 +14,10 @@ namespace Vigil.Identity.Model
         public DateTime Now { get; private set; }
 
         public IdentityVigilContext()
+            : base("VigilContextConnection")
         {
             Now = DateTime.UtcNow;
+            Database.SetInitializer<IdentityVigilContext>(new NullDatabaseInitializer<IdentityVigilContext>());
         }
 
         public IdentityVigilContext(VigilUser affectedBy, DateTime now)
@@ -37,6 +41,26 @@ namespace Vigil.Identity.Model
             Contract.Ensures(Contract.Result<IdentityVigilContext>() != null);
 
             return new IdentityVigilContext();
+        }
+
+        [System.Diagnostics.Contracts.ContractVerification(false)]
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            Contract.Assume(modelBuilder != null);
+
+            modelBuilder.HasDefaultSchema("vigil");
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
+            base.OnModelCreating(modelBuilder);
+
+            // Placed after calling IdentityDbContext's OnModelCreating, because it explicitly
+            // sets the name of the tables for the users/roles to 'AspNet____'
+            // @TODO Find a way to grab all of this information from the VigilContext authoritative, comprehensive class
+            modelBuilder.Entity<VigilUser>().ToTable(typeof(VigilUser).Name);
+            modelBuilder.Entity<VigilUserRole>().ToTable(typeof(VigilUserRole).Name);
+            modelBuilder.Entity<VigilRole>().ToTable(typeof(VigilRole).Name);
+            modelBuilder.Entity<VigilUserClaim>().ToTable(typeof(VigilUserClaim).Name);
+            modelBuilder.Entity<VigilUserLogin>().ToTable(typeof(VigilUserLogin).Name);
         }
     }
 }

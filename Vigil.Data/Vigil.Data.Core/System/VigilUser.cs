@@ -8,6 +8,7 @@ namespace Vigil.Data.Core.System
     public class VigilUser : IdentityUser<Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUser<Guid>
     {
         public VigilUser()
+            : base()
         {
             Id = Guid.NewGuid();
         }
