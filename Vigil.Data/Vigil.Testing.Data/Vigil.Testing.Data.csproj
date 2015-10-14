@@ -141,6 +141,7 @@
     <Compile Include="Core\System\ChangeLogTests.cs" />
     <Compile Include="Core\IdentityTests.cs" />
     <Compile Include="Core\TypeBaseTests.cs" />
+    <Compile Include="Core\ValueObjects\ValueObjectTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Modeling\VigilContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

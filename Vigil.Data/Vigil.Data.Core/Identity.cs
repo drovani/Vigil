@@ -23,10 +23,49 @@ namespace Vigil.Data.Core
         /// </summary>
         /// <param name="other">The Vigil.Data.Core.Identity class to compare Id values.</param>
         /// <returns>Returns true if the two Id values are equal; otherwise, false.</returns>
+        public override bool Equals(object other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            if (other.GetType() != this.GetType())
+            {
+                return false;
+            }
+            return Equals((Identity)other); 
+        }
+
         public bool Equals(Identity other)
         {
-            if (other == null) return false;
-            else return this.Id == other.Id;
+            if (other == null)
+            {
+                return false;
+            }
+            return Guid.Equals(other.Id, this.Id);
+        }
+
+        public static bool operator ==(Identity left, Identity right)
+        {
+            return Equals(left, right);
+        }
+        public static bool operator !=(Identity left, Identity right)
+        {
+            return !Equals(left, right);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
         }
 
         [ContractInvariantMethod]
