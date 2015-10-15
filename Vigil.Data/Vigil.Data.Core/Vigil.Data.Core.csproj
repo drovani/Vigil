@@ -106,9 +106,7 @@
   <ItemGroup>
     <Compile Include="Attributes\NotImplementedAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Identity.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ValueObjects\Identity.cs" />
     <Compile Include="Interfaces\IEffectiveRange.cs" />
     <Compile Include="Interfaces\IEffective.cs" />
     <Compile Include="Interfaces\IOrdered.cs" />
@@ -127,6 +125,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ValueObjects\FullName.cs" />
+    <Compile Include="ValueObjects\IIdentity.cs" />
     <Compile Include="ValueObjects\ValueObject.cs" />
   </ItemGroup>
   <ItemGroup>

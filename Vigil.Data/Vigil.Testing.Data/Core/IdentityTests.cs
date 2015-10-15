@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq;
 using Vigil.Data.Core;
 using Xunit;
 
@@ -7,19 +6,26 @@ namespace Vigil.Testing.Data.Core
 {
     public class IdentityTests
     {
+        private class TestIdentity : Identity
+        {
+            public TestIdentity() : base() { }
+            public TestIdentity(Guid id) : base(id) { }
+        }
+
         [Fact]
         public void Identity_Equality_Fails_For_Unequal_Ids()
         {
-            Identity a = new Mock<Identity>(Guid.NewGuid()).Object;
-            Identity b = new Mock<Identity>(Guid.NewGuid()).Object;
+            TestIdentity a = new TestIdentity(Guid.NewGuid());
+            TestIdentity b = new TestIdentity(Guid.NewGuid());
 
+            Assert.NotEqual(a.Id, b.Id);
             Assert.False(a.Equals(b));
         }
 
         [Fact]
         public void Identity_Equality_Fails_For_Null_Other()
         {
-            Identity a = Mock.Of<Identity>();
+            TestIdentity a = new TestIdentity(Guid.NewGuid());
 
             Assert.False(a.Equals(null));
         }
@@ -29,8 +35,8 @@ namespace Vigil.Testing.Data.Core
         {
             Guid id = Guid.NewGuid();
 
-            Identity source = new Mock<Identity>(id).Object;
-            Identity other = new Mock<Identity>(id).Object;
+            TestIdentity source = new TestIdentity(id);
+            TestIdentity other = new TestIdentity(id);
 
             Assert.True(source.Equals(other));
         }

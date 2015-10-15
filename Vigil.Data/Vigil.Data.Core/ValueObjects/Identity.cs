@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core
 {
-    public abstract class Identity : IEquatable<Identity>
+    [ComplexType]
+    public abstract class Identity : IEquatable<Identity>, IIdentity
     {
-        [Key]
         public Guid Id { get; protected set; }
 
         protected Identity()

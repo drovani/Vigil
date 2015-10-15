@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vigil.Data.Core
 {
+    [ComplexType]
     public class FullName : ValueObject<FullName>
     {
         public string GivenName { get; private set; }

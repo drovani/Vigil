@@ -21,6 +21,7 @@ namespace Vigil.Data.Core
         public int Ordinal { get; protected set; }
 
         protected TypeBase(string typeName)
+            : base()
         {
             Contract.Requires<ArgumentNullException>(typeName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(typeName.Trim()));
@@ -48,7 +49,6 @@ namespace Vigil.Data.Core
             }
             return false;
         }
-
 
         public virtual bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn)
         {
