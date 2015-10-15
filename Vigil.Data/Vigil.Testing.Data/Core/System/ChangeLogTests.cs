@@ -32,11 +32,11 @@ namespace Vigil.Testing.Data.Core.System
         [Fact]
         public void Passing_Null_Values_Saves_Null_Values()
         {
-            TypeBase testTypeBase = new Mock<TypeBase>("Test Type")
+            TypeStateBase testTypeBase = new Mock<TypeStateBase>("Test Type")
             {
                 CallBase = true
             }.Object;
-            ChangeLog log = ChangeLog.CreateLog<TypeBase, DateTime?>(testTypeBase, t => t.DeletedOn, null, null);
+            ChangeLog log = ChangeLog.CreateLog<TypeStateBase, DateTime?>(testTypeBase, t => t.DeletedOn, null, null);
 
             Assert.Null(log.OldValue);
             Assert.Null(log.NewValue);

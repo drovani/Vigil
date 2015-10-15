@@ -13,6 +13,8 @@ namespace Vigil.Data.Modeling
         public VigilUser AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
+        public DbSet<ChangeLog> ChangeLogs { get; protected set; }
+
         public VigilContext()
             : base("VigilContextConnection")
         {
@@ -32,6 +34,10 @@ namespace Vigil.Data.Modeling
 
             modelBuilder.HasDefaultSchema("vigil");
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
+            // Remove the name "State" from the end of all of the ClrTypes.
+            modelBuilder.Types().Where(t => t.Name.EndsWith("State"))
+                .Configure(convention => convention.ToTable(convention.ClrType.Name.Remove(convention.ClrType.Name.Length - "State".Length)));
 
             base.OnModelCreating(modelBuilder);
 

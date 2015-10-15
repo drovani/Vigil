@@ -2,6 +2,7 @@ namespace Vigil.Data.Modeling.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
+    using System.Diagnostics.Contracts;
     using Vigil.Data.Core.System;
     using Vigil.Identity.Model;
 
@@ -12,6 +13,7 @@ namespace Vigil.Data.Modeling.Migrations
             AutomaticMigrationsEnabled = false;
         }
 
+        [ContractVerification(false)]
         protected override void Seed(VigilContext context)
         {
             var adminRole = new VigilRole { Name = "System Administrators", RoleType = VigilRoleType.Administrator };
@@ -39,6 +41,7 @@ namespace Vigil.Data.Modeling.Migrations
         {
             using (VigilUserManager uman = new VigilUserManager(new VigilUserStore(context)))
             {
+                Contract.Assume(uman.PasswordHasher != null);
                 return uman.PasswordHasher.HashPassword(password);
             }
         }

@@ -5,7 +5,7 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
-    public abstract class TypeBase : Identity, ICreated, IModified, IOrdered, IDeleted
+    public abstract class TypeStateBase : Identity, ICreated, IModified, IOrdered, IDeleted
     {
         [Required]
         public VigilUser CreatedBy { get; protected set; }
@@ -20,11 +20,11 @@ namespace Vigil.Data.Core
         public string Description { get; protected set; }
         public int Ordinal { get; protected set; }
 
-        protected TypeBase(string typeName)
+        protected TypeStateBase(string typeName)
             : base()
         {
             Contract.Requires<ArgumentNullException>(typeName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(typeName.Trim()));
+            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(typeName.Trim()));
 
             this.TypeName = typeName.Trim();
         }
@@ -63,6 +63,7 @@ namespace Vigil.Data.Core
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
+            Contract.Invariant(TypeName != null);
             Contract.Invariant(!String.IsNullOrWhiteSpace(TypeName));
         }
     }

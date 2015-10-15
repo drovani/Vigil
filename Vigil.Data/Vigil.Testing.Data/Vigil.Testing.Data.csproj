@@ -138,9 +138,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Core\Attributes\NotImplementedAttributeTests.cs" />
-    <Compile Include="Core\System\ChangeLogTests.cs" />
     <Compile Include="Core\IdentityTests.cs" />
-    <Compile Include="Core\TypeBaseTests.cs" />
+    <Compile Include="Core\Patrons\PatronStateTests.cs" />
+    <Compile Include="Core\Patrons\PersonStateTests.cs" />
+    <Compile Include="Core\Patrons\Types\PatronTypeStateTests.cs" />
+    <Compile Include="Core\Patrons\Types\PersonTypeStateTests.cs" />
+    <Compile Include="Core\System\ChangeLogTests.cs" />
+    <Compile Include="Core\TypeStateBaseTests.cs" />
+    <Compile Include="Core\ValueObjects\DateAccuracyTests.cs" />
+    <Compile Include="Core\ValueObjects\FullNameTests.cs" />
     <Compile Include="Core\ValueObjects\ValueObjectTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Modeling\VigilContextTests.cs" />

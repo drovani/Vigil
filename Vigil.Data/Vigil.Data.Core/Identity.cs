@@ -5,9 +5,9 @@ using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core
 {
-    [ComplexType]
     public abstract class Identity : IEquatable<Identity>, IIdentity
     {
+        [Key]
         public Guid Id { get; protected set; }
 
         protected Identity()
