@@ -63,6 +63,11 @@ namespace Vigil.Data.Core.ValueObjects
             Contract.Requires<ArgumentNullException>(accuracy != null);
         }
 
+        public override string ToString()
+        {
+            return Accuracy;
+        }
+
         [ContractInvariantMethod]
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

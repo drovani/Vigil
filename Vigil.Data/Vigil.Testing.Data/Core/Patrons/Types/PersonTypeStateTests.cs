@@ -22,7 +22,7 @@ namespace Vigil.Testing.Data.Core.Patrons.Types
             PersonTypeState personType = PersonTypeState.Create("PersonTypeState", "A description.", 1, false);
 
             Assert.Equal("PersonTypeState", personType.TypeName);
-            Assert.Equal("A description", personType.Description);
+            Assert.Equal("A description.", personType.Description);
             Assert.Equal(1, personType.Ordinal);
             Assert.Equal(false, personType.AllowMultiplePerPatron);
         }

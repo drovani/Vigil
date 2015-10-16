@@ -22,7 +22,7 @@ namespace Vigil.Testing.Data.Core.Patrons.Types
             PatronTypeState patronType = PatronTypeState.Create("PatronTypeName", "A description.", 1, false);
 
             Assert.Equal("PatronTypeName", patronType.TypeName);
-            Assert.Equal("A description", patronType.Description);
+            Assert.Equal("A description.", patronType.Description);
             Assert.Equal(1, patronType.Ordinal);
             Assert.Equal(false, patronType.IsOrganization);
         }

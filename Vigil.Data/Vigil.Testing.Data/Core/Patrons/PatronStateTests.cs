@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vigil.Data.Core.Patrons;
+﻿using Vigil.Data.Core.Patrons;
 using Vigil.Data.Core.Patrons.Types;
 using Xunit;
 
 namespace Vigil.Testing.Data.Core.Patrons
 {
+    [global::System.Diagnostics.Contracts.ContractVerification(false)]
     public class PatronStateTests
     {
         [Fact]

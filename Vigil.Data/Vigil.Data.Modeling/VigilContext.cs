@@ -4,6 +4,8 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core;
+using Vigil.Data.Core.Patrons;
+using Vigil.Data.Core.Patrons.Types;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Modeling
@@ -14,6 +16,12 @@ namespace Vigil.Data.Modeling
         public DateTime Now { get; protected set; }
 
         public DbSet<ChangeLog> ChangeLogs { get; protected set; }
+
+        public DbSet<PatronTypeState> PatronTypes { get; protected set; }
+        public DbSet<PersonTypeState> PersonTypes { get; protected set; }
+        
+        public DbSet<PatronState> Patrons { get; protected set; }
+        public DbSet<PersonState> Persons { get; protected set; }
 
         public VigilContext()
             : base("VigilContextConnection")

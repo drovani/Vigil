@@ -20,7 +20,7 @@ namespace Vigil.Data.Core.Patrons
         public DateTime? DateOfBirth { get; protected set; }
         public DateAccuracy DateOfBirthAccuracy { get; protected set; }
 
-        protected PersonState(PatronState patron, PersonTypeState personType, FullName fullName, DateTime? dateOfBirth = null)
+        protected PersonState(PatronState patron, PersonTypeState personType, FullName fullName)
         {
             Contract.Requires<ArgumentNullException>(patron != null);
             Contract.Requires<ArgumentNullException>(personType != null);
@@ -29,16 +29,20 @@ namespace Vigil.Data.Core.Patrons
             Patron = patron;
             PersonType = personType;
             FullName = fullName;
-            DateOfBirth = dateOfBirth;
         }
 
-        public static PersonState Create(PatronState patron, PersonTypeState personType, FullName fullName, DateTime? dateOfBirth = null)
+        public static PersonState Create(PatronState patron, PersonTypeState personType, FullName fullName, DateTime? dateOfBirth = null, DateAccuracy dateOfBirthAccuracy = null)
         {
             Contract.Requires<ArgumentNullException>(patron != null);
             Contract.Requires<ArgumentNullException>(personType != null);
             Contract.Requires<ArgumentNullException>(fullName != null);
+            Contract.Ensures(Contract.Result<PersonState>() != null);
 
-            return new PersonState(patron, personType, fullName, dateOfBirth);
+            return new PersonState(patron, personType, fullName)
+            {
+                DateOfBirth = dateOfBirth,
+                DateOfBirthAccuracy = dateOfBirthAccuracy
+            };
         }
 
         #region ICreated, IModified, IDeleted Implementation

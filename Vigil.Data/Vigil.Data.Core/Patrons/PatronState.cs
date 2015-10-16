@@ -18,18 +18,24 @@ namespace Vigil.Data.Core.Patrons
         [DefaultValue(false)]
         public bool IsAnonymous { get; protected set; }
 
-        protected PatronState() { }
+        protected PatronState(PatronTypeState patronType, string displayName) {
+            Contract.Requires<ArgumentNullException>(patronType != null);
+            Contract.Requires<ArgumentNullException>(displayName != null);
+            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(displayName.Trim()));
+
+            PatronType = patronType;
+            DisplayName = displayName.Trim();
+        }
 
         public static PatronState Create(PatronTypeState patronType, string displayName, string accountNumber = null, bool isAnonymous = false)
         {
+            Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(displayName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(displayName.Trim()));
-            Contract.Requires<ArgumentNullException>(patronType != null);
+            Contract.Ensures(Contract.Result<PatronState>() != null);
 
-            return new PatronState
+            return new PatronState(patronType, displayName)
             {
-                DisplayName = displayName.Trim(),
-                PatronType = patronType,
                 AccountNumber = String.IsNullOrWhiteSpace(accountNumber) ? null : accountNumber.Trim(),
                 IsAnonymous = isAnonymous
             };

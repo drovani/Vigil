@@ -26,7 +26,7 @@ namespace Vigil.Data.Core
             Contract.Requires<ArgumentNullException>(typeName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(typeName.Trim()));
 
-            this.TypeName = typeName.Trim();
+            TypeName = typeName.Trim();
         }
 
         public virtual string SetTypeName(string typeName)

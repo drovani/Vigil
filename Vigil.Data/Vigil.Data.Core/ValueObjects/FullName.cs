@@ -20,6 +20,7 @@ namespace Vigil.Data.Core
         public string Suffix { get; protected set; }
 
         public FullName(string title = null, string givenName = null, string middleName = null, string familyname = null, string suffix = null)
+            : this()
         {
             Title = title;
             GivenName = givenName;

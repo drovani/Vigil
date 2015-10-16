@@ -10,7 +10,7 @@ namespace Vigil.Testing.Data.Core.ValueObjects
         {
             DateAccuracy dateAccuracy = new DateAccuracy('U', 'A', 'E');
 
-            Assert.Equal("UAE", dateAccuracy.Accuracy);
+            Assert.Equal("UAE", dateAccuracy.ToString());
             Assert.Equal('U', dateAccuracy.YearAccuracy);
             Assert.Equal('A', dateAccuracy.MonthAccuracy);
             Assert.Equal('E', dateAccuracy.DayAccuracy);
@@ -22,7 +22,7 @@ namespace Vigil.Testing.Data.Core.ValueObjects
             DateAccuracy originalAccuracy = new DateAccuracy('U', 'A', 'E');
             DateAccuracy dateAccuracy = new DateAccuracy(originalAccuracy);
 
-            Assert.Equal("UAE", dateAccuracy.Accuracy);
+            Assert.Equal("UAE", dateAccuracy.ToString());
             Assert.Equal('U', dateAccuracy.YearAccuracy);
             Assert.Equal('A', dateAccuracy.MonthAccuracy);
             Assert.Equal('E', dateAccuracy.DayAccuracy);
