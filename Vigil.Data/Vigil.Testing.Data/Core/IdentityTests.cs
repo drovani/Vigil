@@ -33,28 +33,35 @@ namespace Vigil.Testing.Data.Core
         public void Identity_IEquality_Fails_For_Null_Other()
         {
             IEquatable<Identity> a = new TestIdentity(Guid.NewGuid());
-
-            Assert.False(a.Equals(null));
+            string test = null;
+            Assert.False(a.Equals(test));
         }
-
 
         [Fact]
-        public void Identity_IEquality_Fails_For_Other_Type()
+        public void Identity_IEquality_Passes_For_Reflective_Equality()
         {
-            IEquatable<Identity> a = new TestIdentity(Guid.NewGuid());
+            IEquatable<Identity> test = new TestIdentity(Guid.NewGuid());
 
-            Assert.False(a.Equals(0));
+            Assert.True(test.Equals(test));
         }
-
+        
         [Fact]
         public void Identity_IEquality_Passes_For_Equal_Id_Values()
         {
             Guid id = Guid.NewGuid();
 
             IEquatable<Identity> source = new TestIdentity(id);
-            TestIdentity other = new TestIdentity(id);
+            IEquatable<Identity> other = new TestIdentity(id);
 
             Assert.True(source.Equals(other));
+        }
+        
+        [Fact]
+        public void Identity_IEquality_Fails_For_Other_Type()
+        {
+            IEquatable<Identity> a = new TestIdentity(Guid.NewGuid());
+
+            Assert.False(a.Equals(0));
         }
 
         [Fact]
@@ -84,6 +91,22 @@ namespace Vigil.Testing.Data.Core
             TestIdentity other = new TestIdentity(id);
 
             Assert.True(source.Equals(other));
+        }
+
+        [Fact]
+        public void Identity_HashCode_Matches_HashCode_Of_Id()
+        {
+            TestIdentity test = new TestIdentity();
+
+            Assert.Equal(test.Id.GetHashCode(), test.GetHashCode());
+        }
+
+        [Fact]
+        public void Identity_ToString_Matches_ToString_Of_Id()
+        {
+            TestIdentity test = new TestIdentity();
+
+            Assert.Equal(test.Id.ToString(), test.ToString());
         }
     }
 }

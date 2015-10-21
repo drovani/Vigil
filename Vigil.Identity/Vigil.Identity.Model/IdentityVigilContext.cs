@@ -44,6 +44,7 @@ namespace Vigil.Identity.Model
         }
 
         [System.Diagnostics.Contracts.ContractVerification(false)]
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Contract.Assume(modelBuilder != null);
