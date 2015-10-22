@@ -1,5 +1,6 @@
 ﻿using System;
 using Vigil.Data.Core;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 using Xunit;
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using Vigil.Data.Core.System;
+using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core
 {

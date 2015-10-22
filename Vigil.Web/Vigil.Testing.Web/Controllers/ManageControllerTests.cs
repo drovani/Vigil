@@ -10,6 +10,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Moq;
 using Moq.Protected;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
 using Vigil.Testing.Identity;

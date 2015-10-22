@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core

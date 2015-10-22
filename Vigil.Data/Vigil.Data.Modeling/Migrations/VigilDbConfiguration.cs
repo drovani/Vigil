@@ -3,6 +3,7 @@ namespace Vigil.Data.Modeling.Migrations
     using System;
     using System.Data.Entity.Migrations;
     using System.Diagnostics.Contracts;
+    using Vigil.Data.Core.Identity;
     using Vigil.Data.Core.System;
     using Vigil.Identity.Model;
 

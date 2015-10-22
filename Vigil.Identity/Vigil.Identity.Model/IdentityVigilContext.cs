@@ -4,6 +4,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model

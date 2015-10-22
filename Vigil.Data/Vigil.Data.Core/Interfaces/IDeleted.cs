@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.System;
+using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core
 {

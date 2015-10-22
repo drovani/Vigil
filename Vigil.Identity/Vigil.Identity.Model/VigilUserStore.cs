@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model

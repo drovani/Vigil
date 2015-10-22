@@ -106,10 +106,11 @@
   <ItemGroup>
     <Compile Include="Attributes\DateTimeKindAttribute.cs" />
     <Compile Include="Attributes\NotImplementedAttribute.cs" />
+    <Compile Include="BaseVigilContext.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Patrons\PatronState.cs" />
     <Compile Include="Patrons\PersonState.cs" />
-    <Compile Include="Identity.cs" />
+    <Compile Include="KeyIdentity.cs" />
     <Compile Include="Interfaces\IEffectiveRange.cs" />
     <Compile Include="Interfaces\IEffective.cs" />
     <Compile Include="Interfaces\IOrdered.cs" />
@@ -121,17 +122,18 @@
     <Compile Include="Patrons\Types\PersonTypeState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\ChangeLog.cs" />
-    <Compile Include="System\VigilRole.cs" />
-    <Compile Include="System\VigilUser.cs" />
-    <Compile Include="System\VigilUserClaim.cs" />
-    <Compile Include="System\VigilUserLogin.cs" />
-    <Compile Include="System\VigilUserRole.cs" />
+    <Compile Include="System\Comment.cs" />
+    <Compile Include="Identity\VigilRole.cs" />
+    <Compile Include="Identity\VigilUser.cs" />
+    <Compile Include="Identity\VigilUserClaim.cs" />
+    <Compile Include="Identity\VigilUserLogin.cs" />
+    <Compile Include="Identity\VigilUserRole.cs" />
     <Compile Include="TypeStateBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ValueObjects\DateAccuracy.cs" />
     <Compile Include="ValueObjects\FullName.cs" />
-    <Compile Include="IIdentity.cs" />
+    <Compile Include="IKeyIdentity.cs" />
     <Compile Include="ValueObjects\ValueObject.cs" />
   </ItemGroup>
   <ItemGroup>

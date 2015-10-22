@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
-    public abstract class TypeStateBase : Identity, ICreated, IModified, IOrdered, IDeleted
+    public abstract class TypeStateBase : KeyIdentity, ICreated, IModified, IOrdered, IDeleted
     {
         [Required]
         public VigilUser CreatedBy { get; protected set; }

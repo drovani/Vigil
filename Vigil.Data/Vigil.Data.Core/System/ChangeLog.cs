@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
+using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core.System
 {
-    public class ChangeLog : Identity, ICreated
+    public class ChangeLog : KeyIdentity, ICreated
     {
         [Required]
         public VigilUser CreatedBy { get; protected set; }
@@ -54,14 +55,14 @@ namespace Vigil.Data.Core.System
         }
         /// <summary>Creates a new ChangeLog object.
         /// </summary>
-        /// <typeparam name="TSource">The Type of the object which inherits from <see cref="Vigil.Data.Core.Identity"/> of which the logged field is a member.</typeparam>
+        /// <typeparam name="TSource">The Type of the object which inherits from <see cref="Vigil.Data.Core.KeyIdentity"/> of which the logged field is a member.</typeparam>
         /// <typeparam name="TProperty">The property whose changing value is being logged.</typeparam>
         /// <param name="source">The object whose field is being logged.</param>
         /// <param name="property">An expression resolving to a member whose changing value is being logged.</param>
         /// <param name="oldValue">The old value of the changing member.</param>
         /// <param name="newValue">The new value of the changing member.</param>
         /// <returns>A new ChangeLog instance.</returns>
-        public static ChangeLog CreateLog<TSource, TProperty>(TSource source, Expression<Func<TSource, TProperty>> property, TProperty oldValue, TProperty newValue) where TSource : Identity
+        public static ChangeLog CreateLog<TSource, TProperty>(TSource source, Expression<Func<TSource, TProperty>> property, TProperty oldValue, TProperty newValue) where TSource : KeyIdentity
         {
             Contract.Requires<ArgumentNullException>(source != null);
             Contract.Requires<ArgumentOutOfRangeException>(!source.Id.Equals(Guid.Empty));

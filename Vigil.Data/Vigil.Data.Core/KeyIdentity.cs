@@ -5,17 +5,17 @@ using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core
 {
-    public abstract class Identity : IEquatable<Identity>, IIdentity
+    public abstract class KeyIdentity : IEquatable<KeyIdentity>, IKeyIdentity
     {
         [Key]
         public Guid Id { get; protected set; }
 
-        protected Identity()
+        protected KeyIdentity()
         {
             Id = Guid.NewGuid();
         }
 
-        protected Identity(Guid id)
+        protected KeyIdentity(Guid id)
         {
             this.Id = id;
         }
@@ -38,10 +38,10 @@ namespace Vigil.Data.Core
             {
                 return false;
             }
-            return Equals((Identity)other); 
+            return Equals((KeyIdentity)other); 
         }
 
-        public bool Equals(Identity other)
+        public bool Equals(KeyIdentity other)
         {
             if (other == null)
             {
@@ -50,11 +50,11 @@ namespace Vigil.Data.Core
             return Guid.Equals(other.Id, this.Id);
         }
 
-        public static bool operator ==(Identity left, Identity right)
+        public static bool operator ==(KeyIdentity left, KeyIdentity right)
         {
             return Equals(left, right);
         }
-        public static bool operator !=(Identity left, Identity right)
+        public static bool operator !=(KeyIdentity left, KeyIdentity right)
         {
             return !Equals(left, right);
         }

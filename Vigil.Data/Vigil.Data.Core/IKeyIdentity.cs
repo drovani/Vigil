@@ -2,7 +2,7 @@
 
 namespace Vigil.Data.Core
 {
-    public interface IIdentity
+    public interface IKeyIdentity
     {
         Guid Id { get; }
     }

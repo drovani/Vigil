@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace Vigil.Data.Core.System
+namespace Vigil.Data.Core.Identity
 {
     public class VigilUser : IdentityUser<Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUser<Guid>
     {

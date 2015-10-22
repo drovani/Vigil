@@ -6,7 +6,7 @@ namespace Vigil.Testing.Data.Core
 {
     public class IdentityTests
     {
-        private class TestIdentity : Identity
+        private class TestIdentity : KeyIdentity
         {
             public TestIdentity() : base() { }
             public TestIdentity(Guid id) : base(id) { }
@@ -23,7 +23,7 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Identity_IEquality_Fails_For_Unequal_Ids()
         {
-            IEquatable<Identity> a = new TestIdentity(Guid.NewGuid());
+            IEquatable<KeyIdentity> a = new TestIdentity(Guid.NewGuid());
             TestIdentity b = new TestIdentity(Guid.NewGuid());
 
             Assert.False(a.Equals(b));
@@ -32,7 +32,7 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Identity_IEquality_Fails_For_Null_Other()
         {
-            IEquatable<Identity> a = new TestIdentity(Guid.NewGuid());
+            IEquatable<KeyIdentity> a = new TestIdentity(Guid.NewGuid());
             string test = null;
             Assert.False(a.Equals(test));
         }
@@ -40,7 +40,7 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Identity_IEquality_Passes_For_Reflective_Equality()
         {
-            IEquatable<Identity> test = new TestIdentity(Guid.NewGuid());
+            IEquatable<KeyIdentity> test = new TestIdentity(Guid.NewGuid());
 
             Assert.True(test.Equals(test));
         }
@@ -50,8 +50,8 @@ namespace Vigil.Testing.Data.Core
         {
             Guid id = Guid.NewGuid();
 
-            IEquatable<Identity> source = new TestIdentity(id);
-            IEquatable<Identity> other = new TestIdentity(id);
+            IEquatable<KeyIdentity> source = new TestIdentity(id);
+            IEquatable<KeyIdentity> other = new TestIdentity(id);
 
             Assert.True(source.Equals(other));
         }
@@ -59,7 +59,7 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Identity_IEquality_Fails_For_Other_Type()
         {
-            IEquatable<Identity> a = new TestIdentity(Guid.NewGuid());
+            IEquatable<KeyIdentity> a = new TestIdentity(Guid.NewGuid());
 
             Assert.False(a.Equals(0));
         }

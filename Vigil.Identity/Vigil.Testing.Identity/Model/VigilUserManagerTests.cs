@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Moq;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 using Vigil.Identity.Model;
 using Xunit;

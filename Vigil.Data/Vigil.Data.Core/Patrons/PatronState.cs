@@ -2,12 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons.Types;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core.Patrons
 {
-    public class PatronState : Identity, ICreated, IModified, IDeleted
+    public class PatronState : KeyIdentity, ICreated, IModified, IDeleted
     {
         [Required]
         public virtual PatronTypeState PatronType { get; protected set; }

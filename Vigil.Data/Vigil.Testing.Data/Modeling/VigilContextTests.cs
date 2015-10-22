@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Text.RegularExpressions;
+using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 using Vigil.Data.Modeling;
 using Xunit;
