@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
@@ -18,6 +19,8 @@ namespace Vigil.Data.Core.Patrons
         public string DisplayName { get; protected set; }
         [DefaultValue(false)]
         public bool IsAnonymous { get; protected set; }
+
+        public virtual ICollection<Comment> Comments { get; protected set; }
 
         protected PatronState(PatronTypeState patronType, string displayName) {
             Contract.Requires<ArgumentNullException>(patronType != null);

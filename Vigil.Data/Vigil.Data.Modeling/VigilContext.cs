@@ -43,6 +43,7 @@ namespace Vigil.Data.Modeling
 
             modelBuilder.HasDefaultSchema("vigil");
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             // Remove the name "State" from the end of all of the ClrTypes.
             modelBuilder.Types().Where(t => t.Name.EndsWith("State"))

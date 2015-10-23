@@ -3,9 +3,9 @@ namespace Vigil.Data.Modeling.Migrations
     using System;
     using System.Data.Entity.Migrations;
     using System.Diagnostics.Contracts;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using Vigil.Data.Core.Identity;
-    using Vigil.Data.Core.System;
-    using Vigil.Identity.Model;
 
     internal sealed class VigilDbConfiguration : DbMigrationsConfiguration<VigilContext>
     {
@@ -40,7 +40,7 @@ namespace Vigil.Data.Modeling.Migrations
 
         private string HashPassword(VigilContext context, string password)
         {
-            using (VigilUserManager uman = new VigilUserManager(new VigilUserStore(context)))
+            using (var uman = new UserManager<VigilUser, Guid>(new UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>(context)))
             {
                 Contract.Assume(uman.PasswordHasher != null);
                 return uman.PasswordHasher.HashPassword(password);
