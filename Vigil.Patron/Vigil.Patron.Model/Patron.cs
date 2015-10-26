@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core.Patrons;
+using Vigil.Data.Core.Patrons.Types;
 
 namespace Vigil.Patron.Model
 {

@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core;
 using Vigil.Data.Core.Identity;
+using Vigil.Data.Core.Patrons;
 
 namespace Vigil.Patron.Model
 {
@@ -11,7 +12,7 @@ namespace Vigil.Patron.Model
         public VigilUser AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
-        public DbSet<Patron> Patrons { get; protected set; }
+        public DbSet<PatronState> Patrons { get; protected set; }
 
         public PatronVigilContext(VigilUser affectedBy, DateTime now)
             : base()
