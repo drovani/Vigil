@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core.Identity;
@@ -6,16 +7,21 @@ using Vigil.Data.Core.Patrons;
 
 namespace Vigil.Data.Core
 {
-    public class BaseVigilContext<TContext> : DbContext where TContext : DbContext
+    public abstract class BaseVigilContext<TContext> : DbContext where TContext : DbContext
     {
-        static BaseVigilContext()
-        {
-            Database.SetInitializer<TContext>(new NullDatabaseInitializer<TContext>());
-        }
+        public VigilUser AffectedBy { get; protected set; }
+        public DateTime Now { get; protected set; }
 
-        protected BaseVigilContext()
+        protected BaseVigilContext(VigilUser affectedBy, DateTime now)
             : base("VigilContextConnection")
         {
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<AggregateException>(now != default(DateTime));
+
+            AffectedBy = affectedBy;
+            Now = now.ToUniversalTime();
+
+            Database.SetInitializer<TContext>(new NullDatabaseInitializer<TContext>());
         }
 
         [ContractVerification(false)]

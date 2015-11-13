@@ -12,23 +12,25 @@ namespace Vigil.Data.Core.Patrons
     public class PatronState : KeyIdentity, ICreated, IModified, IDeleted
     {
         [Required]
-        public virtual PatronTypeState PatronType { get; protected set; }
-        public string AccountNumber { get; protected set; }
+        public virtual PatronTypeState PatronType { get; set; }
+        public string AccountNumber { get; set; }
         [Required]
         [StringLength(250)]
-        public string DisplayName { get; protected set; }
+        public string DisplayName { get; set; }
         [DefaultValue(false)]
-        public bool IsAnonymous { get; protected set; }
+        public bool IsAnonymous { get; set; }
 
         public virtual ICollection<Comment> Comments { get; protected set; }
 
-        protected PatronState(PatronTypeState patronType, string displayName) {
+        protected PatronState(PatronTypeState patronType, string displayName)
+        {
             Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(displayName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(displayName.Trim()));
 
             PatronType = patronType;
             DisplayName = displayName.Trim();
+            Comments = new HashSet<Comment>();
         }
 
         public static PatronState Create(PatronTypeState patronType, string displayName, string accountNumber = null, bool isAnonymous = false)

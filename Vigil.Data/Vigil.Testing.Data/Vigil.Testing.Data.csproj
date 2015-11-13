@@ -167,10 +167,6 @@
       <Project>{d6f9b9c3-7537-448d-a2b2-3ffc13cf95ea}</Project>
       <Name>Vigil.Data.Modeling</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Vigil.Data.Services\Vigil.Data.Services.csproj">
-      <Project>{12290054-bb9a-41f2-97e1-f6d64ffe36e7}</Project>
-      <Name>Vigil.Data.Services</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
