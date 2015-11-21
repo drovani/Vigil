@@ -121,6 +121,7 @@
     <Compile Include="Patrons\Types\PatronTypeState.cs" />
     <Compile Include="Patrons\Types\PersonTypeState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\ApplicationSetting.cs" />
     <Compile Include="System\ChangeLog.cs" />
     <Compile Include="System\Comment.cs" />
     <Compile Include="Identity\VigilRole.cs" />

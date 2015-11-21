@@ -1,20 +1,18 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Vigil.Domain")]
+[assembly: AssemblyTitle("Vigil.Application")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vigil Projects")]
-[assembly: AssemblyProduct("Vigil.Domain")]
+[assembly: AssemblyProduct("Vigil.Application")]
 [assembly: AssemblyCopyright("Copyright © Vigil Projects 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -22,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3ccd5736-808e-4f28-b7d8-e72ae2b8a633")]
+[assembly: Guid("19820c54-8888-4b19-a1b9-2706a1c08688")]
 
 // Version information for an assembly consists of the following four values:
 //

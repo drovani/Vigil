@@ -17,6 +17,7 @@ namespace Vigil.Data.Modeling
         public DateTime Now { get; protected set; }
 
         public DbSet<ChangeLog> ChangeLogs { get; protected set; }
+        public DbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
 
         public DbSet<PatronTypeState> PatronTypes { get; protected set; }
         public DbSet<PersonTypeState> PersonTypes { get; protected set; }

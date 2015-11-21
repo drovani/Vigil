@@ -13,11 +13,13 @@ namespace Vigil.Patron.Model
         public DbSet<PatronState> Patrons { get; protected set; }
         public DbSet<PatronTypeState> PatronTypes { get; protected set; }
 
+        public PatronVigilContext() : base(new VigilUser(), DateTime.Now) { }
+
         public PatronVigilContext(VigilUser affectedBy, DateTime now)
             : base(affectedBy, now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<AggregateException>(now != default(DateTime));
+            Contract.Requires<ArgumentException>(now != default(DateTime));
         }
 
         [ContractInvariantMethod]

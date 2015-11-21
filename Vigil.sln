@@ -50,6 +50,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Domain", "Vigil.Domai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Domain", "Vigil.Testing.Domain\Vigil.Testing.Domain.csproj", "{7AE87C68-061E-46C4-B43A-3144FAFF6444}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Application", "Vigil Application", "{5A863CAC-EE27-439B-B481-A62C1E491220}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Application", "Vigil.Application\Vigil.Application.csproj", "{4A354E9D-00CC-44DB-8213-E8DF6392C3B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +104,10 @@ Global
 		{7AE87C68-061E-46C4-B43A-3144FAFF6444}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AE87C68-061E-46C4-B43A-3144FAFF6444}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AE87C68-061E-46C4-B43A-3144FAFF6444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A354E9D-00CC-44DB-8213-E8DF6392C3B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A354E9D-00CC-44DB-8213-E8DF6392C3B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A354E9D-00CC-44DB-8213-E8DF6392C3B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A354E9D-00CC-44DB-8213-E8DF6392C3B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +125,6 @@ Global
 		{0B6F0588-9A9B-4FC3-82C2-990B132FD68E} = {15BC8D3F-635E-4BDA-8D4A-FA1FCF321C8B}
 		{A1F057C6-50FB-47BD-BB4D-B73DD49FE0CB} = {5EA8CB81-FAD8-47FC-8B25-AABEEA989A44}
 		{7AE87C68-061E-46C4-B43A-3144FAFF6444} = {5EA8CB81-FAD8-47FC-8B25-AABEEA989A44}
+		{4A354E9D-00CC-44DB-8213-E8DF6392C3B9} = {5A863CAC-EE27-439B-B481-A62C1E491220}
 	EndGlobalSection
 EndGlobal

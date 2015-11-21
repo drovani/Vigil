@@ -220,6 +220,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Patron\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Patron\PatronAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -252,6 +254,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Areas\Patron\Views\web.config" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -305,6 +308,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Patron\Models\" />
+    <Folder Include="Areas\Patron\Views\Account\" />
+    <Folder Include="Areas\Patron\Views\Patron\" />
+    <Folder Include="Areas\Patron\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -317,6 +324,10 @@
     <ProjectReference Include="..\..\Vigil.Identity\Vigil.Identity.Model\Vigil.Identity.Model.csproj">
       <Project>{befe3d30-e2cd-4ed5-b749-b0dd92b883cf}</Project>
       <Name>Vigil.Identity.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Vigil.Patron\Vigil.Patron.Model\Vigil.Patron.Model.csproj">
+      <Project>{9ab78b6b-9bce-4e4d-9f0e-5e9d9dccc7c3}</Project>
+      <Name>Vigil.Patron.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

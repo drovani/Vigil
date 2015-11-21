@@ -1,37 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons;
 using Vigil.Data.Core.Patrons.Types;
 
 namespace Vigil.Patron.Model
 {
-    public class PatronFactory
+    public class PatronFactory : ModelFactory<PatronCreateModel, PatronReadModel, PatronUpdateModel>
     {
-        public IReadOnlyList<KeyValuePair<string, string>> PropertyValidationErrors { get; protected set; }
         protected readonly PatronVigilContext context;
 
+        [Import("AccountNumberGenerator", typeof(IValueGenerator<>))]
+        protected IValueGenerator<string> accountNumberGenerator { get; set; }
+
         public PatronFactory(VigilUser affectedBy, DateTime now)
+            : base()
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<AggregateException>(now != default(DateTime));
+            Contract.Requires<ArgumentException>(now != default(DateTime));
 
             context = new PatronVigilContext(affectedBy, now);
-            PropertyValidationErrors = new List<KeyValuePair<string, string>>();
         }
 
-        public PatronReadModel CreatePatron(PatronCreateModel createPatron, IAccountNumberGenerator accountNumberGenerator)
+        public PatronReadModel CreatePatron(PatronCreateModel createPatron)
         {
             Contract.Requires<ArgumentNullException>(createPatron != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(createPatron.DisplayName));
 
-            Contract.Assert(context.Patrons != null);
-            Contract.Assert(context.PatronTypes != null);
+            Contract.Assume(context.Patrons != null);
+            Contract.Assume(context.PatronTypes != null);
 
             PatronTypeState patronType = context.PatronTypes.SingleOrDefault(pt => pt.TypeName == createPatron.PatronType);
             if (patronType == null)
@@ -40,7 +41,7 @@ namespace Vigil.Patron.Model
             }
             PatronState newPatron = PatronState.Create(patronType: patronType,
                 displayName: createPatron.DisplayName,
-                accountNumber: accountNumberGenerator.GetAccountNumber(),
+                accountNumber: accountNumberGenerator.GetNextValue(),
                 isAnonymous: createPatron.IsAnonymous);
             context.Patrons.Add(newPatron);
 
@@ -88,15 +89,32 @@ namespace Vigil.Patron.Model
         private int ValidateAndSave(object entity)
         {
             var validationResult = context.Entry(entity).GetValidationResult();
+            ValidationResults.Clear();
             if (validationResult.IsValid)
             {
-                PropertyValidationErrors = new List<KeyValuePair<string, string>>();
                 return context.SaveChanges();
             }
             else
             {
-                PropertyValidationErrors = validationResult.ValidationErrors.Select(ve => new KeyValuePair<string, string>(ve.PropertyName, ve.ErrorMessage)).ToList();
+                foreach (var ve in validationResult.ValidationErrors)
+                {
+                    ValidationResults.Add(new ValidationResult(ve.ErrorMessage, new string[1] { ve.PropertyName }));
+                }
                 return -1;
+            }
+        }
+
+        public bool DeletePatron(string accountNumber)
+        {
+            var patron = context.Patrons.SingleOrDefault(pt => pt.AccountNumber == accountNumber.Trim());
+            if (patron != null)
+            {
+                patron.MarkDeleted(context.AffectedBy, context.Now);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -107,7 +125,7 @@ namespace Vigil.Patron.Model
         private void ObjectInvariant()
         {
             Contract.Invariant(context != null);
-            Contract.Invariant(PropertyValidationErrors != null);
+            Contract.Invariant(ValidationResults != null);
         }
     }
 }

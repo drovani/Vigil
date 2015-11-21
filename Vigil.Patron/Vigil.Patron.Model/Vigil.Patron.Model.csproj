@@ -144,6 +144,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -153,7 +154,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IAccountNumberGenerator.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="PatronCreateModel.cs" />
     <Compile Include="PatronFactory.cs" />
@@ -174,6 +174,10 @@
     <ProjectReference Include="..\..\Vigil.Data\Vigil.Data.Core\Vigil.Data.Core.csproj">
       <Project>{19d5bc74-a409-435a-9dd0-18ac8346ff3b}</Project>
       <Name>Vigil.Data.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Vigil.Domain\Vigil.Domain.csproj">
+      <Project>{a1f057c6-50fb-47bd-bb4d-b73dd49fe0cb}</Project>
+      <Name>Vigil.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
