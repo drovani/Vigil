@@ -3,7 +3,7 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core.Identity;
-using Vigil.Data.Core.Patrons;
+using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
@@ -11,6 +11,8 @@ namespace Vigil.Data.Core
     {
         public VigilUser AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
+
+        public IDbSet<Comment> Comments { get; protected set; }
 
         protected BaseVigilContext(VigilUser affectedBy, DateTime now)
             : base("VigilContextConnection")

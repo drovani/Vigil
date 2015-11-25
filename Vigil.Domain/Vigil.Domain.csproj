@@ -142,7 +142,8 @@
     <Compile Include="Validation\IRule.cs" />
     <Compile Include="ModelFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\Rule.cs" />
+    <Compile Include="Validation\SpecificationRule.cs" />
+    <Compile Include="Validation\ValidationRule.cs" />
     <Compile Include="Validation\StaticRule.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace Vigil.Validation
 {
-    public class StaticRule<TModel> : Rule<TModel>
+    public class StaticRule<TModel> : ValidationRule<TModel>
     {
         protected readonly Predicate<TModel> rulePredicate;
 

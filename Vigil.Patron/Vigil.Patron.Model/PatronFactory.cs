@@ -7,6 +7,7 @@ using System.Linq;
 using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons;
 using Vigil.Data.Core.Patrons.Types;
+using Vigil.Data.Core.System;
 
 namespace Vigil.Patron.Model
 {
@@ -15,7 +16,7 @@ namespace Vigil.Patron.Model
         protected readonly PatronVigilContext context;
 
         [Import("AccountNumberGenerator", typeof(IValueGenerator<>))]
-        protected IValueGenerator<string> accountNumberGenerator { get; set; }
+        protected IValueGenerator<string> AccountNumberGenerator { get; set; }
 
         public PatronFactory(VigilUser affectedBy, DateTime now)
             : base()
@@ -41,7 +42,7 @@ namespace Vigil.Patron.Model
             }
             PatronState newPatron = PatronState.Create(patronType: patronType,
                 displayName: createPatron.DisplayName,
-                accountNumber: accountNumberGenerator.GetNextValue(),
+                accountNumber: AccountNumberGenerator.GetNextValue(context.Now),
                 isAnonymous: createPatron.IsAnonymous);
             context.Patrons.Add(newPatron);
 
@@ -104,13 +105,15 @@ namespace Vigil.Patron.Model
             }
         }
 
-        public bool DeletePatron(string accountNumber)
+        public bool DeletePatron(string accountNumber, string reason)
         {
             var patron = context.Patrons.SingleOrDefault(pt => pt.AccountNumber == accountNumber.Trim());
             if (patron != null)
             {
                 patron.MarkDeleted(context.AffectedBy, context.Now);
-                return true;
+                context.Comments.Add(Comment.Create(patron.Id, reason, context.AffectedBy, context.Now));
+                int numChanges = context.SaveChanges();
+                return numChanges > 0;
             }
             else
             {

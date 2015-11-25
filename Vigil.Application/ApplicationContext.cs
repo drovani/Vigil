@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.Composition;
+using System.Data;
 using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core;
@@ -7,17 +9,22 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Application
 {
-    public class ApplicationContext : BaseVigilContext<ApplicationContext>, IVigilContext
+    [Export(typeof(IApplicationContext))]
+    public class ApplicationContext : BaseVigilContext<ApplicationContext>, IApplicationContext
     {
-        public DbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
+        public IDbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
 
-        public ApplicationContext() : base(new VigilUser(), DateTime.Now) { }
-
+        [ImportingConstructor]
         public ApplicationContext(VigilUser affectedBy, DateTime now)
             : base(affectedBy, now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<ArgumentException>(now != default(DateTime));
+            Contract.Requires<ArgumentOutOfRangeException>(now != default(DateTime));
+        }
+
+        public DbContextTransaction BeginTransaction(IsolationLevel isolationLevel)
+        {
+            return Database.BeginTransaction(isolationLevel);
         }
 
         [ContractInvariantMethod]
@@ -26,6 +33,7 @@ namespace Vigil.Application
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
+            Contract.Invariant(Database != null);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Vigil.Validation
         /// <summary>Unique identifier for this particular rule.
         /// <remarks>This aids in validation caching, i18n text, and possibly other on-the-file identification needs.</remarks>
         /// </summary>
-        Guid ValidationRuleId { get; }
+        Guid RuleId { get; }
         /// <summary>Order that the validation rules will be processed. Equal ordinals will be processed in an unsorted order.
         /// </summary>
         [DefaultValue(0)]
@@ -38,7 +38,7 @@ namespace Vigil.Validation
         [ContractClassFor(typeof(IRule<>))]
         internal abstract class IRuleContract<TModel> : IRule<TModel>
         {
-            public Guid ValidationRuleId { get; set; }
+            public Guid RuleId { get; set; }
             public int Ordinal { get; set; }
             public string ErrorToken { get; set; }
             public string[] ParticipatingFields { get; set; }

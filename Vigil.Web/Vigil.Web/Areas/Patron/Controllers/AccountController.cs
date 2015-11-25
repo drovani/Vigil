@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Web.Mvc;
 using Vigil.Data.Core.Identity;
 using Vigil.Patron.Model;
 
 namespace Vigil.Web.Areas.Patron.Controllers
 {
+    [ContractVerification(false)]
     public class AccountController : Controller
     {
         // Get: Patron/Account
@@ -82,10 +84,10 @@ namespace Vigil.Web.Areas.Patron.Controllers
 
         // DELETE: Patron/850827/Account/Delete
         [HttpDelete]
-        public ActionResult Delete(string accountNumber)
+        public ActionResult Delete(string accountNumber, string reason)
         {
             PatronFactory facto = new PatronFactory(User as VigilUser, DateTime.Now);
-            if (facto.DeletePatron(accountNumber))
+            if (facto.DeletePatron(accountNumber, reason))
             {
                 return RedirectToAction("Index");
             }

@@ -1,7 +1,9 @@
-﻿namespace Vigil
+﻿using System;
+
+namespace Vigil
 {
     public interface IValueGenerator<TValue>
     {
-        TValue GetNextValue();
+        TValue GetNextValue(DateTime now);
     }
 }

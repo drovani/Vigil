@@ -10,6 +10,24 @@ namespace Vigil.Data.Core.System
         public Guid EntityId { get; protected set; }
         public string CommentText { get; protected set; }
 
+        public static Comment Create(Guid entityId, string commentText, VigilUser createdBy, DateTime createdOn)
+        {
+            Contract.Requires<ArgumentException>(entityId != Guid.Empty);
+            Contract.Requires<ArgumentNullException>(commentText != null);
+            Contract.Requires<ArgumentException>(commentText.Trim() != String.Empty);
+            Contract.Requires<ArgumentNullException>(createdBy != null);
+            Contract.Requires<ArgumentOutOfRangeException>(createdOn != default(DateTime));
+
+            return new Comment
+            {
+                EntityId = entityId,
+                CommentText = commentText.Trim(),
+                CreatedBy = createdBy,
+                CreatedOn = createdOn.ToUniversalTime(),
+                Id = Guid.NewGuid()
+            };
+        }
+
         #region ICreated, IModified, IDeleted Implementation
         [Required]
         public VigilUser CreatedBy { get; protected set; }

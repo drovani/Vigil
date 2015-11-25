@@ -321,6 +321,10 @@
       <Project>{19d5bc74-a409-435a-9dd0-18ac8346ff3b}</Project>
       <Name>Vigil.Data.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Vigil.Domain\Vigil.Domain.csproj">
+      <Project>{a1f057c6-50fb-47bd-bb4d-b73dd49fe0cb}</Project>
+      <Name>Vigil.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Vigil.Identity\Vigil.Identity.Model\Vigil.Identity.Model.csproj">
       <Project>{befe3d30-e2cd-4ed5-b749-b0dd92b883cf}</Project>
       <Name>Vigil.Identity.Model</Name>

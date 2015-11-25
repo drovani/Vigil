@@ -10,8 +10,8 @@ namespace Vigil.Patron.Model
 {
     public class PatronVigilContext : BaseVigilContext<PatronVigilContext>, IVigilContext
     {
-        public DbSet<PatronState> Patrons { get; protected set; }
-        public DbSet<PatronTypeState> PatronTypes { get; protected set; }
+        public IDbSet<PatronState> Patrons { get; protected set; }
+        public IDbSet<PatronTypeState> PatronTypes { get; protected set; }
 
         public PatronVigilContext() : base(new VigilUser(), DateTime.Now) { }
 
