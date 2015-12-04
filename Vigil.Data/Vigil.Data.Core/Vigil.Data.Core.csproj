@@ -108,6 +108,7 @@
     <Compile Include="Attributes\NotImplementedAttribute.cs" />
     <Compile Include="BaseVigilContext.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Identity\IVigilUser.cs" />
     <Compile Include="Patrons\PatronState.cs" />
     <Compile Include="Patrons\PersonState.cs" />
     <Compile Include="KeyIdentity.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Identity\VigilUserClaim.cs" />
     <Compile Include="Identity\VigilUserLogin.cs" />
     <Compile Include="Identity\VigilUserRole.cs" />
+    <Compile Include="System\MergedRecord.cs" />
     <Compile Include="TypeStateBase.cs">
       <SubType>Code</SubType>
     </Compile>

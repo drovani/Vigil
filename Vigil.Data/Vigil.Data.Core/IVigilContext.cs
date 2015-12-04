@@ -5,7 +5,7 @@ namespace Vigil.Data.Core
 {
     public interface IVigilContext
     {
-        VigilUser AffectedBy { get; }
+        IVigilUser AffectedBy { get; }
         DateTime Now { get; }
 
         int SaveChanges();

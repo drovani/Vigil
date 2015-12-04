@@ -9,7 +9,7 @@ namespace Vigil.Data.Core.System
     public class ChangeLog : KeyIdentity, ICreated
     {
         [Required]
-        public VigilUser CreatedBy { get; protected set; }
+        public IVigilUser CreatedBy { get; protected set; }
         public DateTime CreatedOn { get; protected set; }
 
         [Required]

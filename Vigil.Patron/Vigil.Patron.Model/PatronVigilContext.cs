@@ -13,9 +13,9 @@ namespace Vigil.Patron.Model
         public IDbSet<PatronState> Patrons { get; protected set; }
         public IDbSet<PatronTypeState> PatronTypes { get; protected set; }
 
-        public PatronVigilContext() : base(new VigilUser(), DateTime.Now) { }
+        public PatronVigilContext() : base(new VigilUser(), DateTime.UtcNow) { }
 
-        public PatronVigilContext(VigilUser affectedBy, DateTime now)
+        public PatronVigilContext(IVigilUser affectedBy, DateTime now)
             : base(affectedBy, now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);

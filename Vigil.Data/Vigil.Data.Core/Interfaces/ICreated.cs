@@ -10,7 +10,7 @@ namespace Vigil.Data.Core
     public interface ICreated
     {
         [Required]
-        VigilUser CreatedBy { get; }
+        IVigilUser CreatedBy { get; }
         DateTime CreatedOn { get; }
     }
 
@@ -19,7 +19,7 @@ namespace Vigil.Data.Core
         [ContractClassFor(typeof(ICreated))]
         internal abstract class ICreatedContract : ICreated
         {
-            public VigilUser CreatedBy { get; set; }
+            public IVigilUser CreatedBy { get; set; }
             public DateTime CreatedOn { get; set; }
 
             [ContractInvariantMethod]

@@ -11,7 +11,7 @@ namespace Vigil.Identity.Model
 {
     public class IdentityVigilContext : IdentityDbContext<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IVigilContext
     {
-        public VigilUser AffectedBy { get; private set; }
+        public IVigilUser AffectedBy { get; private set; }
         public DateTime Now { get; private set; }
 
         public IdentityVigilContext()
@@ -21,7 +21,7 @@ namespace Vigil.Identity.Model
             Database.SetInitializer<IdentityVigilContext>(new NullDatabaseInitializer<IdentityVigilContext>());
         }
 
-        public IdentityVigilContext(VigilUser affectedBy, DateTime now)
+        public IdentityVigilContext(IVigilUser affectedBy, DateTime now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
 
@@ -29,7 +29,7 @@ namespace Vigil.Identity.Model
             this.Now = now.ToUniversalTime();
         }
 
-        public void SetAffectingUser(VigilUser affectedBy)
+        public void SetAffectingUser(IVigilUser affectedBy)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
 

@@ -7,9 +7,9 @@ namespace Vigil.Data.Core
     [ContractClass(typeof(Contracts.IDeletedContract))]
     public interface IDeleted : ICreated
     {
-        VigilUser DeletedBy { get; }
+        IVigilUser DeletedBy { get; }
         DateTime? DeletedOn { get; }
-        bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn);
+        bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn);
     }
 
     namespace Contracts
@@ -17,17 +17,17 @@ namespace Vigil.Data.Core
         [ContractClassFor(typeof(IDeleted))]
         internal abstract class IDeletedContract : IDeleted
         {
-            public VigilUser DeletedBy { get; set; }
+            public IVigilUser DeletedBy { get; set; }
             public DateTime? DeletedOn { get; set; }
 
-            public bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn)
+            public bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn)
             {
                 Contract.Requires<ArgumentNullException>(deletedBy != null);
                 Contract.Requires<ArgumentOutOfRangeException>(deletedOn >= CreatedOn);
                 return default(bool);
             }
 
-            public VigilUser CreatedBy { get; set; }
+            public IVigilUser CreatedBy { get; set; }
             public DateTime CreatedOn { get; set; }
 
             [ContractInvariantMethod]

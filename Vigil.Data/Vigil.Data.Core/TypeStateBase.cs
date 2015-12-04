@@ -9,11 +9,11 @@ namespace Vigil.Data.Core
     public abstract class TypeStateBase : KeyIdentity, ICreated, IModified, IOrdered, IDeleted
     {
         [Required]
-        public VigilUser CreatedBy { get; protected set; }
+        public IVigilUser CreatedBy { get; protected set; }
         public DateTime CreatedOn { get; protected set; }
-        public VigilUser ModifiedBy { get; protected set; }
+        public IVigilUser ModifiedBy { get; protected set; }
         public DateTime? ModifiedOn { get; protected set; }
-        public VigilUser DeletedBy { get; protected set; }
+        public IVigilUser DeletedBy { get; protected set; }
         public DateTime? DeletedOn { get; protected set; }
 
         [Required, StringLength(250)]
@@ -40,7 +40,7 @@ namespace Vigil.Data.Core
             return TypeName;
         }
 
-        public virtual bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn)
+        public virtual bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {
@@ -51,7 +51,7 @@ namespace Vigil.Data.Core
             return false;
         }
 
-        public virtual bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn)
+        public virtual bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
         {
             ModifiedBy = modifiedBy;
             ModifiedOn = modifiedOn.ToUniversalTime();

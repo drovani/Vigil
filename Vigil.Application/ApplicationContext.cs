@@ -15,7 +15,7 @@ namespace Vigil.Application
         public IDbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
 
         [ImportingConstructor]
-        public ApplicationContext(VigilUser affectedBy, DateTime now)
+        public ApplicationContext(IVigilUser affectedBy, DateTime now)
             : base(affectedBy, now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);

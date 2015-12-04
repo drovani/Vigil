@@ -49,24 +49,24 @@ namespace Vigil.Data.Core.Patrons
 
         #region ICreated, IModified, IDeleted Implementation
         [Required]
-        public VigilUser CreatedBy { get; protected set; }
+        public IVigilUser CreatedBy { get; protected set; }
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime CreatedOn { get; protected set; }
-        public VigilUser ModifiedBy { get; protected set; }
+        public IVigilUser ModifiedBy { get; protected set; }
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime? ModifiedOn { get; protected set; }
-        public VigilUser DeletedBy { get; protected set; }
+        public IVigilUser DeletedBy { get; protected set; }
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime? DeletedOn { get; protected set; }
 
-        public bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn)
+        public bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
         {
             ModifiedBy = modifiedBy;
             ModifiedOn = modifiedOn;
             return true;
         }
 
-        public bool MarkDeleted(VigilUser deletedBy, DateTime deletedOn)
+        public bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {

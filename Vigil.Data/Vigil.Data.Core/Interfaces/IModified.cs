@@ -8,9 +8,9 @@ namespace Vigil.Data.Core
     [ContractClass(typeof(Contracts.IModifiedContract))]
     public interface IModified : ICreated
     {
-        VigilUser ModifiedBy { get; }
+        IVigilUser ModifiedBy { get; }
         DateTime? ModifiedOn { get; }
-        bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn);
+        bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn);
     }
 
     namespace Contracts
@@ -18,17 +18,17 @@ namespace Vigil.Data.Core
         [ContractClassFor(typeof(IModified))]
         internal abstract class IModifiedContract : IModified
         {
-            public VigilUser ModifiedBy { get; set; }
+            public IVigilUser ModifiedBy { get; set; }
             public DateTime? ModifiedOn { get; set; }
 
-            public bool MarkModified(VigilUser modifiedBy, DateTime modifiedOn)
+            public bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
             {
                 Contract.Requires<ArgumentNullException>(modifiedBy != null);
                 Contract.Requires<ArgumentOutOfRangeException>(modifiedOn >= CreatedOn);
                 return default(bool);
             }
 
-            public VigilUser CreatedBy { get; set; }
+            public IVigilUser CreatedBy { get; set; }
             public DateTime CreatedOn { get; set; }
 
             [ContractInvariantMethod]

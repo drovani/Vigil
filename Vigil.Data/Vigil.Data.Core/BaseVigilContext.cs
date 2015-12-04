@@ -9,12 +9,12 @@ namespace Vigil.Data.Core
 {
     public abstract class BaseVigilContext<TContext> : DbContext where TContext : DbContext
     {
-        public VigilUser AffectedBy { get; protected set; }
+        public IVigilUser AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
         public IDbSet<Comment> Comments { get; protected set; }
 
-        protected BaseVigilContext(VigilUser affectedBy, DateTime now)
+        protected BaseVigilContext(IVigilUser affectedBy, DateTime now)
             : base("VigilContextConnection")
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);

@@ -13,7 +13,7 @@ namespace Vigil.Patron.Model
     {
         protected readonly PatronVigilContext context;
 
-        public PatronRepository(VigilUser affectedBy, DateTime now)
+        public PatronRepository(IVigilUser affectedBy, DateTime now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
             Contract.Requires<ArgumentException>(now != default(DateTime));
