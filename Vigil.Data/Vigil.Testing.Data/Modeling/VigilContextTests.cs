@@ -39,7 +39,7 @@ namespace Vigil.Testing.Data.Modeling
         {
             using (VigilContext context = new VigilContext(testUser, now))
             {
-                Assert.Equal(testUser, context.AffectedBy);
+                Assert.Equal(testUser, context.AffectedById);
                 Assert.Equal(now, context.Now);
             }
         }

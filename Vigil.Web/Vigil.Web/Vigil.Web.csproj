@@ -23,6 +23,7 @@
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\Vigil\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -255,6 +256,17 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Areas\Patron\Views\web.config" />
+    <Content Include="Areas\Patron\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Patron\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Patron\Views\Account\Index.cshtml" />
+    <Content Include="Areas\Patron\Views\Account\Account.cshtml" />
+    <Content Include="Areas\Patron\Views\Account\Create.cshtml" />
+    <Content Include="Areas\Patron\Views\Account\Edit.cshtml" />
+    <Content Include="Areas\Patron\Views\Account\Delete.cshtml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -266,6 +278,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
@@ -309,9 +322,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Patron\Models\" />
-    <Folder Include="Areas\Patron\Views\Account\" />
-    <Folder Include="Areas\Patron\Views\Patron\" />
-    <Folder Include="Areas\Patron\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -2,7 +2,6 @@
 using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core;
-using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons;
 using Vigil.Data.Core.Patrons.Types;
 
@@ -13,12 +12,11 @@ namespace Vigil.Patron.Model
         public IDbSet<PatronState> Patrons { get; protected set; }
         public IDbSet<PatronTypeState> PatronTypes { get; protected set; }
 
-        public PatronVigilContext() : base(new VigilUser(), DateTime.UtcNow) { }
-
-        public PatronVigilContext(IVigilUser affectedBy, DateTime now)
-            : base(affectedBy, now)
+        public PatronVigilContext(IKeyIdentity affectedById, DateTime now)
+            : base(affectedById, now)
         {
-            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentNullException>(affectedById != null);
+            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
             Contract.Requires<ArgumentException>(now != default(DateTime));
         }
 

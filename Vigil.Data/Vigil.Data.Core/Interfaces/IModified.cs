@@ -10,7 +10,7 @@ namespace Vigil.Data.Core
     {
         IVigilUser ModifiedBy { get; }
         DateTime? ModifiedOn { get; }
-        bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn);
+        bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn);
     }
 
     namespace Contracts
@@ -21,9 +21,10 @@ namespace Vigil.Data.Core
             public IVigilUser ModifiedBy { get; set; }
             public DateTime? ModifiedOn { get; set; }
 
-            public bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
+            public bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
             {
                 Contract.Requires<ArgumentNullException>(modifiedBy != null);
+                Contract.Requires<ArgumentException>(modifiedBy.Id != Guid.Empty);
                 Contract.Requires<ArgumentOutOfRangeException>(modifiedOn >= CreatedOn);
                 return default(bool);
             }
@@ -37,6 +38,7 @@ namespace Vigil.Data.Core
             [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
             private void ObjectInvariant()
             {
+                Contract.Invariant(ModifiedBy == null || ModifiedBy.Id != Guid.Empty);
                 Contract.Invariant(ModifiedOn == null || ModifiedOn.Value != default(DateTime));
                 Contract.Invariant(ModifiedOn == null || ModifiedOn.Value.Kind == DateTimeKind.Utc);
             }

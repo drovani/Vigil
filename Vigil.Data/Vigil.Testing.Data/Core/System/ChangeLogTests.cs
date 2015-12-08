@@ -51,7 +51,7 @@ namespace Vigil.Testing.Data.Core.System
 
             ChangeLog log = ChangeLog.CreateLog<KeyIdentity, Guid>(testIdentity.Id, i => i.Id, Guid.Empty, testIdentity.Id);
             Assert.Equal(testIdentity.Id, log.SourceId);
-            Assert.Equal("Identity", log.ModelName);
+            Assert.Equal("KeyIdentity", log.ModelName);
             Assert.Equal("Id", log.PropertyName);
             Assert.Equal(Guid.Empty.ToString(), log.OldValue);
             Assert.Equal(testIdentity.Id.ToString(), log.NewValue);
@@ -67,7 +67,7 @@ namespace Vigil.Testing.Data.Core.System
 
             ChangeLog log = ChangeLog.CreateLog<KeyIdentity, Guid>(testIdentity, i => i.Id, Guid.Empty, testIdentity.Id);
             Assert.Equal(testIdentity.Id, log.SourceId);
-            Assert.Equal("Identity", log.ModelName);
+            Assert.Equal("KeyIdentity", log.ModelName);
             Assert.Equal("Id", log.PropertyName);
             Assert.Equal(Guid.Empty.ToString(), log.OldValue);
             Assert.Equal(testIdentity.Id.ToString(), log.NewValue);

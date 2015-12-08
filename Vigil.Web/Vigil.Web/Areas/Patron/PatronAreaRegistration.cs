@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Web.Mvc;
 
 namespace Vigil.Web.Areas.Patron
@@ -18,14 +19,16 @@ namespace Vigil.Web.Areas.Patron
             Contract.Assume(context != null);
 
             context.MapRoute(
-                name: "Patron_with_AccountNumber",
-                url: "Patron/{accountNumber}/{controller}/{action}/{id}",
-                defaults: new { action = "Index", id = UrlParameter.Optional }
+                name: "Patron_without_AccountNumber",
+                url: "{culture}/Patron/{controller}/{action}",
+                defaults: new { culture = CultureInfo.CurrentCulture.Name, action = "Index" },
+                namespaces: new string[] { "Vigil.Web.Area.Patron.Controllers" }
             );
             context.MapRoute(
-                "Patron_default",
-                "Patron/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                name: "Patron_with_AccountNumber",
+                url: "{culture}/Patron/{accountNumber}/{controller}/{action}/{id}",
+                defaults: new { culture = CultureInfo.CurrentCulture.Name, action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[] { "Vigil.Web.Area.Patron.Controllers" }
             );
         }
     }

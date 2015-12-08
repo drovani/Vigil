@@ -10,7 +10,7 @@ namespace Vigil.Data.Core.System
         public Guid EntityId { get; protected set; }
         public string CommentText { get; protected set; }
 
-        public static Comment Create(Guid entityId, string commentText, IVigilUser createdBy, DateTime createdOn)
+        public static Comment Create(Guid entityId, string commentText, IKeyIdentity createdBy, DateTime createdOn)
         {
             Contract.Requires<ArgumentException>(entityId != Guid.Empty);
             Contract.Requires<ArgumentNullException>(commentText != null);
@@ -22,7 +22,7 @@ namespace Vigil.Data.Core.System
             {
                 EntityId = entityId,
                 CommentText = commentText.Trim(),
-                CreatedBy = createdBy,
+                CreatedBy =  new VigilUser() { Id = createdBy.Id, UserName = createdBy.Id.ToString() },
                 CreatedOn = createdOn.ToUniversalTime(),
                 Id = Guid.NewGuid()
             };
@@ -40,18 +40,18 @@ namespace Vigil.Data.Core.System
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime? DeletedOn { get; protected set; }
 
-        public bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
+        public bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
         {
-            ModifiedBy = modifiedBy;
+            ModifiedBy =  new VigilUser() { Id = modifiedBy.Id, UserName = modifiedBy.Id.ToString() };;
             ModifiedOn = modifiedOn;
             return true;
         }
 
-        public bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn)
+        public bool MarkDeleted(IKeyIdentity deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {
-                DeletedBy = deletedBy;
+                DeletedBy =  new VigilUser() { Id = deletedBy.Id, UserName = deletedBy.Id.ToString() };;
                 DeletedOn = deletedOn;
                 return true;
             }

@@ -14,7 +14,8 @@ namespace Vigil.Web
             routes.MapRoute(
                 name: "Default",
                 url: "{culture}/{controller}/{action}/{id}",
-                defaults: new { culture = CultureInfo.CurrentCulture.Name, controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { culture = CultureInfo.CurrentCulture.Name, controller = "Home", action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[] { "Vigil.Web.Controllers" }
             );
         }
     }

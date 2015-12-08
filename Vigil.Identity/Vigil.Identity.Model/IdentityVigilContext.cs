@@ -5,13 +5,12 @@ using System.Diagnostics.Contracts;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Vigil.Data.Core;
 using Vigil.Data.Core.Identity;
-using Vigil.Data.Core.System;
 
 namespace Vigil.Identity.Model
 {
     public class IdentityVigilContext : IdentityDbContext<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IVigilContext
     {
-        public IVigilUser AffectedBy { get; private set; }
+        public IKeyIdentity AffectedById { get; private set; }
         public DateTime Now { get; private set; }
 
         public IdentityVigilContext()
@@ -21,19 +20,21 @@ namespace Vigil.Identity.Model
             Database.SetInitializer<IdentityVigilContext>(new NullDatabaseInitializer<IdentityVigilContext>());
         }
 
-        public IdentityVigilContext(IVigilUser affectedBy, DateTime now)
+        public IdentityVigilContext(IKeyIdentity affectedById, DateTime now)
         {
-            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentNullException>(affectedById != null);
+            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
 
-            this.AffectedBy = affectedBy;
-            this.Now = now.ToUniversalTime();
+            AffectedById = affectedById;
+            Now = now.ToUniversalTime();
         }
 
-        public void SetAffectingUser(IVigilUser affectedBy)
+        public void SetAffectingUser(IKeyIdentity affectedById)
         {
-            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentNullException>(affectedById != null);
+            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
 
-            this.AffectedBy = affectedBy;
+            AffectedById = affectedById;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]

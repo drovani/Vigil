@@ -1,11 +1,10 @@
 ﻿using System;
-using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core
 {
     public interface IVigilContext
     {
-        IVigilUser AffectedBy { get; }
+        IKeyIdentity AffectedById { get; }
         DateTime Now { get; }
 
         int SaveChanges();

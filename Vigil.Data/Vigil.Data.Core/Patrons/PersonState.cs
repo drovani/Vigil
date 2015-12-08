@@ -58,18 +58,18 @@ namespace Vigil.Data.Core.Patrons
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime? DeletedOn { get; protected set; }
 
-        public bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
+        public bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
         {
-            ModifiedBy = modifiedBy;
+            ModifiedBy =  new VigilUser() { Id = modifiedBy.Id, UserName = modifiedBy.Id.ToString() };;
             ModifiedOn = modifiedOn;
             return true;
         }
 
-        public bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn)
+        public bool MarkDeleted(IKeyIdentity deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {
-                DeletedBy = deletedBy;
+                DeletedBy =  new VigilUser() { Id = deletedBy.Id, UserName = deletedBy.Id.ToString() };;
                 DeletedOn = deletedOn;
                 return true;
             }

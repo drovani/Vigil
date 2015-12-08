@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core.Identity;
-using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
@@ -27,7 +26,10 @@ namespace Vigil.Data.Core
             [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
             private void ObjectInvariant()
             {
-                Contract.Invariant(CreatedOn == default(DateTime) || CreatedOn.Kind == DateTimeKind.Utc);
+                Contract.Invariant(CreatedBy != null);
+                Contract.Invariant(CreatedBy.Id != Guid.Empty);
+                Contract.Invariant(CreatedOn != default(DateTime));
+                Contract.Invariant(CreatedOn.Kind == DateTimeKind.Utc);
             }
         }
 

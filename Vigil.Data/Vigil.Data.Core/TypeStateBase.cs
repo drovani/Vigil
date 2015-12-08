@@ -40,20 +40,20 @@ namespace Vigil.Data.Core
             return TypeName;
         }
 
-        public virtual bool MarkDeleted(IVigilUser deletedBy, DateTime deletedOn)
+        public virtual bool MarkDeleted(IKeyIdentity deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {
-                DeletedBy = deletedBy;
+                DeletedBy = new VigilUser() { Id = deletedBy.Id, UserName = deletedBy.Id.ToString() }; ;
                 DeletedOn = deletedOn.ToUniversalTime();
                 return true;
             }
             return false;
         }
 
-        public virtual bool MarkModified(IVigilUser modifiedBy, DateTime modifiedOn)
+        public virtual bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
         {
-            ModifiedBy = modifiedBy;
+            ModifiedBy =  new VigilUser() { Id = modifiedBy.Id, UserName = modifiedBy.Id.ToString() };;
             ModifiedOn = modifiedOn.ToUniversalTime();
             return true;
         }

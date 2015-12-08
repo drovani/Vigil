@@ -2,9 +2,8 @@
 
 namespace Vigil.Data.Core.Identity
 {
-    public interface IVigilUser
+    public interface IVigilUser : IKeyIdentity
     {
-        Guid Id { get; }
         string UserName { get; }
     }
 }

@@ -10,16 +10,14 @@ namespace Vigil.Web.Areas.Patron.Controllers
     public class AccountController : Controller
     {
         // Get: Patron/Account
-        [HttpGet]
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         // GET: Patron/850827/Account
         [HttpGet]
         public ActionResult Index(string accountNumber)
         {
+            if (String.IsNullOrEmpty(accountNumber))
+            {
+                return View();
+            }
             PatronRepository repo = new PatronRepository(User as VigilUser, DateTime.Now);
             PatronReadModel read = repo.GetByAccountNumber(accountNumber);
             if (read == null)
@@ -79,7 +77,9 @@ namespace Vigil.Web.Areas.Patron.Controllers
         [HttpGet]
         public ActionResult Delete(string accountNumber)
         {
-            return View();
+            PatronRepository repo = new PatronRepository(User as VigilUser, DateTime.UtcNow);
+            PatronReadModel readModel = repo.GetByAccountNumber(accountNumber);
+            return View(readModel);
         }
 
         // DELETE: Patron/850827/Account/Delete

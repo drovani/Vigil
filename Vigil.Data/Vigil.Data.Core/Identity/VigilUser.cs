@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Vigil.Data.Core.Identity
 {
-    public class VigilUser : IdentityUser<Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUser<Guid>, IVigilUser
+    public class VigilUser : IdentityUser<Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUser<Guid>, IVigilUser, IKeyIdentity
     {
         public VigilUser()
             : base()

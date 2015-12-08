@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Vigil.Data.Core;
 using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons;
 using Vigil.Data.Core.Patrons.Types;
@@ -18,13 +19,14 @@ namespace Vigil.Patron.Model
         [Import("AccountNumberGenerator", typeof(IValueGenerator<>))]
         protected IValueGenerator<string> AccountNumberGenerator { get; set; }
 
-        public PatronFactory(VigilUser affectedBy, DateTime now)
+        public PatronFactory(IKeyIdentity affectedById, DateTime now)
             : base()
         {
-            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentNullException>(affectedById != null);
+            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
             Contract.Requires<ArgumentException>(now != default(DateTime));
 
-            context = new PatronVigilContext(affectedBy, now);
+            context = new PatronVigilContext(affectedById, now);
         }
 
         public PatronReadModel CreatePatron(PatronCreateModel createPatron)
@@ -49,8 +51,8 @@ namespace Vigil.Patron.Model
             int savedChanges = ValidateAndSave(newPatron);
             if (savedChanges >= 0)
             {
-                PatronRepository repo = new PatronRepository(context.AffectedBy, context.Now);
-                return repo.Get(newPatron.Id);
+                PatronRepository repo = new PatronRepository(context.AffectedById, context.Now);
+                return repo.Get(newPatron);
             }
             else
             {
@@ -74,12 +76,12 @@ namespace Vigil.Patron.Model
 
                 if (context.Entry<PatronState>(patron).State == EntityState.Modified)
                 {
-                    patron.MarkModified(context.AffectedBy, context.Now);
+                    patron.MarkModified(context.AffectedById, context.Now);
                     int savedChanges = ValidateAndSave(patron);
                     if (savedChanges >= 0)
                     {
-                        PatronRepository repo = new PatronRepository(context.AffectedBy, context.Now);
-                        return repo.Get(updatePatron.Id);
+                        PatronRepository repo = new PatronRepository(context.AffectedById, context.Now);
+                        return repo.Get(updatePatron);
                     }
                 }
             }
@@ -110,8 +112,8 @@ namespace Vigil.Patron.Model
             var patron = context.Patrons.SingleOrDefault(pt => pt.AccountNumber == accountNumber.Trim());
             if (patron != null)
             {
-                patron.MarkDeleted(context.AffectedBy, context.Now);
-                context.Comments.Add(Comment.Create(patron.Id, reason, context.AffectedBy, context.Now));
+                patron.MarkDeleted(context.AffectedById, context.Now);
+                context.Comments.Add(Comment.Create(patron.Id, reason, context.AffectedById, context.Now));
                 int numChanges = context.SaveChanges();
                 return numChanges > 0;
             }

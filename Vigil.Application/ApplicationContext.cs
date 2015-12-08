@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using Vigil.Data.Core;
-using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Application
@@ -15,10 +14,11 @@ namespace Vigil.Application
         public IDbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
 
         [ImportingConstructor]
-        public ApplicationContext(IVigilUser affectedBy, DateTime now)
-            : base(affectedBy, now)
+        public ApplicationContext(IKeyIdentity affectedById, DateTime now)
+            : base(affectedById, now)
         {
-            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentNullException>(affectedById != null);
+            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
             Contract.Requires<ArgumentOutOfRangeException>(now != default(DateTime));
         }
 

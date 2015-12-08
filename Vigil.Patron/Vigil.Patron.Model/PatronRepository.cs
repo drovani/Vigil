@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
+using Vigil.Data.Core;
 using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons;
 
@@ -13,17 +14,17 @@ namespace Vigil.Patron.Model
     {
         protected readonly PatronVigilContext context;
 
-        public PatronRepository(IVigilUser affectedBy, DateTime now)
+        public PatronRepository(IKeyIdentity affectedById, DateTime now)
         {
-            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentNullException>(affectedById != null);
             Contract.Requires<ArgumentException>(now != default(DateTime));
 
-            context = new PatronVigilContext(affectedBy, now);
+            context = new PatronVigilContext(affectedById, now);
         }
 
-        public PatronReadModel Get(Guid id)
+        public PatronReadModel Get(IKeyIdentity id)
         {
-            return GetPatronReadModel(ps => ps.Id == id);
+            return GetPatronReadModel(ps => ps.Id == id.Id);
         }
         public PatronReadModel GetByAccountNumber(string accountNumber)
         {
