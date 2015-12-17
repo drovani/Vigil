@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.Patrons.Types;
-using Vigil.Data.Core.System;
 using Vigil.Data.Core.ValueObjects;
 
 namespace Vigil.Data.Core.Patrons
@@ -48,28 +46,28 @@ namespace Vigil.Data.Core.Patrons
 
         #region ICreated, IModified, IDeleted Implementation
         [Required]
-        public IVigilUser CreatedBy { get; protected set; }
+        public string CreatedBy { get; protected set; }
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime CreatedOn { get; protected set; }
-        public IVigilUser ModifiedBy { get; protected set; }
+        public string ModifiedBy { get; protected set; }
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime? ModifiedOn { get; protected set; }
-        public IVigilUser DeletedBy { get; protected set; }
+        public string DeletedBy { get; protected set; }
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime? DeletedOn { get; protected set; }
 
-        public bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
+        public bool MarkModified(string modifiedBy, DateTime modifiedOn)
         {
-            ModifiedBy =  new VigilUser() { Id = modifiedBy.Id, UserName = modifiedBy.Id.ToString() };;
+            ModifiedBy = modifiedBy;
             ModifiedOn = modifiedOn;
             return true;
         }
 
-        public bool MarkDeleted(IKeyIdentity deletedBy, DateTime deletedOn)
+        public bool MarkDeleted(string deletedBy, DateTime deletedOn)
         {
             if (DeletedBy == null && DeletedOn == null)
             {
-                DeletedBy =  new VigilUser() { Id = deletedBy.Id, UserName = deletedBy.Id.ToString() };;
+                DeletedBy = deletedBy;
                 DeletedOn = deletedOn;
                 return true;
             }

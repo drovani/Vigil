@@ -14,12 +14,13 @@ namespace Vigil.Patron.Model
     {
         protected readonly PatronVigilContext context;
 
-        public PatronRepository(IKeyIdentity affectedById, DateTime now)
+        public PatronRepository(string affectedBy, DateTime now)
         {
-            Contract.Requires<ArgumentNullException>(affectedById != null);
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
             Contract.Requires<ArgumentException>(now != default(DateTime));
 
-            context = new PatronVigilContext(affectedById, now);
+            context = new PatronVigilContext(affectedBy, now);
         }
 
         public PatronReadModel Get(IKeyIdentity id)
@@ -57,11 +58,11 @@ namespace Vigil.Patron.Model
                         AccountNumber = patronState.AccountNumber,
                         DisplayName = patronState.DisplayName,
                         IsAnonymous = patronState.IsAnonymous,
-                        CreatedBy = patronState.CreatedBy.UserName,
+                        CreatedBy = patronState.CreatedBy,
                         CreatedOn = patronState.CreatedOn,
-                        ModifiedBy = patronState.ModifiedBy != null ? patronState.ModifiedBy.UserName : null,
+                        ModifiedBy = patronState.ModifiedBy,
                         ModifiedOn = patronState.ModifiedOn,
-                        DeletedBy = patronState.DeletedBy != null ? patronState.DeletedBy.UserName : null,
+                        DeletedBy = patronState.DeletedBy,
                         DeletedOn = patronState.DeletedOn
                     });
             query.Load();
@@ -93,11 +94,11 @@ namespace Vigil.Patron.Model
                     AccountNumber = patronState.AccountNumber,
                     DisplayName = patronState.DisplayName,
                     IsAnonymous = patronState.IsAnonymous,
-                    CreatedBy = patronState.CreatedBy.UserName,
+                    CreatedBy = patronState.CreatedBy,
                     CreatedOn = patronState.CreatedOn,
-                    ModifiedBy = patronState.ModifiedBy != null ? patronState.ModifiedBy.UserName : null,
+                    ModifiedBy = patronState.ModifiedBy,
                     ModifiedOn = patronState.ModifiedOn,
-                    DeletedBy = patronState.DeletedBy != null ? patronState.DeletedBy.UserName : null,
+                    DeletedBy = patronState.DeletedBy,
                     DeletedOn = patronState.DeletedOn
                 };
             }

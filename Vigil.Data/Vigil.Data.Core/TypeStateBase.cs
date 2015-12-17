@@ -1,19 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Identity;
-using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
     public abstract class TypeStateBase : KeyIdentity, ICreated, IModified, IOrdered, IDeleted
     {
         [Required]
-        public IVigilUser CreatedBy { get; protected set; }
+        public string CreatedBy { get; protected set; }
         public DateTime CreatedOn { get; protected set; }
-        public IVigilUser ModifiedBy { get; protected set; }
+        public string ModifiedBy { get; protected set; }
         public DateTime? ModifiedOn { get; protected set; }
-        public IVigilUser DeletedBy { get; protected set; }
+        public string DeletedBy { get; protected set; }
         public DateTime? DeletedOn { get; protected set; }
 
         [Required, StringLength(250)]
@@ -38,24 +36,6 @@ namespace Vigil.Data.Core
 
             TypeName = typeName.Trim();
             return TypeName;
-        }
-
-        public virtual bool MarkDeleted(IKeyIdentity deletedBy, DateTime deletedOn)
-        {
-            if (DeletedBy == null && DeletedOn == null)
-            {
-                DeletedBy = new VigilUser() { Id = deletedBy.Id, UserName = deletedBy.Id.ToString() }; ;
-                DeletedOn = deletedOn.ToUniversalTime();
-                return true;
-            }
-            return false;
-        }
-
-        public virtual bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
-        {
-            ModifiedBy =  new VigilUser() { Id = modifiedBy.Id, UserName = modifiedBy.Id.ToString() };;
-            ModifiedOn = modifiedOn.ToUniversalTime();
-            return true;
         }
 
         [ContractInvariantMethod]

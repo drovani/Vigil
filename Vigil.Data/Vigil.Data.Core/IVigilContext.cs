@@ -4,7 +4,7 @@ namespace Vigil.Data.Core
 {
     public interface IVigilContext
     {
-        IKeyIdentity AffectedById { get; }
+        string AffectedBy { get; }
         DateTime Now { get; }
 
         int SaveChanges();

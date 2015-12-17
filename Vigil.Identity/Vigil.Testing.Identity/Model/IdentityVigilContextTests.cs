@@ -24,31 +24,16 @@ namespace Vigil.Testing.Identity.Model
             DateTime now = new DateTime(2015, 7, 30, 15, 10, 12, DateTimeKind.Utc);
             using (var context = new IdentityVigilContext(affectedBy, now))
             {
-                Assert.Equal(affectedBy, context.AffectedById);
+                Assert.Equal(affectedBy.UserName, context.AffectedBy);
                 Assert.Equal(now, context.Now);
             }
         }
 
-        [Fact]
-        public void SetAffectingUser_Sets_AffectedBy()
-        {
-            using (var context = new IdentityVigilContext())
-            {
-                Assert.Null(context.AffectedById);
-
-                VigilUser affectedBy = new VigilUser() { Id = Guid.NewGuid(), UserName = "TestUser" };
-                context.SetAffectingUser(affectedBy);
-                Assert.Equal(affectedBy, context.AffectedById);
-            }
-        }
-
-        [Fact]
         public void Create_Static_Method_Returns_New_IdentityVigilContext()
         {
             using (var context = IdentityVigilContext.Create())
             {
-
-                Assert.Null(context.AffectedById);
+                Assert.Null(context.AffectedBy);
                 Assert.NotEqual(DateTime.MinValue, context.Now);
             }
         }

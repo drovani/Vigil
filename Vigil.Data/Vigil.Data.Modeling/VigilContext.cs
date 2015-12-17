@@ -13,7 +13,7 @@ namespace Vigil.Data.Modeling
 {
     public class VigilContext : IdentityDbContext<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IVigilContext
     {
-        public IKeyIdentity AffectedById { get; protected set; }
+        public string AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
         public DbSet<ChangeLog> ChangeLogs { get; protected set; }
@@ -30,14 +30,14 @@ namespace Vigil.Data.Modeling
         {
             Database.SetInitializer<VigilContext>(new NullDatabaseInitializer<VigilContext>());
         }
-        public VigilContext(IKeyIdentity affectedById, DateTime now)
+        public VigilContext(string affectedBy, DateTime now)
             : this()
         {
-            AffectedById = affectedById;
+            AffectedBy = affectedBy;
             Now = now.ToUniversalTime();
         }
 
-        [System.Diagnostics.Contracts.ContractVerification(false)]
+        [ContractVerification(false)]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Contract.Assume(modelBuilder != null);

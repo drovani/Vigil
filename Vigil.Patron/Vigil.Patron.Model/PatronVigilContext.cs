@@ -12,11 +12,11 @@ namespace Vigil.Patron.Model
         public IDbSet<PatronState> Patrons { get; protected set; }
         public IDbSet<PatronTypeState> PatronTypes { get; protected set; }
 
-        public PatronVigilContext(IKeyIdentity affectedById, DateTime now)
-            : base(affectedById, now)
+        public PatronVigilContext(string affectedBy, DateTime now)
+            : base(affectedBy, now)
         {
-            Contract.Requires<ArgumentNullException>(affectedById != null);
-            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
             Contract.Requires<ArgumentException>(now != default(DateTime));
         }
 

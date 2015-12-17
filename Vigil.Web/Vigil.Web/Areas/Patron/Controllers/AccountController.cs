@@ -18,7 +18,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
             {
                 return View();
             }
-            PatronRepository repo = new PatronRepository(User as VigilUser, DateTime.Now);
+            PatronRepository repo = new PatronRepository(User.Identity.Name, DateTime.Now);
             PatronReadModel read = repo.GetByAccountNumber(accountNumber);
             if (read == null)
             {
@@ -38,7 +38,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
         [HttpPost]
         public ActionResult Create(PatronUpdateModel model)
         {
-            PatronFactory facto = new PatronFactory(User as VigilUser, DateTime.Now);
+            PatronFactory facto = new PatronFactory(User.Identity.Name, DateTime.Now);
             PatronReadModel read = facto.UpdatePatron(model);
             if (read == null)
             {
@@ -61,7 +61,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
         [HttpPut]
         public ActionResult Edit(string accountNumber, PatronUpdateModel model)
         {
-            PatronFactory factory = new PatronFactory(User as VigilUser, DateTime.Now);
+            PatronFactory factory = new PatronFactory(User.Identity.Name, DateTime.Now);
             PatronReadModel readModel = factory.UpdatePatron(model);
             if (readModel != null)
             {
@@ -77,7 +77,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
         [HttpGet]
         public ActionResult Delete(string accountNumber)
         {
-            PatronRepository repo = new PatronRepository(User as VigilUser, DateTime.UtcNow);
+            PatronRepository repo = new PatronRepository(User.Identity.Name, DateTime.UtcNow);
             PatronReadModel readModel = repo.GetByAccountNumber(accountNumber);
             return View(readModel);
         }
@@ -86,7 +86,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
         [HttpDelete]
         public ActionResult Delete(string accountNumber, string reason)
         {
-            PatronFactory facto = new PatronFactory(User as VigilUser, DateTime.Now);
+            PatronFactory facto = new PatronFactory(User.Identity.Name, DateTime.Now);
             if (facto.DeletePatron(accountNumber, reason))
             {
                 return RedirectToAction("Index");

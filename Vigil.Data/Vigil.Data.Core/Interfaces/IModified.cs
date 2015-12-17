@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Identity;
-using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
     [ContractClass(typeof(Contracts.IModifiedContract))]
     public interface IModified : ICreated
     {
-        IVigilUser ModifiedBy { get; }
+        string ModifiedBy { get; }
         DateTime? ModifiedOn { get; }
-        bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn);
     }
 
     namespace Contracts
@@ -18,19 +15,11 @@ namespace Vigil.Data.Core
         [ContractClassFor(typeof(IModified))]
         internal abstract class IModifiedContract : IModified
         {
-            public IVigilUser ModifiedBy { get; set; }
+            public abstract string CreatedBy { get; }
+            public abstract DateTime CreatedOn { get; }
+
+            public string ModifiedBy { get; set; }
             public DateTime? ModifiedOn { get; set; }
-
-            public bool MarkModified(IKeyIdentity modifiedBy, DateTime modifiedOn)
-            {
-                Contract.Requires<ArgumentNullException>(modifiedBy != null);
-                Contract.Requires<ArgumentException>(modifiedBy.Id != Guid.Empty);
-                Contract.Requires<ArgumentOutOfRangeException>(modifiedOn >= CreatedOn);
-                return default(bool);
-            }
-
-            public IVigilUser CreatedBy { get; set; }
-            public DateTime CreatedOn { get; set; }
 
             [ContractInvariantMethod]
             [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -38,7 +27,7 @@ namespace Vigil.Data.Core
             [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
             private void ObjectInvariant()
             {
-                Contract.Invariant(ModifiedBy == null || ModifiedBy.Id != Guid.Empty);
+                Contract.Invariant(ModifiedBy == null || ModifiedBy.Trim() != string.Empty);
                 Contract.Invariant(ModifiedOn == null || ModifiedOn.Value != default(DateTime));
                 Contract.Invariant(ModifiedOn == null || ModifiedOn.Value.Kind == DateTimeKind.Utc);
             }

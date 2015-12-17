@@ -80,7 +80,7 @@ namespace Vigil.Testing.Data.Core.ValueObjects
             Assert.True(address.Equals(address));
         }
         [Fact]
-        public void Addres_Equals_Is_Symmetric()
+        public void Address_Equals_Is_Symmetric()
         {
             Address address = new Address("Address1", "City", "State");
             Address address2 = new Address("Address2", "City", "State");

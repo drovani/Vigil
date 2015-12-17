@@ -9,19 +9,19 @@ namespace Vigil.Data.Core
 {
     public abstract class BaseVigilContext<TContext> : DbContext where TContext : DbContext
     {
-        public IKeyIdentity AffectedById { get; protected set; }
+        public string AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
         public IDbSet<Comment> Comments { get; protected set; }
 
-        protected BaseVigilContext(IKeyIdentity affectedById, DateTime now)
+        protected BaseVigilContext(string affectedBy, DateTime now)
             : base("VigilContextConnection")
         {
-            Contract.Requires<ArgumentNullException>(affectedById != null);
-            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
             Contract.Requires<AggregateException>(now != default(DateTime));
 
-            AffectedById = affectedById;
+            AffectedBy = affectedBy;
             Now = now.ToUniversalTime();
 
             Database.SetInitializer<TContext>(new NullDatabaseInitializer<TContext>());

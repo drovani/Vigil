@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core
 {
@@ -9,7 +8,7 @@ namespace Vigil.Data.Core
     public interface ICreated
     {
         [Required]
-        IVigilUser CreatedBy { get; }
+        string CreatedBy { get; }
         DateTime CreatedOn { get; }
     }
 
@@ -18,7 +17,7 @@ namespace Vigil.Data.Core
         [ContractClassFor(typeof(ICreated))]
         internal abstract class ICreatedContract : ICreated
         {
-            public IVigilUser CreatedBy { get; set; }
+            public string CreatedBy { get; set; }
             public DateTime CreatedOn { get; set; }
 
             [ContractInvariantMethod]
@@ -27,7 +26,7 @@ namespace Vigil.Data.Core
             private void ObjectInvariant()
             {
                 Contract.Invariant(CreatedBy != null);
-                Contract.Invariant(CreatedBy.Id != Guid.Empty);
+                Contract.Invariant(CreatedBy.Trim() != string.Empty);
                 Contract.Invariant(CreatedOn != default(DateTime));
                 Contract.Invariant(CreatedOn.Kind == DateTimeKind.Utc);
             }

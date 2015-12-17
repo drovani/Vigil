@@ -109,6 +109,7 @@
     <Compile Include="BaseVigilContext.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Identity\IVigilUser.cs" />
+    <Compile Include="Interfaces\ExtensionMethods.cs" />
     <Compile Include="Patrons\PatronState.cs" />
     <Compile Include="Patrons\PersonState.cs" />
     <Compile Include="KeyIdentity.cs" />

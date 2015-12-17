@@ -14,11 +14,11 @@ namespace Vigil.Application
         public IDbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
 
         [ImportingConstructor]
-        public ApplicationContext(IKeyIdentity affectedById, DateTime now)
-            : base(affectedById, now)
+        public ApplicationContext(string affectedBy, DateTime now)
+            : base(affectedBy, now)
         {
-            Contract.Requires<ArgumentNullException>(affectedById != null);
-            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
             Contract.Requires<ArgumentOutOfRangeException>(now != default(DateTime));
         }
 

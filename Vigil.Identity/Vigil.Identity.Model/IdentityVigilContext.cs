@@ -10,31 +10,29 @@ namespace Vigil.Identity.Model
 {
     public class IdentityVigilContext : IdentityDbContext<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IVigilContext
     {
-        public IKeyIdentity AffectedById { get; private set; }
+        public string AffectedBy { get; private set; }
         public DateTime Now { get; private set; }
 
         public IdentityVigilContext()
             : base("VigilContextConnection")
         {
             Now = DateTime.UtcNow;
-            Database.SetInitializer<IdentityVigilContext>(new NullDatabaseInitializer<IdentityVigilContext>());
+            AffectedBy = "ReadOnly";
+            Database.SetInitializer(new NullDatabaseInitializer<IdentityVigilContext>());
         }
 
-        public IdentityVigilContext(IKeyIdentity affectedById, DateTime now)
+        public IdentityVigilContext(VigilUser affectedBy, DateTime now) :
+            this(affectedBy.UserName, now)
         {
-            Contract.Requires<ArgumentNullException>(affectedById != null);
-            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+        }
+        public IdentityVigilContext(string affectedBy, DateTime now)
+        {
+            Contract.Requires<ArgumentNullException>(affectedBy != null);
+            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
 
-            AffectedById = affectedById;
+            AffectedBy = affectedBy;
             Now = now.ToUniversalTime();
-        }
-
-        public void SetAffectingUser(IKeyIdentity affectedById)
-        {
-            Contract.Requires<ArgumentNullException>(affectedById != null);
-            Contract.Requires<ArgumentException>(affectedById.Id != Guid.Empty);
-
-            AffectedById = affectedById;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
@@ -45,7 +43,7 @@ namespace Vigil.Identity.Model
             return new IdentityVigilContext();
         }
 
-        [System.Diagnostics.Contracts.ContractVerification(false)]
+        [ContractVerification(false)]
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -139,6 +139,7 @@
   <ItemGroup>
     <Compile Include="Core\Attributes\DateTimeKindAttributeTests.cs" />
     <Compile Include="Core\Attributes\NotImplementedAttributeTests.cs" />
+    <Compile Include="Core\ExtensionMethodsTests.cs" />
     <Compile Include="Core\IdentityTests.cs" />
     <Compile Include="Core\Patrons\PatronStateTests.cs" />
     <Compile Include="Core\Patrons\PersonStateTests.cs" />

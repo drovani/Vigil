@@ -25,7 +25,7 @@ namespace Vigil.Testing.Data.Modeling
         [Fact]
         public void Initialize_And_Create_Database_Cause_Database_To_Exists()
         {
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
                 Database.SetInitializer<VigilContext>(new DropCreateDatabaseAlways<VigilContext>());
                 context.Database.Initialize(true);
@@ -37,9 +37,9 @@ namespace Vigil.Testing.Data.Modeling
         [Fact]
         public void Explicit_Constructor_Sets_AffectedBy_And_Now()
         {
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
-                Assert.Equal(testUser, context.AffectedById);
+                Assert.Equal(testUser.UserName, context.AffectedBy);
                 Assert.Equal(now, context.Now);
             }
         }
@@ -48,7 +48,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUser_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
                 tableName = GetTableName<VigilUser>(context);
             }
@@ -59,7 +59,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUserClaim_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
                 tableName = GetTableName<VigilUserClaim>(context);
             }
@@ -69,7 +69,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUserLogin_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
                 tableName = GetTableName<VigilUserLogin>(context);
             }
@@ -80,7 +80,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilUserRole_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
                 tableName = GetTableName<VigilUserRole>(context);
             }
@@ -91,7 +91,7 @@ namespace Vigil.Testing.Data.Modeling
         public void Validate_VigilRole_TableName_Is_Correct()
         {
             string tableName;
-            using (VigilContext context = new VigilContext(testUser, now))
+            using (VigilContext context = new VigilContext(testUser.UserName, now))
             {
                 tableName = GetTableName<VigilRole>(context);
             }

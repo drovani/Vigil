@@ -45,43 +45,5 @@ namespace Vigil.Testing.Data.Core
             TestTypeStateBase typeBase = new TestTypeStateBase("test type");
             Assert.Throws<ArgumentNullException>(() => typeBase.SetTypeName(null));
         }
-
-        [Fact]
-        public void MarkDeleted_Sets_Deleted_Properties()
-        {
-            TestTypeStateBase typeBase = new TestTypeStateBase("test type");
-            VigilUser testUser = new VigilUser { UserName = "Test User" };
-            DateTime now = new DateTime(2015, 5, 12, 12, 17, 00, DateTimeKind.Utc);
-            bool marked = typeBase.MarkDeleted(testUser, now);
-
-            Assert.True(marked);
-            Assert.Equal(now, typeBase.DeletedOn);
-            Assert.Equal(testUser, typeBase.DeletedBy);
-        }
-        [Fact]
-        public void MarkDeleted_Returns_False_If_Deleted_Properties_Are_Already_Set()
-        {
-            TestTypeStateBase typeBase = new TestTypeStateBase("test type");
-            VigilUser testUser = new VigilUser { UserName = "Test User" };
-            DateTime now = new DateTime(2015, 5, 12, 12, 17, 00, DateTimeKind.Utc);
-            bool initialMarked = typeBase.MarkDeleted(testUser, now);
-            bool triedAgain = typeBase.MarkDeleted(testUser, now.AddDays(1));
-
-            Assert.True(initialMarked);
-            Assert.False(triedAgain);
-            Assert.Equal(now, typeBase.DeletedOn);
-            Assert.Equal(testUser, typeBase.DeletedBy);
-        }
-        [Fact]
-        public void MarkModified_Sets_Modified_Properties()
-        {
-            TestTypeStateBase typeBase = new TestTypeStateBase("test type");
-            VigilUser testUser = new VigilUser { UserName = "Test User" };
-            DateTime now = new DateTime(2015, 5, 12, 12, 17, 00, DateTimeKind.Utc);
-            typeBase.MarkModified(testUser, now);
-
-            Assert.Equal(now, typeBase.ModifiedOn);
-            Assert.Equal(testUser, typeBase.ModifiedBy);
-        }
     }
 }

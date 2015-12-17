@@ -7,6 +7,8 @@ namespace Vigil.Data.Core.Identity
 {
     public class VigilUser : IdentityUser<Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>, IUser<Guid>, IVigilUser, IKeyIdentity
     {
+        public override string UserName { get; set; }
+
         public VigilUser()
             : base()
         {
