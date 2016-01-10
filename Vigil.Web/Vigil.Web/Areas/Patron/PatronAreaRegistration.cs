@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Web.Mvc;
+using Vigil.Web.Mvc;
 
 namespace Vigil.Web.Areas.Patron
 {
@@ -21,14 +22,16 @@ namespace Vigil.Web.Areas.Patron
             context.MapRoute(
                 name: "Patron_without_AccountNumber",
                 url: "{culture}/Patron/{controller}/{action}",
-                defaults: new { culture = CultureInfo.CurrentCulture.Name, action = "Index" },
-                namespaces: new string[] { "Vigil.Web.Area.Patron.Controllers" }
+                defaults: new { controller = "Search", action = "Index", area = AreaName, culture = "en-US" },
+                namespaces: new string[] { "Vigil.Web.Areas.Patron.Controllers" },
+                constraints: new { controller = @"(Search)" }
             );
             context.MapRoute(
                 name: "Patron_with_AccountNumber",
                 url: "{culture}/Patron/{accountNumber}/{controller}/{action}/{id}",
-                defaults: new { culture = CultureInfo.CurrentCulture.Name, action = "Index", id = UrlParameter.Optional },
-                namespaces: new string[] { "Vigil.Web.Area.Patron.Controllers" }
+                defaults: new { action = "Index", id = UrlParameter.Optional, area = AreaName },
+                namespaces: new string[] { "Vigil.Web.Areas.Patron.Controllers" },
+                constraints: new { controller = @"(Account)" }
             );
         }
     }

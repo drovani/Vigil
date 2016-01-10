@@ -22,23 +22,23 @@ namespace Vigil.Data.Core
 
         /// <summary>Compares two Vigil.Data.Core.Identity classes for equality by Id.
         /// </summary>
-        /// <param name="other">The Vigil.Data.Core.Identity class to compare Id values.</param>
+        /// <param name="obj">The Vigil.Data.Core.Identity class to compare Id values.</param>
         /// <returns>Returns true if the two Id values are equal; otherwise, false.</returns>
-        public override bool Equals(object other)
+        public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, other))
+            if (ReferenceEquals(null, obj))
             {
                 return false;
             }
-            if (ReferenceEquals(this, other))
+            if (ReferenceEquals(this, obj))
             {
                 return true;
             }
-            if (other.GetType() != this.GetType())
+            if (obj.GetType() != this.GetType())
             {
                 return false;
             }
-            return Equals((KeyIdentity)other); 
+            return Equals((KeyIdentity)obj); 
         }
 
         public bool Equals(KeyIdentity other)

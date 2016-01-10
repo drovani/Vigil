@@ -1,12 +1,13 @@
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
+using System.Data.Entity.Migrations;
+using System.Diagnostics.Contracts;
+using Vigil.Data.Core.Identity;
+
 namespace Vigil.Data.Modeling.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    using System.Diagnostics.Contracts;
-    using Microsoft.AspNet.Identity;
-    using Microsoft.AspNet.Identity.EntityFramework;
-    using Vigil.Data.Core.Identity;
-
+    [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal sealed class VigilDbConfiguration : DbMigrationsConfiguration<VigilContext>
     {
         public VigilDbConfiguration()
@@ -40,11 +41,13 @@ namespace Vigil.Data.Modeling.Migrations
 
         private string HashPassword(VigilContext context, string password)
         {
+            string hashedPassword;
             using (var uman = new UserManager<VigilUser, Guid>(new UserStore<VigilUser, VigilRole, Guid, VigilUserLogin, VigilUserRole, VigilUserClaim>(context)))
             {
                 Contract.Assume(uman.PasswordHasher != null);
-                return uman.PasswordHasher.HashPassword(password);
+                hashedPassword = uman.PasswordHasher.HashPassword(password);
             }
+            return hashedPassword;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Vigil.Patron.Model
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            throw new System.NotImplementedException();
+            yield return ValidationResult.Success;
         }
 
         [ContractInvariantMethod]

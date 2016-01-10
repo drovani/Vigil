@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Web.Mvc;
+using Vigil.Web.Mvc;
 
 namespace Vigil.Web
 {
@@ -11,6 +12,7 @@ namespace Vigil.Web
         {
             Contract.Requires<ArgumentNullException>(filters != null);
 
+            filters.Add(new CultureFilter());
             filters.Add(new HandleErrorAttribute());
         }
     }

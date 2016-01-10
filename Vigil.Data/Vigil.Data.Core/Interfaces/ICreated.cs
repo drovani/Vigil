@@ -26,7 +26,7 @@ namespace Vigil.Data.Core
             private void ObjectInvariant()
             {
                 Contract.Invariant(CreatedBy != null);
-                Contract.Invariant(CreatedBy.Trim() != string.Empty);
+                Contract.Invariant(!string.IsNullOrWhiteSpace(CreatedBy));
                 Contract.Invariant(CreatedOn != default(DateTime));
                 Contract.Invariant(CreatedOn.Kind == DateTimeKind.Utc);
             }

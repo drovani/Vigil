@@ -29,7 +29,7 @@ namespace Vigil.Identity.Model
         public IdentityVigilContext(string affectedBy, DateTime now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(affectedBy));
 
             AffectedBy = affectedBy;
             Now = now.ToUniversalTime();

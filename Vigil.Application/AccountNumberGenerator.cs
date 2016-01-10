@@ -3,29 +3,30 @@ using System.ComponentModel.Composition;
 using System.Data;
 using System.Data.Entity;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Application
 {
     [Export("AccountNumberGenerator", typeof(IValueGenerator<>))]
-    public class AccountNumberGenerator : IValueGenerator<string>, IDisposable
+    public sealed class AccountNumberGenerator : IValueGenerator<string>, IDisposable
     {
-        protected IApplicationContext applicationContext { get; set; }
+        private IApplicationContext ApplicationContext { get; set; }
 
         [ImportingConstructor]
         public AccountNumberGenerator([Import(typeof(IApplicationContext))] IApplicationContext context)
         {
             Contract.Requires<ArgumentNullException>(context != null);
 
-            applicationContext = context;
+            ApplicationContext = context;
         }
 
         public string GetNextValue(DateTime now)
         {
-            using (DbContextTransaction trans = applicationContext.BeginTransaction(IsolationLevel.RepeatableRead))
+            using (DbContextTransaction trans = ApplicationContext.BeginTransaction(IsolationLevel.RepeatableRead))
             {
-                ApplicationSetting setting = applicationContext.ApplicationSettings.SingleOrDefault(appSet => appSet.SettingName == "AccountNumber");
+                ApplicationSetting setting = ApplicationContext.ApplicationSettings.SingleOrDefault(appSet => appSet.SettingName == "AccountNumber");
                 if (setting == null)
                 {
                     setting = new ApplicationSetting()
@@ -34,14 +35,14 @@ namespace Vigil.Application
                         SettingValue = "0"
                     };
                 }
-                int numericValue = Int32.Parse(setting.SettingValue) + 1;
-                while (numericValue.ToString().Contains("666"))
+                int numericValue = Int32.Parse(setting.SettingValue, CultureInfo.InvariantCulture) + 1;
+                while (numericValue.ToString(CultureInfo.InvariantCulture).Contains("666"))
                 {
                     numericValue++;
                 }
-                setting.SettingValue = numericValue.ToString();
+                setting.SettingValue = numericValue.ToString(CultureInfo.InvariantCulture);
                 setting.LastUpdated = now;
-                applicationContext.SaveChanges();
+                ApplicationContext.SaveChanges();
                 trans.Commit();
 
                 return setting.SettingValue;
@@ -50,9 +51,9 @@ namespace Vigil.Application
 
         public void Dispose()
         {
-            if (applicationContext != null)
+            if (ApplicationContext != null)
             {
-                applicationContext.Dispose();
+                ApplicationContext.Dispose();
             }
         }
 
@@ -62,7 +63,7 @@ namespace Vigil.Application
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(applicationContext != null);
+            Contract.Invariant(ApplicationContext != null);
         }
     }
 }

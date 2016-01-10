@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -7,53 +6,25 @@ using Vigil.Validation;
 
 namespace Vigil
 {
-    public abstract class ModelFactory<TCreateModel, TReadModel, TUpdateModel>
+    public abstract class ModelFactory<TCreateModel>
     {
-        public ICollection<ValidationResult> ValidationResults { get; protected set; }
-        public ICollection<IRule<TCreateModel>> PersistenceRules { get; protected set; }
-        public ICollection<IRule<TCreateModel>> DomainRules { get; protected set; }
+        public abstract ICollection<ValidationResult> ValidationResults { get; }
+        public abstract ICollection<IRule<TCreateModel>> DomainRules { get; }
 
-        public ModelFactory()
-        {
-            ValidationResults = new Collection<ValidationResult>();
-            PersistenceRules = new Collection<IRule<TCreateModel>>();
-            DomainRules = new Collection<IRule<TCreateModel>>();
-        }
-
-        public bool IsPersistenceValid(TCreateModel create)
+        public virtual bool IsDomainValid(TCreateModel create)
         {
             ValidationResults.Clear();
             if (create == null)
             {
                 return false;
             }
-
-            foreach (var rule in PersistenceRules)
+            var orderedRules = DomainRules.OrderBy(pr => pr.Ordinal).ThenBy(pr => pr.RuleId);
+            foreach (var rule in orderedRules)
             {
                 ValidationResult result = rule.Validate(create);
                 if (ValidationResult.Success != result)
                 {
                     ValidationResults.Add(result);
-                }
-            }
-            return !ValidationResults.Any();
-        }
-        public bool IsDomainValid(TCreateModel create)
-        {
-            ValidationResults.Clear();
-            if (create == null)
-            {
-                return false;
-            }
-            if (IsPersistenceValid(create))
-            {
-                foreach (var rule in DomainRules)
-                {
-                    ValidationResult result = rule.Validate(create);
-                    if (ValidationResult.Success != result)
-                    {
-                        ValidationResults.Add(result);
-                    }
                 }
             }
             return !ValidationResults.Any();
@@ -65,7 +36,6 @@ namespace Vigil
         private void ObjectInvariant()
         {
             Contract.Invariant(ValidationResults != null);
-            Contract.Invariant(PersistenceRules != null);
             Contract.Invariant(DomainRules != null);
         }
     }

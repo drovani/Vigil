@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Web.Mvc;
-using Vigil.Data.Core.Identity;
 using Vigil.Patron.Model;
 
 namespace Vigil.Web.Areas.Patron.Controllers
@@ -9,16 +8,15 @@ namespace Vigil.Web.Areas.Patron.Controllers
     [ContractVerification(false)]
     public class AccountController : Controller
     {
-        // Get: Patron/Account
         // GET: Patron/850827/Account
         [HttpGet]
         public ActionResult Index(string accountNumber)
         {
-            if (String.IsNullOrEmpty(accountNumber))
+            if (string.IsNullOrEmpty(accountNumber))
             {
                 return View();
             }
-            PatronRepository repo = new PatronRepository(User.Identity.Name, DateTime.Now);
+            PatronRepository repo = new PatronRepository();
             PatronReadModel read = repo.GetByAccountNumber(accountNumber);
             if (read == null)
             {
@@ -27,42 +25,20 @@ namespace Vigil.Web.Areas.Patron.Controllers
             return View("Account", read);
         }
 
-        // GET: Patron/Account/Create
-        [HttpGet]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Patron/Account/Create
-        [HttpPost]
-        public ActionResult Create(PatronUpdateModel model)
-        {
-            PatronFactory facto = new PatronFactory(User.Identity.Name, DateTime.Now);
-            PatronReadModel read = facto.UpdatePatron(model);
-            if (read == null)
-            {
-                return View(model);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Account", new { area = "Patron", accountNumber = read.AccountNumber });
-            }
-        }
-
         // GET: Patron/850827/Account/Edit
         [HttpGet]
         public ActionResult Edit(string accountNumber)
         {
-            return View();
+            PatronReadModel model = new PatronRepository().GetByAccountNumber(accountNumber);
+            return View(model);
         }
 
-        // POST: Patron/850827/Account/Edit
+        // PUT: Patron/850827/Account/Edit
         [HttpPut]
         public ActionResult Edit(string accountNumber, PatronUpdateModel model)
         {
             PatronFactory factory = new PatronFactory(User.Identity.Name, DateTime.Now);
-            PatronReadModel readModel = factory.UpdatePatron(model);
+            PatronReadModel readModel = factory.UpdatePatron(model, accountNumber);
             if (readModel != null)
             {
                 return RedirectToAction("Index", "Account", new { accountNumber = readModel.AccountNumber });
@@ -77,7 +53,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
         [HttpGet]
         public ActionResult Delete(string accountNumber)
         {
-            PatronRepository repo = new PatronRepository(User.Identity.Name, DateTime.UtcNow);
+            PatronRepository repo = new PatronRepository();
             PatronReadModel readModel = repo.GetByAccountNumber(accountNumber);
             return View(readModel);
         }

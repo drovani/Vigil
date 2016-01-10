@@ -14,10 +14,11 @@ namespace Vigil.Data.Core.System
         {
             Contract.Requires<ArgumentException>(entityId != Guid.Empty);
             Contract.Requires<ArgumentNullException>(commentText != null);
-            Contract.Requires<ArgumentException>(commentText.Trim() != String.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(commentText));
             Contract.Requires<ArgumentNullException>(createdBy != null);
-            Contract.Requires<ArgumentException>(createdBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(createdBy));
             Contract.Requires<ArgumentOutOfRangeException>(createdOn != default(DateTime));
+            Contract.Ensures(Contract.Result<Comment>() != null);
 
             return new Comment
             {

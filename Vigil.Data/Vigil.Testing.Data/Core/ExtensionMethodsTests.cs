@@ -29,8 +29,9 @@ namespace Vigil.Testing.Data.Core
             Modified modded = new Modified() { CreatedBy = "CreateUser", CreatedOn = DateTime.UtcNow.AddDays(-1) };
             DateTime now = DateTime.UtcNow;
 
-            InterfaceExtensionMethods.MarkModified(modded, "ModifyingUser", now);
+            bool changed = InterfaceExtensionMethods.MarkModified(modded, "ModifyingUser", now);
 
+            Assert.True(changed);
             Assert.Equal("ModifyingUser", modded.ModifiedBy);
             Assert.Equal(now, modded.ModifiedOn);
         }
@@ -41,8 +42,23 @@ namespace Vigil.Testing.Data.Core
             Deleted deled = new Deleted() { CreatedBy = "CreateUser", CreatedOn = DateTime.UtcNow.AddDays(-1) };
             DateTime now = DateTime.UtcNow;
 
-            InterfaceExtensionMethods.MarkDeleted(deled, "DeletingUser", now);
+            bool changed = InterfaceExtensionMethods.MarkDeleted(deled, "DeletingUser", now);
 
+            Assert.True(changed);
+            Assert.Equal("DeletingUser", deled.DeletedBy);
+            Assert.Equal(now, deled.DeletedOn);
+        }
+
+        [Fact]
+        public void MarkDeleted_Second_Time_Makes_No_Changes()
+        {
+            Deleted deled = new Deleted() { CreatedBy = "CreateUser", CreatedOn = DateTime.UtcNow.AddDays(-1) };
+            DateTime now = DateTime.UtcNow;
+            bool changed = InterfaceExtensionMethods.MarkDeleted(deled, "DeletingUser", now);
+            bool notChanged = InterfaceExtensionMethods.MarkDeleted(deled, "ShouldNotDeleteUser", now.AddDays(1));
+
+            Assert.True(changed);
+            Assert.False(notChanged);
             Assert.Equal("DeletingUser", deled.DeletedBy);
             Assert.Equal(now, deled.DeletedOn);
         }

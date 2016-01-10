@@ -13,7 +13,7 @@ namespace Vigil.Testing.Data.Core.ValueObjects
         [Fact]
         public void Constructor_Sets_Properties()
         {
-            FullName fullname = new FullName(title: "Title", givenName: "GivenName", middleName: "MiddleName", familyname: "FamilyName", suffix: "Suffix");
+            FullName fullname = new FullName(title: "Title", givenName: "GivenName", middleName: "MiddleName", familyName: "FamilyName", suffix: "Suffix");
 
             Assert.Equal("Title", fullname.Title);
             Assert.Equal("GivenName", fullname.GivenName);
@@ -25,7 +25,7 @@ namespace Vigil.Testing.Data.Core.ValueObjects
         [Fact]
         public void CopyConstructor_Sets_Properties()
         {
-            FullName originalname = new FullName(title: "Title", givenName: "GivenName", middleName: "MiddleName", familyname: "FamilyName", suffix: "Suffix");
+            FullName originalname = new FullName(title: "Title", givenName: "GivenName", middleName: "MiddleName", familyName: "FamilyName", suffix: "Suffix");
             FullName fullname = new FullName(originalname);
 
             Assert.Equal("Title", fullname.Title);

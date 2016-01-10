@@ -126,6 +126,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -136,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomainEvents.cs" />
-    <Compile Include="Handles.cs" />
+    <Compile Include="IHandles.cs" />
     <Compile Include="IDomainEvent.cs" />
     <Compile Include="IValueGenerator.cs" />
     <Compile Include="Validation\IRule.cs" />

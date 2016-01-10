@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
-using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core.System
 {

@@ -150,12 +150,15 @@
     <Compile Include="PatronCreateModel.cs" />
     <Compile Include="PatronFactory.cs" />
     <Compile Include="PatronReadModel.cs" />
+    <Compile Include="PatronReadOnlyVigilContext.cs" />
     <Compile Include="PatronRepository.cs" />
+    <Compile Include="PatronSearchModel.cs" />
     <Compile Include="PatronUpdateModel.cs" />
     <Compile Include="PatronVigilContext.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\PatronType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

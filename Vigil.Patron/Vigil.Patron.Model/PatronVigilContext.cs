@@ -9,15 +9,23 @@ namespace Vigil.Patron.Model
 {
     public class PatronVigilContext : BaseVigilContext<PatronVigilContext>, IVigilContext
     {
-        public IDbSet<PatronState> Patrons { get; protected set; }
-        public IDbSet<PatronTypeState> PatronTypes { get; protected set; }
+        public DbSet<PatronState> Patrons { get; protected set; }
+        public DbSet<PatronTypeState> PatronTypes { get; protected set; }
 
         public PatronVigilContext(string affectedBy, DateTime now)
             : base(affectedBy, now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(affectedBy));
             Contract.Requires<ArgumentException>(now != default(DateTime));
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PatronState>();
+            modelBuilder.Entity<PatronTypeState>();
+
+            base.OnModelCreating(modelBuilder);
         }
 
         [ContractInvariantMethod]

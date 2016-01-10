@@ -9,9 +9,9 @@ namespace Vigil.Data.Core.Patrons
     public class PersonState : KeyIdentity, ICreated, IModified, IDeleted
     {
         [Required]
-        public virtual PatronState Patron { get; protected set; }
+        public PatronState Patron { get; protected set; }
         [Required]
-        public virtual PersonTypeState PersonType { get; protected set; }
+        public PersonTypeState PersonType { get; protected set; }
         [Required]
         public FullName FullName { get; protected set; }
 

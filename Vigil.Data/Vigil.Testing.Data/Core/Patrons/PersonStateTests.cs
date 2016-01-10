@@ -16,7 +16,7 @@ namespace Vigil.Testing.Data.Core.Patrons
         public void Create_Method_Uses_Proper_Defaults()
         {
             PatronState patron = PatronState.Create(PatronTypeState.Create("PatronTypeName"), "PatronDisplayName");
-            FullName fullName = new FullName(givenName: "FirstName", familyname: "LastName");
+            FullName fullName = new FullName(givenName: "FirstName", familyName: "LastName");
             PersonTypeState personType = PersonTypeState.Create("PersonTypeName");
             PersonState person = PersonState.Create(patron, personType, fullName);
 
@@ -30,7 +30,7 @@ namespace Vigil.Testing.Data.Core.Patrons
         public void Create_Method_Sets_Properties()
         {
             PatronState patron = PatronState.Create(PatronTypeState.Create("PatronTypeName"), "PatronDisplayName");
-            FullName fullName = new FullName(givenName: "FirstName", familyname: "LastName");
+            FullName fullName = new FullName(givenName: "FirstName", familyName: "LastName");
             PersonTypeState personType = PersonTypeState.Create("PersonTypeName");
 
             PersonState person = PersonState.Create(patron, personType, fullName, new DateTime(1981, 8, 25, 0, 0, 0, DateTimeKind.Utc), new DateAccuracy('U', 'A', 'E'));

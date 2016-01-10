@@ -11,7 +11,7 @@ namespace Vigil.Data.Core.Patrons
     public class PatronState : KeyIdentity, ICreated, IModified, IDeleted
     {
         [Required]
-        public virtual PatronTypeState PatronType { get; set; }
+        public PatronTypeState PatronType { get; set; }
         public string AccountNumber { get; set; }
         [Required]
         [StringLength(250)]
@@ -19,29 +19,28 @@ namespace Vigil.Data.Core.Patrons
         [DefaultValue(false)]
         public bool IsAnonymous { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; protected set; }
+        public virtual ICollection<Comment> Comments { get; }
 
         protected PatronState(PatronTypeState patronType, string displayName)
         {
             Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(displayName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(displayName.Trim()));
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(displayName));
 
             PatronType = patronType;
             DisplayName = displayName.Trim();
-            Comments = new HashSet<Comment>();
         }
 
         public static PatronState Create(PatronTypeState patronType, string displayName, string accountNumber = null, bool isAnonymous = false)
         {
             Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(displayName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(displayName.Trim()));
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(displayName));
             Contract.Ensures(Contract.Result<PatronState>() != null);
 
             return new PatronState(patronType, displayName)
             {
-                AccountNumber = String.IsNullOrWhiteSpace(accountNumber) ? null : accountNumber.Trim(),
+                AccountNumber = string.IsNullOrWhiteSpace(accountNumber) ? null : accountNumber.Trim(),
                 IsAnonymous = isAnonymous
             };
         }
@@ -66,7 +65,7 @@ namespace Vigil.Data.Core.Patrons
         private void ObjectInvariant()
         {
             Contract.Invariant(DisplayName != null);
-            Contract.Invariant(!String.IsNullOrWhiteSpace(DisplayName));
+            Contract.Invariant(!string.IsNullOrWhiteSpace(DisplayName));
             Contract.Invariant(PatronType != null);
         }
     }

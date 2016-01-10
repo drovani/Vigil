@@ -26,7 +26,7 @@ namespace Vigil.Data.Core
             [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
             private void ObjectInvariant()
             {
-                Contract.Invariant(DeletedBy == null || DeletedBy.Trim() != string.Empty);
+                Contract.Invariant(DeletedBy == null || !string.IsNullOrWhiteSpace(DeletedBy));
                 Contract.Invariant(DeletedOn == null || DeletedOn.Value != default(DateTime));
                 Contract.Invariant(DeletedOn == null || DeletedOn.Value.Kind == DateTimeKind.Utc);
             }

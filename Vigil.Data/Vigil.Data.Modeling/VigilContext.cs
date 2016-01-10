@@ -47,7 +47,7 @@ namespace Vigil.Data.Modeling
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             // Remove the name "State" from the end of all of the ClrTypes.
-            modelBuilder.Types().Where(t => t.Name.EndsWith("State"))
+            modelBuilder.Types().Where(t => t.Name.EndsWith("State", StringComparison.Ordinal))
                 .Configure(convention => convention.ToTable(convention.ClrType.Name.Remove(convention.ClrType.Name.Length - "State".Length)));
 
             base.OnModelCreating(modelBuilder);

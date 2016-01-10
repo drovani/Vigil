@@ -2,7 +2,6 @@
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Identity;
 using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
@@ -14,17 +13,21 @@ namespace Vigil.Data.Core
 
         public IDbSet<Comment> Comments { get; protected set; }
 
+        static BaseVigilContext()
+        {
+            Database.SetInitializer<TContext>(null);
+        }
+
         protected BaseVigilContext(string affectedBy, DateTime now)
             : base("VigilContextConnection")
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(affectedBy));
             Contract.Requires<AggregateException>(now != default(DateTime));
 
             AffectedBy = affectedBy;
             Now = now.ToUniversalTime();
-
-            Database.SetInitializer<TContext>(new NullDatabaseInitializer<TContext>());
+            Configuration.ProxyCreationEnabled = false;
         }
 
         [ContractVerification(false)]
@@ -37,18 +40,10 @@ namespace Vigil.Data.Core
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             // Remove the name "State" from the end of all of the ClrTypes.
-            modelBuilder.Types().Where(t => t.Name.EndsWith("State"))
+            modelBuilder.Types().Where(t => t.Name.EndsWith("State", StringComparison.Ordinal))
                 .Configure(convention => convention.ToTable(convention.ClrType.Name.Remove(convention.ClrType.Name.Length - "State".Length)));
 
             base.OnModelCreating(modelBuilder);
-
-            // Placed after calling IdentityDbContext's OnModelCreating, because it explicitly
-            // sets the name of the tables for the users/roles to 'AspNet____'
-            modelBuilder.Entity<VigilUser>().ToTable(typeof(VigilUser).Name);
-            modelBuilder.Entity<VigilUserRole>().ToTable(typeof(VigilUserRole).Name);
-            modelBuilder.Entity<VigilRole>().ToTable(typeof(VigilRole).Name);
-            modelBuilder.Entity<VigilUserClaim>().ToTable(typeof(VigilUserClaim).Name);
-            modelBuilder.Entity<VigilUserLogin>().ToTable(typeof(VigilUserLogin).Name);
         }
     }
 }

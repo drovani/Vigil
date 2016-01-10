@@ -18,7 +18,7 @@ namespace Vigil.Application
             : base(affectedBy, now)
         {
             Contract.Requires<ArgumentNullException>(affectedBy != null);
-            Contract.Requires<ArgumentException>(affectedBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(affectedBy));
             Contract.Requires<ArgumentOutOfRangeException>(now != default(DateTime));
         }
 

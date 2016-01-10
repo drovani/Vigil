@@ -19,13 +19,13 @@ namespace Vigil.Data.Core
         [StringLength(250)]
         public string Suffix { get; protected set; }
 
-        public FullName(string title = null, string givenName = null, string middleName = null, string familyname = null, string suffix = null)
+        public FullName(string title = null, string givenName = null, string middleName = null, string familyName = null, string suffix = null)
             : this()
         {
             Title = title;
             GivenName = givenName;
             MiddleName = middleName;
-            FamilyName = familyname;
+            FamilyName = familyName;
             Suffix = suffix;
         }
         public FullName(FullName fullName)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Reflection;
 
 namespace Vigil.Data.Core
 {
@@ -10,16 +9,23 @@ namespace Vigil.Data.Core
         {
             Contract.Requires<ArgumentNullException>(modified != null);
             Contract.Requires<ArgumentNullException>(modifiedBy != null);
-            Contract.Requires<ArgumentException>(modifiedBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(modifiedBy));
             Contract.Requires<ArgumentException>(modifiedOn != default(DateTime));
             Contract.Requires<ArgumentOutOfRangeException>(modifiedOn >= modified.CreatedOn);
 
-            modified.GetType()
-                    .GetProperty(nameof(modified.ModifiedBy))
-                    .SetValue(modified, modifiedBy);
-            modified.GetType()
-                    .GetProperty(nameof(modified.ModifiedOn))
-                    .SetValue(modified, modifiedOn.ToUniversalTime());
+            if (modifiedBy != modified.ModifiedBy)
+            {
+                modified.GetType()
+                        .GetProperty(nameof(modified.ModifiedBy))
+                        .SetValue(modified, modifiedBy);
+            }
+
+            if (modifiedOn.ToUniversalTime() != modified.ModifiedOn)
+            {
+                modified.GetType()
+                        .GetProperty(nameof(modified.ModifiedOn))
+                        .SetValue(modified, modifiedOn.ToUniversalTime());
+            }
 
             return true;
         }
@@ -27,7 +33,7 @@ namespace Vigil.Data.Core
         {
             Contract.Requires<ArgumentNullException>(deleted != null);
             Contract.Requires<ArgumentNullException>(deletedBy != null);
-            Contract.Requires<ArgumentException>(deletedBy.Trim() != string.Empty);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(deletedBy));
             Contract.Requires<ArgumentException>(deletedOn != default(DateTime));
             Contract.Requires<ArgumentOutOfRangeException>(deletedOn >= deleted.CreatedOn);
 

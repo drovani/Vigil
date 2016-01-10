@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Vigil
 {
@@ -26,12 +27,10 @@ namespace Vigil
         {
             if (actions != null)
             {
-                foreach (var action in actions)
+                var these = actions.OfType<Action<T>>();
+                foreach (Action<T> action in actions)
                 {
-                    if (action is Action<T>)
-                    {
-                        ((Action<T>)action)(args);
-                    }
+                    action(args);
                 }
             }
         }
