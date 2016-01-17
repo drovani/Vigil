@@ -7,8 +7,8 @@
     <ProjectGuid>{9AB78B6B-9BCE-4E4D-9F0E-5E9D9DCCC7C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vigil.Patron.Model</RootNamespace>
-    <AssemblyName>Vigil.Patron.Model</AssemblyName>
+    <RootNamespace>Vigil.Patrons.Model</RootNamespace>
+    <AssemblyName>Vigil.Patrons.Model</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -124,7 +124,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Vigil.Patron.Model.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Vigil.Patrons.Model.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -163,7 +163,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Vigil.Patron.Model.snk" />
+    <None Include="Vigil.Patrons.Model.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Vigil.Data\Vigil.Data.Core\Vigil.Data.Core.csproj">

@@ -8,10 +8,10 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core.Patrons
 {
-    public class PatronState : KeyIdentity, ICreated, IModified, IDeleted
+    public class Patron : KeyIdentity, ICreated, IModified, IDeleted
     {
         [Required]
-        public PatronTypeState PatronType { get; set; }
+        public PatronType PatronType { get; set; }
         public string AccountNumber { get; set; }
         [Required]
         [StringLength(250)]
@@ -21,7 +21,7 @@ namespace Vigil.Data.Core.Patrons
 
         public virtual ICollection<Comment> Comments { get; }
 
-        protected PatronState(PatronTypeState patronType, string displayName)
+        protected Patron(PatronType patronType, string displayName)
         {
             Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(displayName != null);
@@ -31,14 +31,14 @@ namespace Vigil.Data.Core.Patrons
             DisplayName = displayName.Trim();
         }
 
-        public static PatronState Create(PatronTypeState patronType, string displayName, string accountNumber = null, bool isAnonymous = false)
+        public static Patron Create(PatronType patronType, string displayName, string accountNumber = null, bool isAnonymous = false)
         {
             Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(displayName != null);
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(displayName));
-            Contract.Ensures(Contract.Result<PatronState>() != null);
+            Contract.Ensures(Contract.Result<Patron>() != null);
 
-            return new PatronState(patronType, displayName)
+            return new Patron(patronType, displayName)
             {
                 AccountNumber = string.IsNullOrWhiteSpace(accountNumber) ? null : accountNumber.Trim(),
                 IsAnonymous = isAnonymous

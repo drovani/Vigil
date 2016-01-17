@@ -4,12 +4,12 @@ using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core.Patrons.Types
 {
-    public class PersonTypeState : TypeStateBase
+    public class PersonType : TypeBase
     {
         [DefaultValue(true)]
         public bool AllowMultiplePerPatron { get; set; }
 
-        protected PersonTypeState(string personTypeName, bool allowMultiplePerPatron = true):base(personTypeName)
+        protected PersonType(string personTypeName, bool allowMultiplePerPatron = true):base(personTypeName)
         {
             Contract.Requires<ArgumentNullException>(personTypeName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(personTypeName));
@@ -17,13 +17,13 @@ namespace Vigil.Data.Core.Patrons.Types
             AllowMultiplePerPatron = allowMultiplePerPatron;
         }
 
-        public static PersonTypeState Create(string personTypeName, string description = null, int ordinal = 0, bool allowMultiplePerPatron = true)
+        public static PersonType Create(string personTypeName, string description = null, int ordinal = 0, bool allowMultiplePerPatron = true)
         {
             Contract.Requires<ArgumentNullException>(personTypeName != null);
             Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(personTypeName));
-            Contract.Ensures(Contract.Result<PersonTypeState>() != null);
+            Contract.Ensures(Contract.Result<PersonType>() != null);
 
-            return new PersonTypeState(personTypeName, allowMultiplePerPatron)
+            return new PersonType(personTypeName, allowMultiplePerPatron)
             {
                 Description = description,
                 Ordinal = ordinal

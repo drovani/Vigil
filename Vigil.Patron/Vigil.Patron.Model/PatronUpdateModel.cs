@@ -1,7 +1,7 @@
 ﻿using System;
 using Vigil.Data.Core;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
     public class PatronUpdateModel
     {

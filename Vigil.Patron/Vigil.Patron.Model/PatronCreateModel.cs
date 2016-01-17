@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
     public class PatronCreateModel : IValidatableObject
     {

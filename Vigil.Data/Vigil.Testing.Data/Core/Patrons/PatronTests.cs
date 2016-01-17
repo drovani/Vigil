@@ -5,13 +5,13 @@ using Xunit;
 namespace Vigil.Testing.Data.Core.Patrons
 {
     [global::System.Diagnostics.Contracts.ContractVerification(false)]
-    public class PatronStateTests
+    public class PatronTests
     {
         [Fact]
         public void Create_Method_Uses_Proper_Defaults()
         {
-            PatronTypeState patronType = PatronTypeState.Create("PatronTypeName");
-            PatronState patron = PatronState.Create(patronType, "PatronDisplayName");
+            PatronType patronType = PatronType.Create("PatronTypeName");
+            Patron patron = Patron.Create(patronType, "PatronDisplayName");
 
             Assert.Same(patronType, patron.PatronType);
             Assert.Equal("PatronDisplayName", patron.DisplayName);
@@ -22,8 +22,8 @@ namespace Vigil.Testing.Data.Core.Patrons
         [Fact]
         public void Create_Method_Sets_Properties()
         {
-            PatronTypeState patronType = PatronTypeState.Create("PatronTypeName");
-            PatronState patron = PatronState.Create(patronType, "PatronDisplayName", "0123456", true);
+            PatronType patronType = PatronType.Create("PatronTypeName");
+            Patron patron = Patron.Create(patronType, "PatronDisplayName", "0123456", true);
 
             Assert.Same(patronType, patron.PatronType);
             Assert.Equal("PatronDisplayName", patron.DisplayName);

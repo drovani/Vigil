@@ -5,10 +5,17 @@ using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core.System
 {
-    public class Comment : KeyIdentity, ICreated, IModified, IDeleted
+    public class Comment : KeyIdentity, ICreated, IModified, IDeleted, IEntityId
     {
+        /// <summary>The object to which this comment is attached.
+        /// </summary>
         public Guid EntityId { get; protected set; }
+        [Required]
         public string CommentText { get; protected set; }
+
+        protected Comment() { }
+
+        protected Comment(Guid id) : base(id) { }
 
         public static Comment Create(Guid entityId, string commentText, string createdBy, DateTime createdOn)
         {

@@ -5,12 +5,12 @@ using Vigil.Data.Core;
 using Vigil.Data.Core.Patrons;
 using Vigil.Data.Core.Patrons.Types;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
     public class PatronVigilContext : BaseVigilContext<PatronVigilContext>, IVigilContext
     {
-        public DbSet<PatronState> Patrons { get; protected set; }
-        public DbSet<PatronTypeState> PatronTypes { get; protected set; }
+        public DbSet<Data.Core.Patrons.Patron> Patrons { get; protected set; }
+        public DbSet<PatronType> PatronTypes { get; protected set; }
 
         public PatronVigilContext(string affectedBy, DateTime now)
             : base(affectedBy, now)
@@ -22,8 +22,8 @@ namespace Vigil.Patron.Model
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PatronState>();
-            modelBuilder.Entity<PatronTypeState>();
+            modelBuilder.Entity<Data.Core.Patrons.Patron>();
+            modelBuilder.Entity<PatronType>();
 
             base.OnModelCreating(modelBuilder);
         }

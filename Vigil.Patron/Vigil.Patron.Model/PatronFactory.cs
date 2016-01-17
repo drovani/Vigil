@@ -11,7 +11,7 @@ using Vigil.Data.Core.Patrons.Types;
 using Vigil.Data.Core.System;
 using Vigil.Validation;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
     public class PatronFactory : ModelFactory<PatronCreateModel>
     {
@@ -44,13 +44,13 @@ namespace Vigil.Patron.Model
                 return null;
             }
 
-            PatronTypeState patronType = context.PatronTypes.SingleOrDefault(pt => pt.TypeName == createPatron.PatronType);
+            PatronType patronType = context.PatronTypes.SingleOrDefault(pt => pt.TypeName == createPatron.PatronType);
             if (patronType == null)
             {
                 ValidationResults.Add(new ValidationResult("InvalidPatronType", new string[] { nameof(PatronCreateModel.PatronType) }));
                 return null;
             }
-            PatronState newPatron = PatronState.Create(patronType: patronType,
+            Data.Core.Patrons.Patron newPatron = Data.Core.Patrons.Patron.Create(patronType: patronType,
                 displayName: createPatron.DisplayName,
                 accountNumber: AccountNumberGenerator.GetNextValue(context.Now),
                 isAnonymous: createPatron.IsAnonymous);
@@ -71,7 +71,7 @@ namespace Vigil.Patron.Model
         {
             Contract.Requires<ArgumentNullException>(updatePatron != null);
 
-            PatronState patron = context.Patrons.SingleOrDefault(p => p.AccountNumber == accountNumber);
+            Data.Core.Patrons.Patron patron = context.Patrons.SingleOrDefault(p => p.AccountNumber == accountNumber);
             if (patron != null)
             {
                 patron.DisplayName = updatePatron.DisplayName ?? patron.DisplayName;

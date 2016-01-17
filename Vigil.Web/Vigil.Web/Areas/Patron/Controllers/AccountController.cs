@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Web.Mvc;
-using Vigil.Patron.Model;
+using Vigil.Patrons.Model;
 
 namespace Vigil.Web.Areas.Patron.Controllers
 {

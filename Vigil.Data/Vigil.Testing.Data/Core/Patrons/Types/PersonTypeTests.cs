@@ -3,14 +3,14 @@ using Xunit;
 
 namespace Vigil.Testing.Data.Core.Patrons.Types
 {
-    public class PersonTypeStateTests
+    public class PersonTypeTests
     {
         [Fact]
         public void Create_Method_Uses_Proper_Defaults()
         {
-            PersonTypeState personType = PersonTypeState.Create("PersonTypeState");
+            PersonType personType = PersonType.Create("PersonType");
 
-            Assert.Equal("PersonTypeState", personType.TypeName);
+            Assert.Equal("PersonType", personType.TypeName);
             Assert.Null(personType.Description);
             Assert.Equal(0, personType.Ordinal);
             Assert.Equal(true, personType.AllowMultiplePerPatron);
@@ -19,9 +19,9 @@ namespace Vigil.Testing.Data.Core.Patrons.Types
         [Fact]
         public void Create_Method_Sets_Properties()
         {
-            PersonTypeState personType = PersonTypeState.Create("PersonTypeState", "A description.", 1, false);
+            PersonType personType = PersonType.Create("PersonType", "A description.", 1, false);
 
-            Assert.Equal("PersonTypeState", personType.TypeName);
+            Assert.Equal("PersonType", personType.TypeName);
             Assert.Equal("A description.", personType.Description);
             Assert.Equal(1, personType.Ordinal);
             Assert.Equal(false, personType.AllowMultiplePerPatron);

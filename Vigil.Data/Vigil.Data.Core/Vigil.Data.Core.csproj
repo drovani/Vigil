@@ -110,8 +110,9 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Identity\IVigilUser.cs" />
     <Compile Include="Interfaces\ExtensionMethods.cs" />
-    <Compile Include="Patrons\PatronState.cs" />
-    <Compile Include="Patrons\PersonState.cs" />
+    <Compile Include="Interfaces\IEntityId.cs" />
+    <Compile Include="Patrons\Patron.cs" />
+    <Compile Include="Patrons\Person.cs" />
     <Compile Include="KeyIdentity.cs" />
     <Compile Include="Interfaces\IEffectiveRange.cs" />
     <Compile Include="Interfaces\IEffective.cs" />
@@ -120,8 +121,8 @@
     <Compile Include="Interfaces\IModified.cs" />
     <Compile Include="Interfaces\ICreated.cs" />
     <Compile Include="IVigilContext.cs" />
-    <Compile Include="Patrons\Types\PatronTypeState.cs" />
-    <Compile Include="Patrons\Types\PersonTypeState.cs" />
+    <Compile Include="Patrons\Types\PatronType.cs" />
+    <Compile Include="Patrons\Types\PersonType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyBaseVigilContext.cs" />
     <Compile Include="System\ApplicationSetting.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="Identity\VigilUserLogin.cs" />
     <Compile Include="Identity\VigilUserRole.cs" />
     <Compile Include="System\MergedRecord.cs" />
-    <Compile Include="TypeStateBase.cs">
+    <Compile Include="TypeBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ValueObjects\DateAccuracy.cs" />

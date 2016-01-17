@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
     public class PatronSearchModel
     {

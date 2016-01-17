@@ -19,11 +19,11 @@ namespace Vigil.Data.Modeling
         public DbSet<ChangeLog> ChangeLogs { get; protected set; }
         public DbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
 
-        public DbSet<PatronTypeState> PatronTypes { get; protected set; }
-        public DbSet<PersonTypeState> PersonTypes { get; protected set; }
+        public DbSet<PatronType> PatronTypes { get; protected set; }
+        public DbSet<PersonType> PersonTypes { get; protected set; }
         
-        public DbSet<PatronState> Patrons { get; protected set; }
-        public DbSet<PersonState> Persons { get; protected set; }
+        public DbSet<Patron> Patrons { get; protected set; }
+        public DbSet<Person> Persons { get; protected set; }
 
         public VigilContext()
             : base("VigilContextConnection")
@@ -45,10 +45,6 @@ namespace Vigil.Data.Modeling
             modelBuilder.HasDefaultSchema("vigil");
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-
-            // Remove the name "State" from the end of all of the ClrTypes.
-            modelBuilder.Types().Where(t => t.Name.EndsWith("State", StringComparison.Ordinal))
-                .Configure(convention => convention.ToTable(convention.ClrType.Name.Remove(convention.ClrType.Name.Length - "State".Length)));
 
             base.OnModelCreating(modelBuilder);
 

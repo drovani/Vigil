@@ -6,14 +6,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using Vigil.Data.Core;
 using Vigil.Data.Core.Patrons;
-using Vigil.Patron.Model.Types;
+using Vigil.Patrons.Model.Types;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
-    public class PatronRepository : IRepository<PatronState, PatronReadModel>
+    public class PatronRepository : IRepository<Patron, PatronReadModel>
     {
         protected readonly PatronReadOnlyVigilContext context;
-        public Expression<Func<PatronState, PatronReadModel>> ToReadModel
+        public Expression<Func<Patron, PatronReadModel>> ToReadModel
         {
             get
             {
@@ -39,7 +39,7 @@ namespace Vigil.Patron.Model
             context = new PatronReadOnlyVigilContext();
         }
 
-        public IEnumerable<PatronType> GetPatronTypes()
+        public IEnumerable<PatronTypeModel> GetPatronTypes()
         {
             var query = from pt in context.PatronTypes
                         where pt.DeletedOn == null
@@ -50,7 +50,7 @@ namespace Vigil.Patron.Model
                             pt.Description,
                             pt.IsOrganization
                         };
-            return query.ToList().Select(pt => new PatronType(pt.TypeName, pt.Description, pt.IsOrganization));
+            return query.ToList().Select(pt => new PatronTypeModel(pt.TypeName, pt.Description, pt.IsOrganization));
         }
 
         public PatronReadModel Get(IKeyIdentity id)
@@ -85,11 +85,11 @@ namespace Vigil.Patron.Model
             return result.ToList();
         }
 
-        private PatronReadModel GetPatronReadModel(Expression<Func<PatronState, bool>> predicate)
+        private PatronReadModel GetPatronReadModel(Expression<Func<Data.Core.Patrons.Patron, bool>> predicate)
         {
             Contract.Assume(context.Patrons != null);
 
-            PatronState patronState = context.Patrons
+            Data.Core.Patrons.Patron patronState = context.Patrons
                     .Include(p => p.PatronType)
                     .Where(predicate)
                     .SingleOrDefault();
@@ -102,12 +102,12 @@ namespace Vigil.Patron.Model
                 return ToReadModel.Compile().Invoke(patronState);
             }
         }
-        private List<Expression<Func<PatronState, bool>>> GetSearchPredicates(PatronSearchModel search)
+        private List<Expression<Func<Data.Core.Patrons.Patron, bool>>> GetSearchPredicates(PatronSearchModel search)
         {
             Contract.Requires<ArgumentNullException>(search != null);
-            Contract.Ensures(Contract.Result<IList<Expression<Func<PatronState, bool>>>>() != null);
+            Contract.Ensures(Contract.Result<IList<Expression<Func<Data.Core.Patrons.Patron, bool>>>>() != null);
 
-            List<Expression<Func<PatronState, bool>>> predicates = new List<Expression<Func<PatronState, bool>>>();
+            List<Expression<Func<Data.Core.Patrons.Patron, bool>>> predicates = new List<Expression<Func<Data.Core.Patrons.Patron, bool>>>();
 
             if (!string.IsNullOrWhiteSpace(search.AccountNumber))
             {

@@ -6,12 +6,12 @@ using Vigil.Data.Core.ValueObjects;
 
 namespace Vigil.Data.Core.Patrons
 {
-    public class PersonState : KeyIdentity, ICreated, IModified, IDeleted
+    public class Person : KeyIdentity, ICreated, IModified, IDeleted
     {
         [Required]
-        public PatronState Patron { get; protected set; }
+        public Patron Patron { get; protected set; }
         [Required]
-        public PersonTypeState PersonType { get; protected set; }
+        public PersonType PersonType { get; protected set; }
         [Required]
         public FullName FullName { get; protected set; }
 
@@ -19,7 +19,7 @@ namespace Vigil.Data.Core.Patrons
         public DateTime? DateOfBirth { get; protected set; }
         public DateAccuracy DateOfBirthAccuracy { get; protected set; }
 
-        protected PersonState(PatronState patron, PersonTypeState personType, FullName fullName)
+        protected Person(Patron patron, PersonType personType, FullName fullName)
         {
             Contract.Requires<ArgumentNullException>(patron != null);
             Contract.Requires<ArgumentNullException>(personType != null);
@@ -30,14 +30,14 @@ namespace Vigil.Data.Core.Patrons
             FullName = fullName;
         }
 
-        public static PersonState Create(PatronState patron, PersonTypeState personType, FullName fullName, DateTime? dateOfBirth = null, DateAccuracy dateOfBirthAccuracy = null)
+        public static Person Create(Patron patron, PersonType personType, FullName fullName, DateTime? dateOfBirth = null, DateAccuracy dateOfBirthAccuracy = null)
         {
             Contract.Requires<ArgumentNullException>(patron != null);
             Contract.Requires<ArgumentNullException>(personType != null);
             Contract.Requires<ArgumentNullException>(fullName != null);
-            Contract.Ensures(Contract.Result<PersonState>() != null);
+            Contract.Ensures(Contract.Result<Person>() != null);
 
-            return new PersonState(patron, personType, fullName)
+            return new Person(patron, personType, fullName)
             {
                 DateOfBirth = dateOfBirth,
                 DateOfBirthAccuracy = dateOfBirthAccuracy

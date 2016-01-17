@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Vigil.Patron.Model;
+using Vigil.Patrons.Model;
 
 namespace Vigil.Web.Areas.Patron.Models
 {

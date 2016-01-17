@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core
 {
-    public abstract class TypeStateBase : KeyIdentity, ICreated, IModified, IOrdered, IDeleted
+    public abstract class TypeBase : KeyIdentity, ICreated, IModified, IOrdered, IDeleted
     {
         [Required]
         public string CreatedBy { get; protected set; }
@@ -19,7 +19,7 @@ namespace Vigil.Data.Core
         public string Description { get; protected set; }
         public int Ordinal { get; protected set; }
 
-        protected TypeStateBase(string typeName)
+        protected TypeBase(string typeName)
             : base()
         {
             Contract.Requires<ArgumentNullException>(typeName != null);

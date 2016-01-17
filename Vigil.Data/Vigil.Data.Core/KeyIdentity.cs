@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core
@@ -17,7 +16,7 @@ namespace Vigil.Data.Core
 
         protected KeyIdentity(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         /// <summary>Compares two Vigil.Data.Core.Identity classes for equality by Id.
@@ -34,7 +33,7 @@ namespace Vigil.Data.Core
             {
                 return true;
             }
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
@@ -47,7 +46,7 @@ namespace Vigil.Data.Core
             {
                 return false;
             }
-            return Guid.Equals(other.Id, this.Id);
+            return Guid.Equals(other.Id, Id);
         }
 
         public static bool operator ==(KeyIdentity left, KeyIdentity right)

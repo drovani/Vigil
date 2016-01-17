@@ -143,6 +143,10 @@
     <Compile Include="Migrations\201512181803264_Change_CreatedBy_ModifedBy_DeletedBy_To_String.Designer.cs">
       <DependentUpon>201512181803264_Change_CreatedBy_ModifedBy_DeletedBy_To_String.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601131917372_Remove_State_From_Names.cs" />
+    <Compile Include="Migrations\201601131917372_Remove_State_From_Names.Designer.cs">
+      <DependentUpon>201601131917372_Remove_State_From_Names.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\VigilDbConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VigilContext.cs" />
@@ -174,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512181803264_Change_CreatedBy_ModifedBy_DeletedBy_To_String.resx">
       <DependentUpon>201512181803264_Change_CreatedBy_ModifedBy_DeletedBy_To_String.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601131917372_Remove_State_From_Names.resx">
+      <DependentUpon>201601131917372_Remove_State_From_Names.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

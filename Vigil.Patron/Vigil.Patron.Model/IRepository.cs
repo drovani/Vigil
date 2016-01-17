@@ -3,21 +3,21 @@ using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
 using Vigil.Data.Core;
 
-namespace Vigil.Patron.Model
+namespace Vigil.Patrons.Model
 {
     [ContractClass(typeof(Contracts.IRepositoryContract<,>))]
-    public interface IRepository<TState, TReadModel>
+    public interface IRepository<TEntity, TReadModel>
     {
         TReadModel Get(IKeyIdentity id);
-        Expression<Func<TState, TReadModel>> ToReadModel { get; }
+        Expression<Func<TEntity, TReadModel>> ToReadModel { get; }
     }
 
     namespace Contracts
     {
         [ContractClassFor(typeof(IRepository<,>))]
-        internal abstract class IRepositoryContract<TState, TReadModel> : IRepository<TState, TReadModel>
+        internal abstract class IRepositoryContract<TEntity, TReadModel> : IRepository<TEntity, TReadModel>
         {
-            public Expression<Func<TState, TReadModel>> ToReadModel
+            public Expression<Func<TEntity, TReadModel>> ToReadModel
             {
                 get
                 {

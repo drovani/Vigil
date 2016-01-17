@@ -340,9 +340,9 @@
       <Project>{befe3d30-e2cd-4ed5-b749-b0dd92b883cf}</Project>
       <Name>Vigil.Identity.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Vigil.Patron\Vigil.Patron.Model\Vigil.Patron.Model.csproj">
+    <ProjectReference Include="..\..\Vigil.Patron\Vigil.Patron.Model\Vigil.Patrons.Model.csproj">
       <Project>{9ab78b6b-9bce-4e4d-9f0e-5e9d9dccc7c3}</Project>
-      <Name>Vigil.Patron.Model</Name>
+      <Name>Vigil.Patrons.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -3,9 +3,9 @@ using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Web.Mvc;
-using Vigil.Patron.Model;
+using Vigil.Patrons.Model;
 using Vigil.Web.Areas.Patron.Models;
-using Vigil.Patron.Model.Types;
+using Vigil.Patrons.Model.Types;
 
 namespace Vigil.Web.Areas.Patron.Controllers
 {
@@ -24,7 +24,7 @@ namespace Vigil.Web.Areas.Patron.Controllers
         public ActionResult Create()
         {
             var patronTypes = new PatronRepository().GetPatronTypes();
-            ViewBag.PatronTypes = new SelectList(patronTypes, nameof(PatronType.TypeName), nameof(PatronType.TypeName));
+            ViewBag.PatronTypes = new SelectList(patronTypes, nameof(PatronTypeModel.TypeName), nameof(PatronTypeModel.TypeName));
 
             return View(new PatronUpdateModel() { IsAnonymous = false });
         }

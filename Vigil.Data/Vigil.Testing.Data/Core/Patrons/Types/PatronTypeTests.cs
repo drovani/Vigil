@@ -3,12 +3,12 @@ using Xunit;
 
 namespace Vigil.Testing.Data.Core.Patrons.Types
 {
-    public class PatronTypeStateTests
+    public class PatronTypeTests
     {
         [Fact]
         public void Create_Method_Uses_Proper_Defaults()
         {
-            PatronTypeState patronType = PatronTypeState.Create("PatronTypeName");
+            PatronType patronType = PatronType.Create("PatronTypeName");
 
             Assert.Equal("PatronTypeName", patronType.TypeName);
             Assert.Null(patronType.Description);
@@ -19,7 +19,7 @@ namespace Vigil.Testing.Data.Core.Patrons.Types
         [Fact]
         public void Create_Method_Sets_Properties()
         {
-            PatronTypeState patronType = PatronTypeState.Create("PatronTypeName", "A description.", 1, false);
+            PatronType patronType = PatronType.Create("PatronTypeName", "A description.", 1, false);
 
             Assert.Equal("PatronTypeName", patronType.TypeName);
             Assert.Equal("A description.", patronType.Description);
