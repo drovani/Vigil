@@ -19,19 +19,23 @@ namespace Vigil.Data.Core
         public string Description { get; protected set; }
         public int Ordinal { get; protected set; }
 
-        protected TypeBase(string typeName)
+        protected TypeBase() { }
+
+        protected TypeBase(string createdBy, DateTime createdOn, string typeName)
             : base()
         {
-            Contract.Requires<ArgumentNullException>(typeName != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(typeName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(typeName));
 
+            CreatedBy = createdBy;
+            CreatedOn = createdOn.ToUniversalTime();
             TypeName = typeName.Trim();
         }
 
         public virtual string SetTypeName(string typeName)
         {
-            Contract.Requires<ArgumentNullException>(typeName != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(typeName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(typeName));
             Contract.Ensures(Contract.Result<string>() != null);
 
             TypeName = typeName.Trim();
@@ -44,7 +48,6 @@ namespace Vigil.Data.Core
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(TypeName != null);
         }
     }
 }

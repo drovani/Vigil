@@ -10,9 +10,9 @@ using Vigil.Patrons.Model.Types;
 
 namespace Vigil.Patrons.Model
 {
-    public class PatronRepository : IRepository<Patron, PatronReadModel>
+    public class PatronRepository : IRepository<Patron, PatronReadModel>, IDisposable
     {
-        protected readonly PatronReadOnlyVigilContext context;
+        private PatronReadOnlyVigilContext context;
         public Expression<Func<Patron, PatronReadModel>> ToReadModel
         {
             get
@@ -41,6 +41,8 @@ namespace Vigil.Patrons.Model
 
         public IEnumerable<PatronTypeModel> GetPatronTypes()
         {
+            Contract.Ensures(Contract.Result<IEnumerable<PatronTypeModel>>() != null);
+
             var query = from pt in context.PatronTypes
                         where pt.DeletedOn == null
                         orderby pt.Ordinal, pt.TypeName
@@ -53,7 +55,7 @@ namespace Vigil.Patrons.Model
             return query.ToList().Select(pt => new PatronTypeModel(pt.TypeName, pt.Description, pt.IsOrganization));
         }
 
-        public PatronReadModel Get(IKeyIdentity id)
+        public PatronReadModel Find(IKeyIdentity id)
         {
             return GetPatronReadModel(ps => ps.Id == id.Id);
         }
@@ -85,11 +87,11 @@ namespace Vigil.Patrons.Model
             return result.ToList();
         }
 
-        private PatronReadModel GetPatronReadModel(Expression<Func<Data.Core.Patrons.Patron, bool>> predicate)
+        private PatronReadModel GetPatronReadModel(Expression<Func<Patron, bool>> predicate)
         {
             Contract.Assume(context.Patrons != null);
 
-            Data.Core.Patrons.Patron patronState = context.Patrons
+            Patron patronState = context.Patrons
                     .Include(p => p.PatronType)
                     .Where(predicate)
                     .SingleOrDefault();
@@ -102,12 +104,12 @@ namespace Vigil.Patrons.Model
                 return ToReadModel.Compile().Invoke(patronState);
             }
         }
-        private List<Expression<Func<Data.Core.Patrons.Patron, bool>>> GetSearchPredicates(PatronSearchModel search)
+        private static List<Expression<Func<Patron, bool>>> GetSearchPredicates(PatronSearchModel search)
         {
             Contract.Requires<ArgumentNullException>(search != null);
-            Contract.Ensures(Contract.Result<IList<Expression<Func<Data.Core.Patrons.Patron, bool>>>>() != null);
+            Contract.Ensures(Contract.Result<IList<Expression<Func<Patron, bool>>>>() != null);
 
-            List<Expression<Func<Data.Core.Patrons.Patron, bool>>> predicates = new List<Expression<Func<Data.Core.Patrons.Patron, bool>>>();
+            List<Expression<Func<Patron, bool>>> predicates = new List<Expression<Func<Patron, bool>>>();
 
             if (!string.IsNullOrWhiteSpace(search.AccountNumber))
             {
@@ -144,5 +146,26 @@ namespace Vigil.Patrons.Model
 
             return predicates;
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

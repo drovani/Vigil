@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 
 namespace Vigil.Data.Core
 {
@@ -16,14 +17,14 @@ namespace Vigil.Data.Core
             if (modifiedBy != modified.ModifiedBy)
             {
                 modified.GetType()
-                        .GetProperty(nameof(modified.ModifiedBy))
+                        .GetProperty(nameof(modified.ModifiedBy), BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(modified, modifiedBy);
             }
 
             if (modifiedOn.ToUniversalTime() != modified.ModifiedOn)
             {
                 modified.GetType()
-                        .GetProperty(nameof(modified.ModifiedOn))
+                        .GetProperty(nameof(modified.ModifiedOn), BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(modified, modifiedOn.ToUniversalTime());
             }
 

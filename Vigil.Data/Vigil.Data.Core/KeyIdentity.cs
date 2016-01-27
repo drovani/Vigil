@@ -46,7 +46,7 @@ namespace Vigil.Data.Core
             {
                 return false;
             }
-            return Guid.Equals(other.Id, Id);
+            return Equals(other.Id, Id);
         }
 
         public static bool operator ==(KeyIdentity left, KeyIdentity right)

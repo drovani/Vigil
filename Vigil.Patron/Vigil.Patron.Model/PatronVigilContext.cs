@@ -9,8 +9,8 @@ namespace Vigil.Patrons.Model
 {
     public class PatronVigilContext : BaseVigilContext<PatronVigilContext>, IVigilContext
     {
-        public DbSet<Data.Core.Patrons.Patron> Patrons { get; protected set; }
-        public DbSet<PatronType> PatronTypes { get; protected set; }
+        public IDbSet<Patron> Patrons { get { return Set<Patron>(); } }
+        public IDbSet<PatronType> PatronTypes { get { return Set<PatronType>(); } }
 
         public PatronVigilContext(string affectedBy, DateTime now)
             : base(affectedBy, now)
@@ -22,7 +22,7 @@ namespace Vigil.Patrons.Model
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Data.Core.Patrons.Patron>();
+            modelBuilder.Entity<Patron>();
             modelBuilder.Entity<PatronType>();
 
             base.OnModelCreating(modelBuilder);

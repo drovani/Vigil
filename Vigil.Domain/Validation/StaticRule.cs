@@ -6,7 +6,7 @@ namespace Vigil.Validation
 {
     public class StaticRule<TModel> : ValidationRule<TModel>
     {
-        protected readonly Predicate<TModel> rulePredicate;
+        protected Predicate<TModel> rulePredicate;
 
         public StaticRule(Predicate<TModel> predicate, string errorToken, params string[] properties)
             : base(errorToken: errorToken,

@@ -9,22 +9,27 @@ namespace Vigil.Data.Core.Patrons.Types
         [DefaultValue(true)]
         public bool IsOrganization { get; protected set; }
 
-        protected PatronType(string patronTypeName, bool isOrganization = true)
-            : base(patronTypeName)
+        protected PatronType() { }
+
+        protected PatronType(string createdBy, DateTime createdOn, string patronTypeName, bool isOrganization = true)
+            : base(createdBy, createdOn, patronTypeName)
         {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(patronTypeName != null);
             Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(patronTypeName));
 
             IsOrganization = isOrganization;
         }
 
-        public static PatronType Create(string patronTypeName, string description = null, int ordinal = 0, bool isOrganization = true)
+        public static PatronType Create(string createdBy, DateTime createdOn, string patronTypeName, string description = null, int ordinal = 0, bool isOrganization = true)
         {
-            Contract.Requires<ArgumentNullException>(patronTypeName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(patronTypeName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(patronTypeName));
             Contract.Ensures(Contract.Result<PatronType>() != null);
 
-            return new PatronType(patronTypeName, isOrganization)
+            return new PatronType(createdBy, createdOn, patronTypeName, isOrganization)
             {
                 Description = description,
                 Ordinal = ordinal

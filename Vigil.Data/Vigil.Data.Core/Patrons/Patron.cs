@@ -21,24 +21,28 @@ namespace Vigil.Data.Core.Patrons
 
         public virtual ICollection<Comment> Comments { get; }
 
-        protected Patron(PatronType patronType, string displayName)
+        protected Patron(string createdBy, DateTime createdOn, PatronType patronType, string displayName)
         {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(patronType != null);
-            Contract.Requires<ArgumentNullException>(displayName != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(displayName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(displayName));
 
+            CreatedBy = createdBy;
+            CreatedOn = createdOn;
             PatronType = patronType;
             DisplayName = displayName.Trim();
         }
 
-        public static Patron Create(PatronType patronType, string displayName, string accountNumber = null, bool isAnonymous = false)
+        public static Patron Create(string createdBy, DateTime createdOn, PatronType patronType, string displayName, string accountNumber = null, bool isAnonymous = false)
         {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(patronType != null);
-            Contract.Requires<ArgumentNullException>(displayName != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(displayName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(displayName));
             Contract.Ensures(Contract.Result<Patron>() != null);
 
-            return new Patron(patronType, displayName)
+            return new Patron(createdBy, createdOn, patronType, displayName)
             {
                 AccountNumber = string.IsNullOrWhiteSpace(accountNumber) ? null : accountNumber.Trim(),
                 IsAnonymous = isAnonymous

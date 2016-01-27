@@ -158,6 +158,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomNumberGenerator.cs" />
     <Compile Include="Types\PatronType.cs" />
   </ItemGroup>
   <ItemGroup>

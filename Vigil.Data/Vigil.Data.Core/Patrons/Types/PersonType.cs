@@ -9,21 +9,24 @@ namespace Vigil.Data.Core.Patrons.Types
         [DefaultValue(true)]
         public bool AllowMultiplePerPatron { get; set; }
 
-        protected PersonType(string personTypeName, bool allowMultiplePerPatron = true):base(personTypeName)
+        protected PersonType(string createdBy, DateTime createdOn, string personTypeName, bool allowMultiplePerPatron = true)
+            : base(createdBy, createdOn, personTypeName)
         {
-            Contract.Requires<ArgumentNullException>(personTypeName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(personTypeName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(personTypeName));
 
             AllowMultiplePerPatron = allowMultiplePerPatron;
         }
 
-        public static PersonType Create(string personTypeName, string description = null, int ordinal = 0, bool allowMultiplePerPatron = true)
+        public static PersonType Create(string createdBy, DateTime createdOn, string personTypeName, string description = null, int ordinal = 0, bool allowMultiplePerPatron = true)
         {
-            Contract.Requires<ArgumentNullException>(personTypeName != null);
-            Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(personTypeName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(personTypeName));
             Contract.Ensures(Contract.Result<PersonType>() != null);
 
-            return new PersonType(personTypeName, allowMultiplePerPatron)
+            return new PersonType(createdBy, createdOn, personTypeName, allowMultiplePerPatron)
             {
                 Description = description,
                 Ordinal = ordinal

@@ -13,9 +13,9 @@ using Vigil.Validation;
 
 namespace Vigil.Patrons.Model
 {
-    public class PatronFactory : ModelFactory<PatronCreateModel>
+    public class PatronFactory : ModelFactory<PatronCreateModel>, IDisposable
     {
-        protected readonly PatronVigilContext context;
+        private PatronVigilContext context;
 
         [Import("AccountNumberGenerator", typeof(IValueGenerator<>))]
         protected IValueGenerator<string> AccountNumberGenerator { get; set; }
@@ -32,6 +32,7 @@ namespace Vigil.Patrons.Model
             Contract.Requires<ArgumentException>(now != default(DateTime));
 
             context = new PatronVigilContext(affectedBy, now);
+            AccountNumberGenerator = new RandomNumberGenerator();
         }
 
         public PatronReadModel CreatePatron(PatronCreateModel createPatron)
@@ -50,17 +51,20 @@ namespace Vigil.Patrons.Model
                 ValidationResults.Add(new ValidationResult("InvalidPatronType", new string[] { nameof(PatronCreateModel.PatronType) }));
                 return null;
             }
-            Data.Core.Patrons.Patron newPatron = Data.Core.Patrons.Patron.Create(patronType: patronType,
+            Patron newPatron = Patron.Create(
+                createdBy: context.AffectedBy,
+                createdOn: context.Now,
+                patronType: patronType,
                 displayName: createPatron.DisplayName,
                 accountNumber: AccountNumberGenerator.GetNextValue(context.Now),
                 isAnonymous: createPatron.IsAnonymous);
-            //context.Patrons.Add(newPatron);
+            context.Patrons.Add(newPatron);
 
             int savedChanges = ValidateAndSave(newPatron);
             if (savedChanges >= 0)
             {
                 PatronRepository repo = new PatronRepository();
-                return repo.Get(newPatron);
+                return repo.Find(newPatron);
             }
             else
             {
@@ -71,7 +75,7 @@ namespace Vigil.Patrons.Model
         {
             Contract.Requires<ArgumentNullException>(updatePatron != null);
 
-            Data.Core.Patrons.Patron patron = context.Patrons.SingleOrDefault(p => p.AccountNumber == accountNumber);
+            Patron patron = context.Patrons.SingleOrDefault(p => p.AccountNumber == accountNumber);
             if (patron != null)
             {
                 patron.DisplayName = updatePatron.DisplayName ?? patron.DisplayName;
@@ -88,7 +92,7 @@ namespace Vigil.Patrons.Model
                     if (savedChanges >= 0)
                     {
                         PatronRepository repo = new PatronRepository();
-                        return repo.Get(patron);
+                        return repo.Find(patron);
                     }
                 }
             }
@@ -139,5 +143,26 @@ namespace Vigil.Patrons.Model
             Contract.Invariant(context != null);
             Contract.Invariant(ValidationResults != null);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

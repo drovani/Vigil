@@ -36,7 +36,7 @@ namespace Vigil.Data.Core.System
             Contract.Requires<ArgumentException>(identifier != Guid.Empty);
             Contract.Requires<ArgumentNullException>(property != null);
             Contract.Requires<ArgumentNullException>(changedBy != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(changedBy));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(changedBy));
             Contract.Requires<ArgumentException>(changedOn != default(DateTime));
             Contract.Ensures(Contract.Result<ChangeLog>() != null);
 
@@ -72,7 +72,7 @@ namespace Vigil.Data.Core.System
             Contract.Requires<ArgumentOutOfRangeException>(!source.Id.Equals(Guid.Empty));
             Contract.Requires<ArgumentNullException>(property != null);
             Contract.Requires<ArgumentNullException>(changedBy != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(changedBy));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(changedBy));
             Contract.Requires<ArgumentException>(changedOn != default(DateTime));
             Contract.Ensures(Contract.Result<ChangeLog>() != null);
 

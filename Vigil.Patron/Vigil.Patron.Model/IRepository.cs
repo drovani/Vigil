@@ -8,7 +8,7 @@ namespace Vigil.Patrons.Model
     [ContractClass(typeof(Contracts.IRepositoryContract<,>))]
     public interface IRepository<TEntity, TReadModel>
     {
-        TReadModel Get(IKeyIdentity id);
+        TReadModel Find(IKeyIdentity id);
         Expression<Func<TEntity, TReadModel>> ToReadModel { get; }
     }
 
@@ -25,7 +25,7 @@ namespace Vigil.Patrons.Model
                 }
             }
 
-            public TReadModel Get(IKeyIdentity id)
+            public TReadModel Find(IKeyIdentity id)
             {
                 Contract.Requires<ArgumentNullException>(id != null);
                 throw new NotImplementedException();

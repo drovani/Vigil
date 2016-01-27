@@ -6,17 +6,12 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core
 {
-    public abstract class BaseVigilContext<TContext> : DbContext where TContext : DbContext
+    public abstract class BaseVigilContext<TContext> : DbContext, IVigilContext where TContext : DbContext
     {
         public string AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
         public IDbSet<Comment> Comments { get; protected set; }
-
-        static BaseVigilContext()
-        {
-            Database.SetInitializer<TContext>(null);
-        }
 
         protected BaseVigilContext(string affectedBy, DateTime now)
             : base("VigilContextConnection")
@@ -27,7 +22,6 @@ namespace Vigil.Data.Core
 
             AffectedBy = affectedBy;
             Now = now.ToUniversalTime();
-            Configuration.ProxyCreationEnabled = false;
         }
 
         [ContractVerification(false)]

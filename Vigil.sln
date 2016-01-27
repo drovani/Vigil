@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Patron", "Vigil Patro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Patrons.Model", "Vigil.Patron\Vigil.Patron.Model\Vigil.Patrons.Model.csproj", "{9AB78B6B-9BCE-4E4D-9F0E-5E9D9DCCC7C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Patron", "Vigil.Testing.Patron\Vigil.Testing.Patron.csproj", "{0B6F0588-9A9B-4FC3-82C2-990B132FD68E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Testing.Patrons", "Vigil.Testing.Patron\Vigil.Testing.Patrons.csproj", "{0B6F0588-9A9B-4FC3-82C2-990B132FD68E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vigil Domain", "Vigil Domain", "{5EA8CB81-FAD8-47FC-8B25-AABEEA989A44}"
 EndProject

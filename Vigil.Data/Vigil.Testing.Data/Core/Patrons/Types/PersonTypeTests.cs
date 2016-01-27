@@ -1,4 +1,5 @@
-﻿using Vigil.Data.Core.Patrons.Types;
+﻿using System;
+using Vigil.Data.Core.Patrons.Types;
 using Xunit;
 
 namespace Vigil.Testing.Data.Core.Patrons.Types
@@ -8,7 +9,7 @@ namespace Vigil.Testing.Data.Core.Patrons.Types
         [Fact]
         public void Create_Method_Uses_Proper_Defaults()
         {
-            PersonType personType = PersonType.Create("PersonType");
+            PersonType personType = PersonType.Create("TestUser", DateTime.UtcNow, "PersonType");
 
             Assert.Equal("PersonType", personType.TypeName);
             Assert.Null(personType.Description);
@@ -19,7 +20,7 @@ namespace Vigil.Testing.Data.Core.Patrons.Types
         [Fact]
         public void Create_Method_Sets_Properties()
         {
-            PersonType personType = PersonType.Create("PersonType", "A description.", 1, false);
+            PersonType personType = PersonType.Create("TestUser", DateTime.UtcNow, "PersonType", "A description.", 1, false);
 
             Assert.Equal("PersonType", personType.TypeName);
             Assert.Equal("A description.", personType.Description);

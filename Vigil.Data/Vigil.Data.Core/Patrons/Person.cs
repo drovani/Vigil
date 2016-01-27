@@ -19,8 +19,10 @@ namespace Vigil.Data.Core.Patrons
         public DateTime? DateOfBirth { get; protected set; }
         public DateAccuracy DateOfBirthAccuracy { get; protected set; }
 
-        protected Person(Patron patron, PersonType personType, FullName fullName)
+        protected Person(string createdBy, DateTime createdOn, Patron patron, PersonType personType, FullName fullName)
         {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(patron != null);
             Contract.Requires<ArgumentNullException>(personType != null);
             Contract.Requires<ArgumentNullException>(fullName != null);
@@ -30,14 +32,16 @@ namespace Vigil.Data.Core.Patrons
             FullName = fullName;
         }
 
-        public static Person Create(Patron patron, PersonType personType, FullName fullName, DateTime? dateOfBirth = null, DateAccuracy dateOfBirthAccuracy = null)
+        public static Person Create(string createdBy, DateTime createdOn, Patron patron, PersonType personType, FullName fullName, DateTime? dateOfBirth = null, DateAccuracy dateOfBirthAccuracy = null)
         {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(patron != null);
             Contract.Requires<ArgumentNullException>(personType != null);
             Contract.Requires<ArgumentNullException>(fullName != null);
             Contract.Ensures(Contract.Result<Person>() != null);
 
-            return new Person(patron, personType, fullName)
+            return new Person(createdBy, createdOn, patron, personType, fullName)
             {
                 DateOfBirth = dateOfBirth,
                 DateOfBirthAccuracy = dateOfBirthAccuracy

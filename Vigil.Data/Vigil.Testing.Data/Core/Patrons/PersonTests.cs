@@ -15,10 +15,10 @@ namespace Vigil.Testing.Data.Core.Patrons
         [Fact]
         public void Create_Method_Uses_Proper_Defaults()
         {
-            Patron patron = Patron.Create(PatronType.Create("PatronTypeName"), "PatronDisplayName");
+            Patron patron = Patron.Create("TestUser", DateTime.UtcNow, PatronType.Create("TestUser", DateTime.UtcNow, "PatronTypeName"), "PatronDisplayName");
             FullName fullName = new FullName(givenName: "FirstName", familyName: "LastName");
-            PersonType personType = PersonType.Create("PersonTypeName");
-            Person person = Person.Create(patron, personType, fullName);
+            PersonType personType = PersonType.Create("TestUser", DateTime.UtcNow, "PersonTypeName");
+            Person person = Person.Create("TestUser", DateTime.UtcNow, patron, personType, fullName);
 
             Assert.Same(patron, person.Patron);
             Assert.Same(personType, person.PersonType);
@@ -29,11 +29,11 @@ namespace Vigil.Testing.Data.Core.Patrons
         [Fact]
         public void Create_Method_Sets_Properties()
         {
-            Patron patron = Patron.Create(PatronType.Create("PatronTypeName"), "PatronDisplayName");
+            Patron patron = Patron.Create("TestUser", DateTime.UtcNow, PatronType.Create("TestUser", DateTime.UtcNow, "PatronTypeName"), "PatronDisplayName");
             FullName fullName = new FullName(givenName: "FirstName", familyName: "LastName");
-            PersonType personType = PersonType.Create("PersonTypeName");
+            PersonType personType = PersonType.Create("TestUser", DateTime.UtcNow, "PersonTypeName");
 
-            Person person = Person.Create(patron, personType, fullName, new DateTime(1981, 8, 25, 0, 0, 0, DateTimeKind.Utc), new DateAccuracy('U', 'A', 'E'));
+            Person person = Person.Create("TestUser", DateTime.UtcNow, patron, personType, fullName, new DateTime(1981, 8, 25, 0, 0, 0, DateTimeKind.Utc), new DateAccuracy('U', 'A', 'E'));
 
             Assert.Same(patron, person.Patron);
             Assert.Same(personType, person.PersonType);

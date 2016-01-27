@@ -16,14 +16,14 @@ namespace Vigil.Data.Modeling
         public string AffectedBy { get; protected set; }
         public DateTime Now { get; protected set; }
 
-        public DbSet<ChangeLog> ChangeLogs { get; protected set; }
-        public DbSet<ApplicationSetting> ApplicationSettings { get; protected set; }
+        public IDbSet<ChangeLog> ChangeLogs { get { return Set<ChangeLog>(); } }
+        public IDbSet<ApplicationSetting> ApplicationSettings { get { return Set<ApplicationSetting>(); } }
 
-        public DbSet<PatronType> PatronTypes { get; protected set; }
-        public DbSet<PersonType> PersonTypes { get; protected set; }
-        
-        public DbSet<Patron> Patrons { get; protected set; }
-        public DbSet<Person> Persons { get; protected set; }
+        public IDbSet<PatronType> PatronTypes { get { return Set<PatronType>(); } }
+        public IDbSet<PersonType> PersonTypes { get { return Set<PersonType>(); } }
+
+        public IDbSet<Patron> Patrons { get { return Set<Patron>(); } }
+        public IDbSet<Person> Persons { get { return Set<Person>(); } }
 
         public VigilContext()
             : base("VigilContextConnection")

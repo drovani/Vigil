@@ -9,8 +9,8 @@ namespace Vigil.Testing.Data.Core
     {
         private class TestTypeBase : TypeBase
         {
-            public TestTypeBase(string typeName)
-                : base(typeName)
+            public TestTypeBase(string createdBy, DateTime createdOn, string typeName)
+                : base(createdBy, createdOn, typeName)
             {
             }
         }
@@ -18,13 +18,13 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void Constructor_Sets_TypeName_Property()
         {
-            TestTypeBase typeBase = new TestTypeBase("test type");
+            TestTypeBase typeBase = new TestTypeBase("TestUser", DateTime.UtcNow, "test type");
             Assert.Equal("test type", typeBase.TypeName);
         }
         [Fact]
         public void SetTypeName_Sets_TypeName_Property()
         {
-            TestTypeBase typeBase = new TestTypeBase("test type");
+            TestTypeBase typeBase = new TestTypeBase("TestUser", DateTime.UtcNow, "test type");
             Assert.Equal("test type", typeBase.TypeName);
 
             typeBase.SetTypeName("reset type");
@@ -34,13 +34,13 @@ namespace Vigil.Testing.Data.Core
         [Fact]
         public void SetTypeName_To_Empty_Throws_Exception()
         {
-            TestTypeBase typeBase = new TestTypeBase("test type");
+            TestTypeBase typeBase = new TestTypeBase("TestUser", DateTime.UtcNow, "test type");
             Assert.Throws<ArgumentException>(() => typeBase.SetTypeName(String.Empty));
         }
         [Fact]
         public void SetTypeName_To_Null_Throws_Exception()
         {
-            TestTypeBase typeBase = new TestTypeBase("test type");
+            TestTypeBase typeBase = new TestTypeBase("TestUser", DateTime.UtcNow, "test type");
             Assert.Throws<ArgumentNullException>(() => typeBase.SetTypeName(null));
         }
     }
