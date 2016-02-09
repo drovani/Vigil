@@ -8,7 +8,7 @@ using Vigil.Data.Core.System;
 
 namespace Vigil.Data.Core.Patrons
 {
-    public class Patron : KeyIdentity, ICreated, IModified, IDeleted
+    public class Patron : IdentityDeletedBase
     {
         [Required]
         public PatronType PatronType { get; set; }
@@ -21,15 +21,17 @@ namespace Vigil.Data.Core.Patrons
 
         public virtual ICollection<Comment> Comments { get; }
 
+        protected Patron() : base() { }
+
         protected Patron(string createdBy, DateTime createdOn, PatronType patronType, string displayName)
+            : base(createdBy, createdOn)
         {
             Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
             Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(patronType != null);
             Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(displayName));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(displayName.Trim()));
 
-            CreatedBy = createdBy;
-            CreatedOn = createdOn;
             PatronType = patronType;
             DisplayName = displayName.Trim();
         }
@@ -49,26 +51,12 @@ namespace Vigil.Data.Core.Patrons
             };
         }
 
-        #region ICreated, IModified, IDeleted Implementation
-        [Required]
-        public string CreatedBy { get; protected set; }
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime CreatedOn { get; protected set; }
-        public string ModifiedBy { get; protected set; }
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime? ModifiedOn { get; protected set; }
-        public string DeletedBy { get; protected set; }
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime? DeletedOn { get; protected set; }
-        #endregion
-
         [ContractInvariantMethod]
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(DisplayName != null);
             Contract.Invariant(!string.IsNullOrWhiteSpace(DisplayName));
             Contract.Invariant(PatronType != null);
         }

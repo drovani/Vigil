@@ -17,7 +17,6 @@ namespace Vigil.Patrons.Model
     {
         private PatronVigilContext context;
 
-        [Import("AccountNumberGenerator", typeof(IValueGenerator<>))]
         protected IValueGenerator<string> AccountNumberGenerator { get; set; }
         [ImportMany("DomainRules", typeof(IRule<PatronCreateModel>))]
         public override ICollection<IRule<PatronCreateModel>> DomainRules { get; } = new List<IRule<PatronCreateModel>>();
@@ -32,7 +31,7 @@ namespace Vigil.Patrons.Model
             Contract.Requires<ArgumentException>(now != default(DateTime));
 
             context = new PatronVigilContext(affectedBy, now);
-            AccountNumberGenerator = new RandomNumberGenerator();
+            AccountNumberGenerator = new AccountNumberGenerator(context);
         }
 
         public PatronReadModel CreatePatron(PatronCreateModel createPatron)
@@ -51,13 +50,8 @@ namespace Vigil.Patrons.Model
                 ValidationResults.Add(new ValidationResult("InvalidPatronType", new string[] { nameof(PatronCreateModel.PatronType) }));
                 return null;
             }
-            Patron newPatron = Patron.Create(
-                createdBy: context.AffectedBy,
-                createdOn: context.Now,
-                patronType: patronType,
-                displayName: createPatron.DisplayName,
-                accountNumber: AccountNumberGenerator.GetNextValue(context.Now),
-                isAnonymous: createPatron.IsAnonymous);
+            Patron newPatron = context.Create<Patron>(patronType, createPatron.DisplayName, AccountNumberGenerator.GetNextValue(context.Now), createPatron.IsAnonymous);
+
             context.Patrons.Add(newPatron);
 
             int savedChanges = ValidateAndSave(newPatron);
@@ -124,7 +118,7 @@ namespace Vigil.Patrons.Model
             if (patron != null)
             {
                 patron.MarkDeleted(context.AffectedBy, context.Now);
-                context.Comments.Add(Comment.Create(patron.Id, reason, context.AffectedBy, context.Now));
+                context.Comments.Add(Comment.Create(context.AffectedBy, context.Now, patron.Id, reason));
                 int numChanges = context.SaveChanges();
                 return numChanges > 0;
             }

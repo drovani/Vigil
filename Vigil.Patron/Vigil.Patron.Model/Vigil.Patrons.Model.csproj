@@ -146,6 +146,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountNumberGenerator.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="PatronCreateModel.cs" />
     <Compile Include="PatronFactory.cs" />
@@ -158,7 +159,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomNumberGenerator.cs" />
     <Compile Include="Types\PatronType.cs" />
   </ItemGroup>
   <ItemGroup>
