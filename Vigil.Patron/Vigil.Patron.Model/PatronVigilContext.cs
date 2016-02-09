@@ -20,6 +20,15 @@ namespace Vigil.Patrons.Model
             Contract.Requires<ArgumentException>(now != default(DateTime));
         }
 
+        public TPatron Create<TPatron>(PatronType patronType, string displayName, string accountNumber = null, bool isAnonymous = false) where TPatron : Patron
+        {
+            Contract.Requires<ArgumentNullException>(patronType != null);
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(displayName));
+            Contract.Ensures(Contract.Result<TPatron>() != null);
+
+            return Patron.Create(AffectedBy, Now, patronType, displayName, accountNumber, isAnonymous) as TPatron;
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Patron>();

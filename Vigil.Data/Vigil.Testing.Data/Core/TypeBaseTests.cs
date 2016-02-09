@@ -35,7 +35,7 @@ namespace Vigil.Testing.Data.Core
         public void SetTypeName_To_Empty_Throws_Exception()
         {
             TestTypeBase typeBase = new TestTypeBase("TestUser", DateTime.UtcNow, "test type");
-            Assert.Throws<ArgumentException>(() => typeBase.SetTypeName(String.Empty));
+            Assert.Throws<ArgumentNullException>(() => typeBase.SetTypeName(string.Empty));
         }
         [Fact]
         public void SetTypeName_To_Null_Throws_Exception()

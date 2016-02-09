@@ -4,32 +4,22 @@ using System.Diagnostics.Contracts;
 
 namespace Vigil.Data.Core
 {
-    public abstract class TypeBase : KeyIdentity, ICreated, IModified, IOrdered, IDeleted
+    public abstract class TypeBase : IdentityDeletedBase
     {
-        [Required]
-        public string CreatedBy { get; protected set; }
-        public DateTime CreatedOn { get; protected set; }
-        public string ModifiedBy { get; protected set; }
-        public DateTime? ModifiedOn { get; protected set; }
-        public string DeletedBy { get; protected set; }
-        public DateTime? DeletedOn { get; protected set; }
-
         [Required, StringLength(250)]
         public string TypeName { get; protected set; }
         public string Description { get; protected set; }
         public int Ordinal { get; protected set; }
 
-        protected TypeBase() { }
+        protected TypeBase() : base() { }
 
         protected TypeBase(string createdBy, DateTime createdOn, string typeName)
-            : base()
+            : base(createdBy, createdOn)
         {
             Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
             Contract.Requires<ArgumentException>(createdOn != default(DateTime));
             Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(typeName));
 
-            CreatedBy = createdBy;
-            CreatedOn = createdOn.ToUniversalTime();
             TypeName = typeName.Trim();
         }
 

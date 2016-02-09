@@ -19,7 +19,7 @@ namespace Vigil.Testing.Data.Core.System
                 CallBase = true
             }.Object;
 
-            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<KeyIdentity, Guid>(testIdentity.Id, i => new Guid(), Guid.Empty, testIdentity.Id, "TestChange", Now));
+            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<KeyIdentity, Guid>("TestChanger", Now, testIdentity.Id, i => new Guid(), Guid.Empty, testIdentity.Id));
         }
         [Fact]
         public void CreateLog_With_Invalid_MemberExpression_Throws_Exception()
@@ -29,16 +29,16 @@ namespace Vigil.Testing.Data.Core.System
                 CallBase = true
             }.Object;
 
-            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<KeyIdentity, Guid>(testIdentity.Id, i => Guid.Empty, Guid.Empty, testIdentity.Id, "TestChange", Now));
+            Assert.Throws<ArgumentException>(() => ChangeLog.CreateLog<KeyIdentity, Guid>("TestChanger", Now, testIdentity.Id, i => Guid.Empty, Guid.Empty, testIdentity.Id));
         }
         [Fact]
         public void Passing_Null_Values_Saves_Null_Values()
         {
-            TypeBase testTypeBase = new Mock<TypeBase>("Test Type")
+            TypeBase testTypeBase = new Mock<TypeBase>("TypeBaseCreator", Now, "Test Type")
             {
                 CallBase = true
             }.Object;
-            ChangeLog log = ChangeLog.CreateLog(testTypeBase, t => t.DeletedOn, null, null, "TestChanger", Now);
+            ChangeLog log = ChangeLog.CreateLog("TestChanger", Now, testTypeBase, t => t.DeletedOn, null, null);
 
             Assert.Null(log.OldValue);
             Assert.Null(log.NewValue);
@@ -53,7 +53,7 @@ namespace Vigil.Testing.Data.Core.System
                 CallBase = true
             }.Object;
 
-            ChangeLog log = ChangeLog.CreateLog<KeyIdentity, Guid>(testIdentity.Id, i => i.Id, Guid.Empty, testIdentity.Id, "TestChanger", Now);
+            ChangeLog log = ChangeLog.CreateLog<KeyIdentity, Guid>("TestChanger", Now, testIdentity.Id, i => i.Id, Guid.Empty, testIdentity.Id);
             Assert.Equal(testIdentity.Id, log.EntityId);
             Assert.Equal("KeyIdentity", log.ModelName);
             Assert.Equal("Id", log.PropertyName);
@@ -71,7 +71,7 @@ namespace Vigil.Testing.Data.Core.System
                 CallBase = true
             }.Object;
 
-            ChangeLog log = ChangeLog.CreateLog(testIdentity, i => i.Id, Guid.Empty, testIdentity.Id, "TestChanger", Now);
+            ChangeLog log = ChangeLog.CreateLog("TestChanger", Now, testIdentity, i => i.Id, Guid.Empty, testIdentity.Id);
             Assert.Equal(testIdentity.Id, log.EntityId);
             Assert.Equal("KeyIdentity", log.ModelName);
             Assert.Equal("Id", log.PropertyName);

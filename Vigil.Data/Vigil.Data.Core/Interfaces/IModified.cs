@@ -8,6 +8,8 @@ namespace Vigil.Data.Core
     {
         string ModifiedBy { get; }
         DateTime? ModifiedOn { get; }
+
+        bool MarkModified(string modifiedBy, DateTime modifiedOn);
     }
 
     namespace Contracts
@@ -20,6 +22,14 @@ namespace Vigil.Data.Core
 
             public string ModifiedBy { get; set; }
             public DateTime? ModifiedOn { get; set; }
+
+            public bool MarkModified(string modifiedBy, DateTime modifiedOn)
+            {
+                Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(modifiedBy));
+                Contract.Requires<ArgumentException>(modifiedOn != default(DateTime));
+
+                throw new NotImplementedException("Contract Class");
+            }
 
             [ContractInvariantMethod]
             [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Contracts;
-using Vigil.Data.Core.Identity;
 
 namespace Vigil.Data.Core.System
 {
-    public class Comment : KeyIdentity, ICreated, IModified, IDeleted, IEntityId
+    public class Comment : IdentityDeletedBase
     {
         /// <summary>The object to which this comment is attached.
         /// </summary>
@@ -13,42 +12,24 @@ namespace Vigil.Data.Core.System
         [Required]
         public string CommentText { get; protected set; }
 
-        protected Comment() { }
+        protected Comment() : base() { }
 
-        protected Comment(Guid id) : base(id) { }
-
-        public static Comment Create(Guid entityId, string commentText, string createdBy, DateTime createdOn)
+        protected Comment(string createdBy, DateTime createdOn, Guid entityId, string commentText) :base(createdBy, createdOn)
         {
-            Contract.Requires<ArgumentException>(entityId != Guid.Empty);
-            Contract.Requires<ArgumentNullException>(commentText != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(commentText));
-            Contract.Requires<ArgumentNullException>(createdBy != null);
-            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
             Contract.Requires<ArgumentOutOfRangeException>(createdOn != default(DateTime));
-            Contract.Ensures(Contract.Result<Comment>() != null);
-
-            return new Comment
-            {
-                EntityId = entityId,
-                CommentText = commentText.Trim(),
-                CreatedBy = createdBy,
-                CreatedOn = createdOn.ToUniversalTime(),
-                Id = Guid.NewGuid()
-            };
         }
 
-        #region ICreated, IModified, IDeleted Implementation
-        [Required]
-        public string CreatedBy { get; protected set; }
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime CreatedOn { get; protected set; }
-        public string ModifiedBy { get; protected set; }
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime? ModifiedOn { get; protected set; }
-        public string DeletedBy { get; protected set; }
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime? DeletedOn { get; protected set; }
-        #endregion
+        public static Comment Create(string createdBy, DateTime createdOn, Guid entityId, string commentText)
+        {
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(createdBy));
+            Contract.Requires<ArgumentOutOfRangeException>(createdOn != default(DateTime));
+            Contract.Requires<ArgumentException>(entityId != Guid.Empty);
+            Contract.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(commentText));
+            Contract.Ensures(Contract.Result<Comment>() != null);
+
+            return new Comment(createdBy, createdOn, entityId, commentText);
+        }
 
         [ContractInvariantMethod]
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -57,6 +38,7 @@ namespace Vigil.Data.Core.System
         private void ObjectInvariant()
         {
             Contract.Invariant(EntityId != Guid.Empty);
+            Contract.Invariant(CommentText != null);
         }
     }
 }

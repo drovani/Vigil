@@ -108,8 +108,10 @@
     <Compile Include="Attributes\NotImplementedAttribute.cs" />
     <Compile Include="BaseVigilContext.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IdentityCreatedBase.cs" />
+    <Compile Include="IdentityDeletedBase.cs" />
+    <Compile Include="IdentityModifiedBase.cs" />
     <Compile Include="Identity\IVigilUser.cs" />
-    <Compile Include="Interfaces\ExtensionMethods.cs" />
     <Compile Include="Interfaces\IEntityId.cs" />
     <Compile Include="Patrons\Patron.cs" />
     <Compile Include="Patrons\Person.cs" />
