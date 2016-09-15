@@ -1,0 +1,16 @@
+﻿{
+  "dependencies": {
+    "Vigil.Domain": "0.0.1-*",
+    "Vigil.MessageQueue": "0.0.1-*"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0"
+        }
+      }
+    }
+  },
+  "version": "0.0.1-*"
+}
