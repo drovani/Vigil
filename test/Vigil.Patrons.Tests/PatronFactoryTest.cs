@@ -5,7 +5,7 @@ using Vigil.MessageQueue;
 using Vigil.MessageQueue.Commands;
 using Xunit;
 
-namespace Vigil.Patrons.Tests
+namespace Vigil.Patrons
 {
     public class PatronFactoryTest
     {
