@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
 
 namespace Vigil.Domain
 {
@@ -71,12 +70,6 @@ namespace Vigil.Domain
         public override string ToString()
         {
             return Id.ToString();
-        }
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(Id != Guid.Empty);
         }
     }
 }

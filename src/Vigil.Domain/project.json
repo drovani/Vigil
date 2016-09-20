@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "System.Diagnostics.Contracts": "4.0.1"
   },
   "frameworks": {
     "netcoreapp1.0": {
