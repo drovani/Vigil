@@ -25,7 +25,7 @@ namespace Vigil.Patrons
 
             queue.VerifyAll();
             Assert.NotEqual(Guid.Empty, result.AffectedEntity.Id);
-            Assert.Null(result.ValidationResults);
+            Assert.Empty(result.ValidationResults);
         }
 
         [Fact]
