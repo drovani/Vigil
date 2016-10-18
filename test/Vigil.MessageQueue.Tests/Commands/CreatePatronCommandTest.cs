@@ -7,6 +7,7 @@ namespace Vigil.MessageQueue.Commands
 {
     public class CreatePatronCommandTest
     {
+        [Fact]
         public void CreatePatronCommand_Defaults_IsAnonymous()
         {
             CreatePatronCommand command = new CreatePatronCommand();
