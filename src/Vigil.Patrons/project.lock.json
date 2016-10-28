@@ -2120,20 +2120,6 @@
         "runtime": {
           "netcoreapp1.0/Vigil.Domain.dll": {}
         }
-      },
-      "Vigil.MessageQueue/0.0.1": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v1.0",
-        "dependencies": {
-          "Microsoft.NETCore.App": "1.0.0",
-          "Vigil.Domain": "0.0.1"
-        },
-        "compile": {
-          "netcoreapp1.0/Vigil.MessageQueue.dll": {}
-        },
-        "runtime": {
-          "netcoreapp1.0/Vigil.MessageQueue.dll": {}
-        }
       }
     }
   },
@@ -6733,17 +6719,11 @@
       "type": "project",
       "path": "../Vigil.Domain/project.json",
       "msbuildProject": "../Vigil.Domain/Vigil.Domain.xproj"
-    },
-    "Vigil.MessageQueue/0.0.1": {
-      "type": "project",
-      "path": "../Vigil.MessageQueue/project.json",
-      "msbuildProject": "../Vigil.MessageQueue/Vigil.MessageQueue.xproj"
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "Vigil.Domain >= 0.0.1-*",
-      "Vigil.MessageQueue >= 0.0.1-*"
+      "Vigil.Domain >= 0.0.1-*"
     ],
     ".NETCoreApp,Version=v1.0": [
       "Microsoft.NETCore.App >= 1.0.0"

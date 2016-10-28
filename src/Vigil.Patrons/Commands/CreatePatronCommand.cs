@@ -1,11 +1,14 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Vigil.Domain;
+using Vigil.Domain.Messaging;
 
-namespace Vigil.MessageQueue.Commands
+namespace Vigil.Patrons.Commands
 {
     public class CreatePatronCommand : ICommand
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         [Required, StringLength(250)]
         public string DisplayName { get; set; }
         [DefaultValue(false)]

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace Vigil.MessageQueue.Commands
+namespace Vigil.Patrons.Commands
 {
     public class CreatePatronCommandTest
     {
