@@ -2,6 +2,6 @@
 {
     public interface IEventBus
     {
-        void Publish(IEvent @event);
+        void Publish<TEvent>(TEvent @event) where TEvent : IEvent;
     }
 }

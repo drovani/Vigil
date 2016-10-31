@@ -14,13 +14,24 @@ namespace Vigil.Patrons
         {
             CreatePatronCommand command = new CreatePatronCommand()
             {
-                DisplayName = "Test User",
+                DisplayName = "Test Patron",
                 IsAnonymous = false,
                 PatronType = "Test Account"
             };
 
             var eventBus = new Mock<IEventBus>();
-            eventBus.Setup(bus => bus.Publish(It.IsAny<PatronCreated>())).Verifiable();
+            eventBus.Setup(bus => bus.Publish(It.IsAny<PatronCreated>()))
+                .Callback<PatronCreated>((@event) =>
+                {
+                    Assert.Equal(command.DisplayName, @event.DisplayName);
+                    Assert.Equal(command.IsAnonymous, @event.IsAnonymous);
+                    Assert.Equal(command.PatronType, @event.PatronType);
+                    Assert.Equal(command.Id, @event.SourceId);
+                    Assert.NotEqual(command.Id, @event.Id);
+                    Assert.NotEqual(command.Id, @event.PatronId);
+                    Assert.NotEqual(Guid.Empty, @event.PatronId);
+                    Assert.NotEqual(Guid.Empty, @event.Id);
+                }).Verifiable();
             var repo = new Mock<ICommandRepository>();
             repo.Setup(re => re.Save(It.Is<CreatePatronCommand>(cpc => cpc.Id == command.Id))).Verifiable();
 
@@ -32,52 +43,34 @@ namespace Vigil.Patrons
         }
 
         [Fact]
-        public void User_Cannot_Create_Patron_That_Fails_Validation()
-        {
-            //var queue = new Mock<ICommandQueue>(MockBehavior.Strict);
-            //queue.Setup(q => q.QueueCommand(It.IsAny<ICommand>())).Verifiable();
-            //PatronFactory factory = new PatronFactory(queue.Object);
-
-            //FactoryResult result = factory.CreatePatron(new CreatePatronCommand());
-
-            //queue.Verify(q => q.QueueCommand(It.IsAny<ICommand>()), Times.Never);
-            //Assert.Equal(Guid.Empty, result.AffectedId);
-            //Assert.NotEmpty(result.ValidationResults);
-        }
-
-        [Fact]
         public void User_Can_Update_a_Patron()
         {
-            //var queue = new Mock<ICommandQueue>(MockBehavior.Strict);
-            //queue.Setup(q => q.QueueCommand(It.IsAny<ICommand>())).Verifiable();
-            //PatronFactory factory = new PatronFactory(queue.Object);
-            //UpdatePatronCommand command = new UpdatePatronCommand()
-            //{
-            //    PatronId = Guid.NewGuid(),
-            //    DisplayName = "Updated Patron Name",
-            //    IsAnonymous = null,
-            //    PatronType = null
-            //};
+            UpdatePatronCommand command = new UpdatePatronCommand()
+            {
+                PatronId = Guid.NewGuid(),
+                DisplayName = "Updated Test Patron"
+            };
 
-            //FactoryResult result = factory.UpdatePatron(command);
+            var eventBus = new Mock<IEventBus>();
+            eventBus.Setup(bus => bus.Publish(It.IsAny<PatronUpdated>()))
+                .Callback<PatronUpdated>((@event) =>
+                {
+                    Assert.Equal(command.DisplayName, @event.DisplayName);
+                    Assert.Equal(command.IsAnonymous, @event.IsAnonymous);
+                    Assert.Equal(command.PatronType, @event.PatronType);
+                    Assert.Equal(command.Id, @event.SourceId);
+                    Assert.Equal(command.PatronId, @event.PatronId);
+                    Assert.NotEqual(command.Id, @event.Id);
+                    Assert.NotEqual(Guid.Empty, @event.Id);
+                }).Verifiable();
+            var repo = new Mock<ICommandRepository>();
+            repo.Setup(re => re.Save(It.Is<UpdatePatronCommand>(cpc => cpc.Id == command.Id))).Verifiable();
 
-            //queue.VerifyAll();
-            //Assert.Equal(command.PatronId, result.AffectedId);
-            //Assert.Empty(result.ValidationResults);
-        }
+            PatronCommandHandler handler = new PatronCommandHandler(eventBus.Object, repo.Object);
+            handler.Handle(command);
 
-        [Fact]
-        public void User_Cannot_Update_Patron_That_Fails_Validation()
-        {
-            //var queue = new Mock<ICommandQueue>(MockBehavior.Strict);
-            //queue.Setup(q => q.QueueCommand(It.IsAny<ICommand>())).Verifiable();
-            //PatronFactory factory = new PatronFactory(queue.Object);
-
-            //FactoryResult result = factory.UpdatePatron(new UpdatePatronCommand());
-
-            //queue.Verify(q => q.QueueCommand(It.IsAny<ICommand>()), Times.Never);
-            //Assert.Equal(Guid.Empty, result.AffectedId);
-            //Assert.NotEmpty(result.ValidationResults);
+            Assert.NotEqual(Guid.Empty, command.Id);
+            Mock.Verify(eventBus, repo);
         }
     }
 }
