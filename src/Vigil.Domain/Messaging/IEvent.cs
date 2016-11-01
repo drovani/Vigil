@@ -2,9 +2,8 @@
 
 namespace Vigil.Domain.Messaging
 {
-    public interface IEvent
+    public interface IEvent : IKeyIdentity
     {
-        Guid Id { get; }
         Guid SourceId { get; }
     }
 }

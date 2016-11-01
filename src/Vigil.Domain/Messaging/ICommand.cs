@@ -2,10 +2,7 @@
 
 namespace Vigil.Domain.Messaging
 {
-    public interface ICommand
+    public interface ICommand : IKeyIdentity
     {
-        /// <summary>Gets the command identifier.
-        /// </summary>
-        Guid Id { get; }
     }
 }
