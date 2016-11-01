@@ -35,7 +35,7 @@ namespace Vigil.Patrons
             var repo = new Mock<ICommandRepository>();
             repo.Setup(re => re.Save(It.Is<CreatePatronCommand>(cpc => cpc.Id == command.Id))).Verifiable();
 
-            PatronCommandHandler handler = new PatronCommandHandler(eventBus.Object, repo.Object);
+            ICommandHandler<CreatePatronCommand> handler = new PatronCommandHandler(eventBus.Object, repo.Object);
             handler.Handle(command);
 
             Assert.NotEqual(Guid.Empty, command.Id);
@@ -66,7 +66,7 @@ namespace Vigil.Patrons
             var repo = new Mock<ICommandRepository>();
             repo.Setup(re => re.Save(It.Is<UpdatePatronCommand>(cpc => cpc.Id == command.Id))).Verifiable();
 
-            PatronCommandHandler handler = new PatronCommandHandler(eventBus.Object, repo.Object);
+            ICommandHandler<UpdatePatronCommand> handler = new PatronCommandHandler(eventBus.Object, repo.Object);
             handler.Handle(command);
 
             Assert.NotEqual(Guid.Empty, command.Id);

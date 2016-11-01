@@ -5,7 +5,7 @@ using Vigil.Patrons.Events;
 
 namespace Vigil.Patrons
 {
-    public class PatronCommandHandler : ICommandHandler<CreatePatronCommand>
+    public class PatronCommandHandler : ICommandHandler<CreatePatronCommand>, ICommandHandler<UpdatePatronCommand>
     {
         private readonly IEventBus eventBus;
         private readonly ICommandRepository repo;
