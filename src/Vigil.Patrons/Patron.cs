@@ -1,21 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
 using Vigil.Domain;
+using Vigil.Domain.EventSourcing;
+using Vigil.Domain.Messaging;
+using Vigil.Patrons.Events;
 
 namespace Vigil.Patrons
 {
-    public class Patron : IKeyIdentity
+    public class Patron : EventSourced
     {
-        public Guid Id { get; set; }
         public string DisplayName { get; set; }
         public bool IsAnonymous { get; set; }
         public string PatronType { get; set; }
 
-        public Patron(Guid patronId, string displayName, bool isAnonymous, string patronType)
+        public Patron(Guid patronId, IEnumerable<IVersionedEvent> history)
+            : this(patronId)
         {
-            Id = patronId;
-            DisplayName = displayName;
-            IsAnonymous = isAnonymous;
-            PatronType = patronType;
+            LoadFrom(history);
+        }
+
+        protected Patron(Guid patronId) : base(patronId)
+        {
+            Handles<PatronCreated>(OnPatronCreated);
+            Handles<PatronHeaderChanged>(OnPatronHeaderChanged);
+        }
+
+        private void OnPatronCreated(PatronCreated evnt)
+        {
+            DisplayName = evnt.DisplayName;
+            IsAnonymous = evnt.IsAnonymous;
+            PatronType = evnt.PatronType;
+        }
+
+        private void OnPatronHeaderChanged(PatronHeaderChanged evnt)
+        {
+            DisplayName = evnt.DisplayName ?? DisplayName;
+            IsAnonymous = evnt.IsAnonymous ?? IsAnonymous;
+            PatronType = evnt.PatronType ?? PatronType;
         }
     }
 }

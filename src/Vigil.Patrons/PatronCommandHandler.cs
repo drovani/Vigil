@@ -5,7 +5,7 @@ using Vigil.Patrons.Events;
 
 namespace Vigil.Patrons
 {
-    public class PatronCommandHandler : ICommandHandler<CreatePatronCommand>, ICommandHandler<UpdatePatronCommand>
+    public class PatronCommandHandler : ICommandHandler<CreatePatron>, ICommandHandler<UpdatePatronHeader>
     {
         private readonly IEventBus eventBus;
         private readonly ICommandRepository repo;
@@ -16,7 +16,7 @@ namespace Vigil.Patrons
             this.repo = repo;
         }
 
-        public void Handle(CreatePatronCommand command)
+        public void Handle(CreatePatron command)
         {
             var patronCreated = new PatronCreated
             {
@@ -30,9 +30,9 @@ namespace Vigil.Patrons
             repo.Save(command);
         }
 
-        public void Handle(UpdatePatronCommand command)
+        public void Handle(UpdatePatronHeader command)
         {
-            var patronUpdated = new PatronUpdated
+            var headerChanged = new PatronHeaderChanged
             {
                 SourceId = command.Id,
                 PatronId = command.PatronId,
@@ -40,7 +40,7 @@ namespace Vigil.Patrons
                 IsAnonymous = command.IsAnonymous,
                 PatronType = command.PatronType
             };
-            eventBus.Publish(patronUpdated);
+            eventBus.Publish(headerChanged);
             repo.Save(command);
         }
     }

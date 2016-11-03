@@ -7,7 +7,7 @@ namespace Vigil.Patrons
 {
     public class PatronEventHandler :
         IEventHandler<PatronCreated>,
-        IEventHandler<PatronUpdated>
+        IEventHandler<PatronHeaderChanged>
     {
         private Func<IPatronContext> contextFactory;
 
@@ -20,12 +20,12 @@ namespace Vigil.Patrons
         {
             using (var context = contextFactory.Invoke())
             {
-                context.Patrons.Add(new Patron(@event.PatronId, @event.DisplayName, @event.IsAnonymous, @event.PatronType));
+                context.Patrons.Add(new Patron(@event.PatronId, new []{ @event }));
                 context.SaveChanges();
             }
         }
 
-        public void Handle(PatronUpdated @event)
+        public void Handle(PatronHeaderChanged @event)
         {
             using (var context = contextFactory.Invoke())
             {
