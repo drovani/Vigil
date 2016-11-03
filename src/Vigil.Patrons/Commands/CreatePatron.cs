@@ -5,7 +5,7 @@ using Vigil.Domain.Messaging;
 
 namespace Vigil.Patrons.Commands
 {
-    public class CreatePatronCommand : ICommand
+    public class CreatePatron : ICommand
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 

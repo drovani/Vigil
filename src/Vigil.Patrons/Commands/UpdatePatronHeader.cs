@@ -5,7 +5,7 @@ using Vigil.Domain.Messaging;
 
 namespace Vigil.Patrons.Commands
 {
-    public class UpdatePatronCommand : ICommand, IValidatableObject
+    public class UpdatePatronHeader : ICommand, IValidatableObject
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 

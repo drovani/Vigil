@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
-    "Vigil.Domain": "0.0.1-*"
+    "Vigil.Domain": "0.0.1-*",
+    "Microsoft.EntityFrameworkCore": "1.1.0-preview1-final"
   },
   "frameworks": {
     "netcoreapp1.0": {
