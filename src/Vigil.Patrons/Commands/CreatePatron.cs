@@ -8,6 +8,7 @@ namespace Vigil.Patrons.Commands
     public class CreatePatron : ICommand
     {
         public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid PatronId { get; set; } = Guid.NewGuid();
 
         [Required, StringLength(250)]
         public string DisplayName { get; set; }
