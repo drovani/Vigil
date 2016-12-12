@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vigil.Domain.Messaging;
+using System.ComponentModel.DataAnnotations;
 
 namespace Vigil.Domain.EventSourcing
 {
@@ -14,25 +14,25 @@ namespace Vigil.Domain.EventSourcing
         public int Version { get; private set; } = -1;
         public IEnumerable<IVersionedEvent> Events { get { return events; } }
 
+        [Required]
+        public string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public string DeletedBy { get; set; }
+        public DateTime? DeletedOn { get; set; }
+
         protected EventSourced(Guid id)
         {
             this.id = id;
         }
 
         protected void Handles<TEvent>(Action<TEvent> handler)
-            where TEvent : IEvent
+            where TEvent : IVersionedEvent
         {
-            handlers.Add(typeof(TEvent), @event => handler((TEvent)@event));
+            handlers.Add(typeof(TEvent), evnt => handler((TEvent)evnt));
         }
-        protected void AppendEvent(VersionedEvent e)
-        {
-            e.SourceId = Id;
-            e.Version = Version + 1;
 
-            handlers[e.GetType()].Invoke(e);
-            Version = e.Version;
-            events.Add(e);
-        }
         protected void LoadFrom(IEnumerable<IVersionedEvent> pastEvents)
         {
             foreach (var e in pastEvents)

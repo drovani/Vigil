@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Vigil.Domain.Messaging
+﻿namespace Vigil.Domain.Messaging
 {
     public interface ICommandQueue
     {
-        void Publish<TCommand>(TCommand @event) where TCommand : ICommand;
+        void Publish<TCommand>(TCommand command) where TCommand : ICommand;
     }
 }

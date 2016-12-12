@@ -2,6 +2,6 @@
 {
     public interface ICommandRepository
     {
-        void Save<TCommand>(TCommand command) where TCommand : ICommand;
+        void Save<TCommand>(TCommand command) where TCommand : Command;
     }
 }

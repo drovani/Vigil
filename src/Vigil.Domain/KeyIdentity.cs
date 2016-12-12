@@ -11,12 +11,9 @@ namespace Vigil.Domain
         }
 
         [Key]
-        public Guid Id { get; protected set; }
+        public Guid Id { get; protected set; } = Guid.NewGuid();
 
-        protected KeyIdentity()
-        {
-            Id = Guid.NewGuid();
-        }
+        protected KeyIdentity() { }
 
         protected KeyIdentity(Guid id)
         {

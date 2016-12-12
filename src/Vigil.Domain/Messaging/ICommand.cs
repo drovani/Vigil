@@ -1,8 +1,4 @@
-﻿using System;
-
-namespace Vigil.Domain.Messaging
+﻿namespace Vigil.Domain.Messaging
 {
-    public interface ICommand : IKeyIdentity
-    {
-    }
+    public interface ICommand : IKeyIdentity { }
 }
