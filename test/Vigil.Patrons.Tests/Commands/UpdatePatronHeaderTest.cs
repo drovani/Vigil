@@ -8,10 +8,12 @@ namespace Vigil.Patrons.Commands
 {
     public class UpdatePatronHeaderTest
     {
+        private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
+
         [Fact]
         public void Validation_Requires_PatronId()
         {
-            UpdatePatronHeader command = new UpdatePatronHeader();
+            UpdatePatronHeader command = new UpdatePatronHeader("Update User", Now);
 
             List<ValidationResult> validationResults = new List<ValidationResult>();
             Validator.TryValidateObject(command, new ValidationContext(command), validationResults, true);
@@ -25,7 +27,7 @@ namespace Vigil.Patrons.Commands
         [Fact]
         public void Validation_On_DisplayName_And_PatronType_Has_Maximum_String_Length()
         {
-            UpdatePatronHeader command = new UpdatePatronHeader()
+            UpdatePatronHeader command = new UpdatePatronHeader("Update User", Now)
             {
                 PatronId = Guid.NewGuid(),
                 DisplayName = "This is a string with lots of letters appended.".PadRight(1000, 'A'),

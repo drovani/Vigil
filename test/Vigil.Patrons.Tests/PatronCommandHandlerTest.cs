@@ -9,10 +9,12 @@ namespace Vigil.Patrons
 {
     public class PatronCommandHandlerTest
     {
+        private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
+
         [Fact]
         public void User_Can_Create_New_Patron()
         {
-            CreatePatron command = new CreatePatron()
+            CreatePatron command = new CreatePatron("Create User", Now)
             {
                 DisplayName = "Test Patron",
                 IsAnonymous = false,
@@ -21,16 +23,16 @@ namespace Vigil.Patrons
 
             var eventBus = new Mock<IEventBus>();
             eventBus.Setup(bus => bus.Publish(It.IsAny<PatronCreated>()))
-                .Callback<PatronCreated>((@event) =>
+                .Callback<PatronCreated>((evnt) =>
                 {
-                    Assert.Equal(command.DisplayName, @event.DisplayName);
-                    Assert.Equal(command.IsAnonymous, @event.IsAnonymous);
-                    Assert.Equal(command.PatronType, @event.PatronType);
-                    Assert.Equal(command.Id, @event.SourceId);
-                    Assert.NotEqual(command.Id, @event.Id);
-                    Assert.NotEqual(command.Id, @event.PatronId);
-                    Assert.NotEqual(Guid.Empty, @event.PatronId);
-                    Assert.NotEqual(Guid.Empty, @event.Id);
+                    Assert.Equal(command.DisplayName, evnt.DisplayName);
+                    Assert.Equal(command.IsAnonymous, evnt.IsAnonymous);
+                    Assert.Equal(command.PatronType, evnt.PatronType);
+                    Assert.Equal(command.Id, evnt.SourceId);
+                    Assert.NotEqual(command.Id, evnt.Id);
+                    Assert.NotEqual(command.Id, evnt.PatronId);
+                    Assert.NotEqual(Guid.Empty, evnt.PatronId);
+                    Assert.NotEqual(Guid.Empty, evnt.Id);
                 }).Verifiable();
             var repo = new Mock<ICommandRepository>();
             repo.Setup(re => re.Save(It.Is<CreatePatron>(cpc => cpc.Id == command.Id))).Verifiable();
@@ -45,7 +47,7 @@ namespace Vigil.Patrons
         [Fact]
         public void User_Can_Update_a_Patron_Header()
         {
-            UpdatePatronHeader command = new UpdatePatronHeader()
+            UpdatePatronHeader command = new UpdatePatronHeader("Update User", Now)
             {
                 PatronId = Guid.NewGuid(),
                 DisplayName = "Updated Test Patron"
@@ -53,15 +55,16 @@ namespace Vigil.Patrons
 
             var eventBus = new Mock<IEventBus>();
             eventBus.Setup(bus => bus.Publish(It.IsAny<PatronHeaderChanged>()))
-                .Callback<PatronHeaderChanged>((@event) =>
+                .Callback<PatronHeaderChanged>((evnt) =>
                 {
-                    Assert.Equal(command.DisplayName, @event.DisplayName);
-                    Assert.Equal(command.IsAnonymous, @event.IsAnonymous);
-                    Assert.Equal(command.PatronType, @event.PatronType);
-                    Assert.Equal(command.Id, @event.SourceId);
-                    Assert.Equal(command.PatronId, @event.PatronId);
-                    Assert.NotEqual(command.Id, @event.Id);
-                    Assert.NotEqual(Guid.Empty, @event.Id);
+                    Assert.Equal("Updated Test Patron", evnt.DisplayName);
+                    Assert.Equal(command.IsAnonymous, evnt.IsAnonymous);
+                    Assert.Equal(command.PatronType, evnt.PatronType);
+                    Assert.Equal(command.Id, evnt.SourceId);
+                    Assert.Equal(command.PatronId, evnt.PatronId);
+                    Assert.NotEqual(command.Id, evnt.Id);
+                    Assert.Equal("Update User", evnt.GeneratedBy);
+                    Assert.Equal(Now, evnt.GeneratedOn);
                 }).Verifiable();
             var repo = new Mock<ICommandRepository>();
             repo.Setup(re => re.Save(It.Is<UpdatePatronHeader>(cpc => cpc.Id == command.Id))).Verifiable();

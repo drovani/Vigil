@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
@@ -7,10 +8,12 @@ namespace Vigil.Patrons.Commands
 {
     public class CreatePatronTest
     {
+        private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
+
         [Fact]
         public void CreatePatronCommand_Defaults_IsAnonymous()
         {
-            CreatePatron command = new CreatePatron();
+            CreatePatron command = new CreatePatron("Create User", Now);
 
             Assert.False(command.IsAnonymous, "Default Value of CreatePatronCommand.IsAnonymous changed from 'false'.");
             Assert.Null(command.DisplayName);
@@ -20,7 +23,7 @@ namespace Vigil.Patrons.Commands
         [Fact]
         public void Validation_Requires_DisplayName_and_PatronType()
         {
-            CreatePatron command = new CreatePatron();
+            CreatePatron command = new CreatePatron("Create User", Now);
 
             List<ValidationResult> validationResults = new List<ValidationResult>();
             Validator.TryValidateObject(command, new ValidationContext(command), validationResults, true);
@@ -33,7 +36,7 @@ namespace Vigil.Patrons.Commands
         [Fact]
         public void Validation_On_DisplayName_Has_Maximum_String_Length()
         {
-            CreatePatron command = new CreatePatron()
+            CreatePatron command = new CreatePatron("Create User", Now)
             {
                 DisplayName = "This is a string with lots of letters appended.".PadRight(1000, 'A'),
                 PatronType = "Invalid Type"

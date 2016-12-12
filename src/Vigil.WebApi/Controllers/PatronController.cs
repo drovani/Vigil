@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Vigil.Patrons.Commands;
-using Vigil.Domain.Messaging;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
+using Vigil.Domain.Messaging;
+using Vigil.Patrons.Commands;
 
 namespace Vigil.WebApi.Controllers
 {
@@ -85,7 +85,7 @@ namespace Vigil.WebApi.Controllers
             {
                 if (context.Patrons.Any(p => p.Id == id))
                 {
-                    commandQueue.Publish(new DeletePatron { PatronId = id });
+                    commandQueue.Publish(new DeletePatron(User.Identity.Name, DateTime.Now) { PatronId = id });
                     return Ok();
                 }
                 else

@@ -7,7 +7,7 @@ namespace Vigil.Patrons.Commands
 {
     public abstract class PatronCommand : Command, IValidatableObject
     {
-        public Guid PatronId { get; set; } = Guid.NewGuid();
+        public Guid PatronId { get; set; }
 
         public PatronCommand(string generatedBy, DateTime generatedOn) : base(generatedBy, generatedOn) { }
 
