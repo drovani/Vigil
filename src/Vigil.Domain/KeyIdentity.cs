@@ -3,13 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vigil.Domain
 {
-    public class KeyIdentity : IEquatable<KeyIdentity>, IKeyIdentity
+    public abstract class KeyIdentity : IEquatable<KeyIdentity>, IKeyIdentity
     {
-        public static KeyIdentity NewIdentity()
-        {
-            return new KeyIdentity();
-        }
-
         [Key]
         public Guid Id { get; protected set; } = Guid.NewGuid();
 
