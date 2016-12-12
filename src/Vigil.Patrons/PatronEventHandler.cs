@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Vigil.Domain.EventSourcing;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons.Events;
 
@@ -16,26 +18,43 @@ namespace Vigil.Patrons
             this.contextFactory = contextFactory;
         }
 
-        public void Handle(PatronCreated @event)
+        public void Handle(PatronCreated evnt)
         {
             using (var context = contextFactory.Invoke())
             {
-                context.Patrons.Add(new Patron(@event.PatronId, new []{ @event }));
+                context.Patrons.Add(new Patron(evnt.PatronId, new[] { evnt }));
                 context.SaveChanges();
             }
         }
 
-        public void Handle(PatronHeaderChanged @event)
+        public void Handle(PatronHeaderChanged evnt)
         {
             using (var context = contextFactory.Invoke())
             {
-                var patron = context.Patrons.FirstOrDefault(p => p.Id == @event.PatronId);
+                var patron = context.Patrons.FirstOrDefault(p => p.Id == evnt.PatronId);
                 if (patron != null)
                 {
-                    patron.DisplayName = @event.DisplayName ?? patron.DisplayName;
-                    patron.IsAnonymous = @event.IsAnonymous ?? patron.IsAnonymous;
-                    patron.PatronType = @event.PatronType ?? patron.PatronType;
+                    patron.ModifiedBy = evnt.GeneratedBy;
+                    patron.ModifiedOn = evnt.GeneratedOn;
+                    patron.DisplayName = evnt.DisplayName ?? patron.DisplayName;
+                    patron.IsAnonymous = evnt.IsAnonymous ?? patron.IsAnonymous;
+                    patron.PatronType = evnt.PatronType ?? patron.PatronType;
                     context.SaveChanges();
+                }
+            }
+        }
+
+        public void Handle(PatronDeleted evnt)
+        {
+            using (var context = contextFactory.Invoke())
+            {
+                var patron = context.Patrons.FirstOrDefault(p => p.Id == evnt.PatronId);
+                if (patron != null)
+                {
+                    patron.ModifiedBy = evnt.GeneratedBy;
+                    patron.ModifiedOn = evnt.GeneratedOn;
+                    patron.DeletedBy = evnt.GeneratedBy;
+                    patron.DeletedOn = evnt.GeneratedOn;
                 }
             }
         }

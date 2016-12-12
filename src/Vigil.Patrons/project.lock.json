@@ -2326,7 +2326,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v1.0",
         "dependencies": {
-          "Microsoft.NETCore.App": "1.0.0"
+          "Microsoft.NETCore.App": "1.0.0",
+          "System.Linq": "4.3.0-preview1-24530-04"
         },
         "compile": {
           "netcoreapp1.0/Vigil.Domain.dll": {}

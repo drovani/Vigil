@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vigil.Domain;
 using Vigil.Domain.EventSourcing;
-using Vigil.Domain.Messaging;
 using Vigil.Patrons.Events;
 
 namespace Vigil.Patrons
@@ -23,6 +21,7 @@ namespace Vigil.Patrons
         {
             Handles<PatronCreated>(OnPatronCreated);
             Handles<PatronHeaderChanged>(OnPatronHeaderChanged);
+            Handles<PatronDeleted>(OnPatronDeleted);
         }
 
         private void OnPatronCreated(PatronCreated evnt)
@@ -30,6 +29,8 @@ namespace Vigil.Patrons
             DisplayName = evnt.DisplayName;
             IsAnonymous = evnt.IsAnonymous;
             PatronType = evnt.PatronType;
+            CreatedBy = evnt.GeneratedBy;
+            CreatedOn = evnt.GeneratedOn;
         }
 
         private void OnPatronHeaderChanged(PatronHeaderChanged evnt)
@@ -37,6 +38,16 @@ namespace Vigil.Patrons
             DisplayName = evnt.DisplayName ?? DisplayName;
             IsAnonymous = evnt.IsAnonymous ?? IsAnonymous;
             PatronType = evnt.PatronType ?? PatronType;
+            ModifiedBy = evnt.GeneratedBy;
+            ModifiedOn = evnt.GeneratedOn;
+        }
+
+        private void OnPatronDeleted(PatronDeleted evnt)
+        {
+            ModifiedBy = evnt.GeneratedBy;
+            ModifiedOn = evnt.GeneratedOn;
+            DeletedBy = evnt.GeneratedBy;
+            DeletedOn = evnt.GeneratedOn;
         }
     }
 }

@@ -5,7 +5,7 @@ using Vigil.Patrons.Events;
 
 namespace Vigil.Patrons
 {
-    public class PatronCommandHandler : ICommandHandler<CreatePatron>, ICommandHandler<UpdatePatronHeader>
+    public class PatronCommandHandler : ICommandHandler<CreatePatron>, ICommandHandler<UpdatePatronHeader>, ICommandHandler<DeletePatron>
     {
         private readonly IEventBus eventBus;
         private readonly ICommandRepository repo;
@@ -18,29 +18,35 @@ namespace Vigil.Patrons
 
         public void Handle(CreatePatron command)
         {
-            var patronCreated = new PatronCreated
+            var evnt = new PatronCreated(command.GeneratedBy, command.GeneratedOn, command.Id)
             {
-                SourceId = command.Id,
                 PatronId = Guid.NewGuid(),
                 DisplayName = command.DisplayName,
                 IsAnonymous = command.IsAnonymous,
                 PatronType = command.PatronType
             };
-            eventBus.Publish(patronCreated);
+            eventBus.Publish(evnt);
             repo.Save(command);
         }
-
         public void Handle(UpdatePatronHeader command)
         {
-            var headerChanged = new PatronHeaderChanged
+            var evnt = new PatronHeaderChanged(command.GeneratedBy, command.GeneratedOn, command.Id)
             {
-                SourceId = command.Id,
                 PatronId = command.PatronId,
                 DisplayName = command.DisplayName,
                 IsAnonymous = command.IsAnonymous,
                 PatronType = command.PatronType
             };
-            eventBus.Publish(headerChanged);
+            eventBus.Publish(evnt);
+            repo.Save(command);
+        }
+        public void Handle(DeletePatron command)
+        {
+            var evnt = new PatronDeleted(command.GeneratedBy, command.GeneratedOn, command.Id)
+            {
+                PatronId = command.PatronId
+            };
+            eventBus.Publish(evnt);
             repo.Save(command);
         }
     }
