@@ -10,7 +10,7 @@ namespace Vigil.Domain.Messaging
         protected Command(string generatedBy, DateTime generatedOn)
         {
             if (string.IsNullOrEmpty(generatedBy)) throw new ArgumentNullException(nameof(generatedBy));
-            if (generatedOn == default(DateTime)) throw new ArgumentException(nameof(generatedOn));
+            if (generatedOn == default(DateTime)) throw new ArgumentException($"{nameof(generatedOn)} requires a non-default value.", nameof(generatedOn));
 
             GeneratedBy = generatedBy;
             GeneratedOn = generatedOn;

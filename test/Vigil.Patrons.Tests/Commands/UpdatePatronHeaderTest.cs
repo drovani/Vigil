@@ -32,6 +32,7 @@ namespace Vigil.Patrons.Commands
                 PatronId = Guid.NewGuid(),
                 DisplayName = "This is a string with lots of letters appended.".PadRight(1000, 'A'),
                 PatronType = "This is a string with lots of letters appended.".PadRight(1000, 'A'),
+                IsAnonymous = true
             };
 
             List<ValidationResult> validationResults = new List<ValidationResult>();

@@ -10,11 +10,6 @@ namespace Vigil.Domain
 
         protected KeyIdentity() { }
 
-        protected KeyIdentity(Guid id)
-        {
-            Id = id;
-        }
-
         /// <summary>Compares two Vigil.Data.Core.Identity classes for equality by Id.
         /// </summary>
         /// <param name="obj">The Vigil.Data.Core.Identity class to compare Id values.</param>

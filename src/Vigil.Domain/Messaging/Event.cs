@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Vigil.Domain.Messaging
 {
@@ -15,8 +16,8 @@ namespace Vigil.Domain.Messaging
         protected Event(string generatedBy, DateTime generatedOn, Guid sourceId)
         {
             if (string.IsNullOrEmpty(generatedBy)) throw new ArgumentNullException(nameof(generatedBy));
-            if (generatedOn == default(DateTime)) throw new ArgumentException(nameof(generatedOn));
-            if (Guid.Empty.Equals(sourceId)) throw new ArgumentException(nameof(sourceId));
+            if (generatedOn == default(DateTime)) throw new ArgumentException($"{nameof(generatedOn)} requires a non-default value.", nameof(generatedOn));
+            if (Guid.Empty.Equals(sourceId)) throw new ArgumentException($"{nameof(sourceId)} requires a non-default value.", nameof(sourceId));
 
             GeneratedBy = generatedBy;
             GeneratedOn = generatedOn;

@@ -12,7 +12,7 @@ namespace Vigil.Patrons
         private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
 
         [Fact]
-        public void Patron_Can_Be_Materialized_From_Patron_Created()
+        public void Patron_Can_Be_Hydrated_From_Patron_Created()
         {
             var patronId = Guid.NewGuid();
 
@@ -40,7 +40,7 @@ namespace Vigil.Patrons
         }
 
         [Fact]
-        public void Patron_Can_Be_Materialized_From_Patron_Created_And_Updated()
+        public void Patron_Can_Be_Hydrated_From_Patron_Created_And_Updated()
         {
             var patronId = Guid.NewGuid();
             var evnts = new VersionedEvent[] {
@@ -77,7 +77,41 @@ namespace Vigil.Patrons
         }
 
         [Fact]
-        public void Patron_Can_Be_Materialized_From_Patron_Created_And_Deleted()
+        public void Patron_Can_Be_Hydrated_From_Patron_Created_And_Empty_Updated()
+        {
+            var patronId = Guid.NewGuid();
+            var evnts = new VersionedEvent[] {
+                new PatronCreated("Create User", Now, Guid.NewGuid())
+                {
+                    DisplayName = "Test Creation",
+                    IsAnonymous = false,
+                    PatronType = "Test Account",
+                    PatronId = patronId,
+                    Version = 0
+                },
+                new PatronHeaderChanged("Change User", Now.AddDays(1), Guid.NewGuid())
+                {
+                    PatronId = patronId,
+                    Version = 1
+                }
+            };
+            Patron result = new Patron(patronId, evnts);
+
+            Assert.Equal("Test Creation", result.DisplayName);
+            Assert.False(result.IsAnonymous);
+            Assert.Equal("Test Account", result.PatronType);
+            Assert.Equal(patronId, result.Id);
+            Assert.Equal(1, result.Version);
+            Assert.Equal("Create User", result.CreatedBy);
+            Assert.Equal(Now, result.CreatedOn);
+            Assert.Equal("Change User", result.ModifiedBy);
+            Assert.Equal(Now.AddDays(1), result.ModifiedOn);
+            Assert.Null(result.DeletedBy);
+            Assert.Null(result.DeletedOn);
+        }
+
+        [Fact]
+        public void Patron_Can_Be_Hydrated_From_Patron_Created_And_Deleted()
         {
             var patronId = Guid.NewGuid();
             var evnts = new VersionedEvent[] {
