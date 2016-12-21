@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Vigil.Domain.EventSourcing;
 using Vigil.Patrons.Events;
 
@@ -16,6 +17,8 @@ namespace Vigil.Patrons
         {
             LoadFrom(history);
         }
+
+        protected Patron() : this(Guid.NewGuid()) { }
 
         protected Patron(Guid patronId) : base(patronId)
         {

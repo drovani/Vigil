@@ -8,10 +8,10 @@ namespace Vigil.Domain.EventSourcing
     {
         private readonly Dictionary<Type, Action<IVersionedEvent>> handlers = new Dictionary<Type, Action<IVersionedEvent>>();
         private readonly List<IVersionedEvent> events = new List<IVersionedEvent>();
-        private readonly Guid id;
 
-        public Guid Id { get { return id; } }
-        public int Version { get; private set; } = -1;
+        [Key]
+        public Guid Id { get; protected set; }
+        public int Version { get; protected set; } = -1;
         public IEnumerable<IVersionedEvent> Events { get { return events; } }
 
         [Required]
@@ -24,7 +24,7 @@ namespace Vigil.Domain.EventSourcing
 
         protected EventSourced(Guid id)
         {
-            this.id = id;
+            Id = id;
         }
 
         protected void Handles<TEvent>(Action<TEvent> handler)
@@ -39,6 +39,7 @@ namespace Vigil.Domain.EventSourcing
             {
                 handlers[e.GetType()].Invoke(e);
                 Version = e.Version;
+                events.Add(e);
             }
         }
     }

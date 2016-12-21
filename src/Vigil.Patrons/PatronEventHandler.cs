@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Vigil.Domain.EventSourcing;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons.Events;
 
@@ -20,11 +18,10 @@ namespace Vigil.Patrons
 
         public void Handle(PatronCreated evnt)
         {
-            using (var context = contextFactory.Invoke())
-            {
-                context.Patrons.Add(new Patron(evnt.PatronId, new[] { evnt }));
-                context.SaveChanges();
-            }
+            var context = contextFactory.Invoke();
+            var patron = new Patron(evnt.PatronId, new[] { evnt });
+            context.Patrons.Add(patron);
+            context.SaveChanges();
         }
 
         public void Handle(PatronHeaderChanged evnt)
