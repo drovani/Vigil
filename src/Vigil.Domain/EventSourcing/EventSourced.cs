@@ -27,6 +27,14 @@ namespace Vigil.Domain.EventSourcing
             Id = id;
         }
 
+        public void Update(VersionedEvent e)
+        {
+            e.Version = Version + 1;
+            handlers[e.GetType()].Invoke(e);
+            Version = e.Version;
+            events.Add(e);
+        }
+
         protected void Handles<TEvent>(Action<TEvent> handler)
             where TEvent : IVersionedEvent
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons.Events;
 
@@ -7,7 +6,8 @@ namespace Vigil.Patrons
 {
     public class PatronEventHandler :
         IEventHandler<PatronCreated>,
-        IEventHandler<PatronHeaderChanged>
+        IEventHandler<PatronHeaderChanged>,
+        IEventHandler<PatronDeleted>
     {
         private Func<IPatronContext> contextFactory;
 
@@ -28,14 +28,11 @@ namespace Vigil.Patrons
         {
             using (var context = contextFactory.Invoke())
             {
-                var patron = context.Patrons.FirstOrDefault(p => p.Id == evnt.PatronId);
+                var patron = context.Patrons.Find(evnt.PatronId);
+
                 if (patron != null)
                 {
-                    patron.ModifiedBy = evnt.GeneratedBy;
-                    patron.ModifiedOn = evnt.GeneratedOn;
-                    patron.DisplayName = evnt.DisplayName ?? patron.DisplayName;
-                    patron.IsAnonymous = evnt.IsAnonymous ?? patron.IsAnonymous;
-                    patron.PatronType = evnt.PatronType ?? patron.PatronType;
+                    patron.Update(evnt);
                     context.SaveChanges();
                 }
             }
@@ -45,13 +42,11 @@ namespace Vigil.Patrons
         {
             using (var context = contextFactory.Invoke())
             {
-                var patron = context.Patrons.FirstOrDefault(p => p.Id == evnt.PatronId);
+                var patron = context.Patrons.Find(evnt.PatronId);
                 if (patron != null)
                 {
-                    patron.ModifiedBy = evnt.GeneratedBy;
-                    patron.ModifiedOn = evnt.GeneratedOn;
-                    patron.DeletedBy = evnt.GeneratedBy;
-                    patron.DeletedOn = evnt.GeneratedOn;
+                    patron.Update(evnt);
+                    context.SaveChanges();
                 }
             }
         }
