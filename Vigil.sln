@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		codecoverage.runsettings = codecoverage.runsettings
 		global.json = global.json
+		vigil.snk = vigil.snk
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Vigil.Domain", "src\Vigil.Domain\Vigil.Domain.xproj", "{4D4201AE-EE12-4C64-B564-C998CF6B95B3}"

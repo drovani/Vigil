@@ -1,4 +1,7 @@
 ﻿{
+  "buildOptions": {
+    "keyFile": "../../vigil.snk"
+  },
   "dependencies": {
     "Vigil.Domain": "0.0.1-*",
     "Microsoft.EntityFrameworkCore": "1.1.0-preview1-final"

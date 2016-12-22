@@ -1,6 +1,9 @@
 {
+  "buildOptions": {
+    "keyFile": "../../vigil.snk"
+  },
   "dependencies": {
-    "System.Linq": "4.3.0-preview1-24530-04"
+    "System.Linq": "4.3.0"
   },
   "frameworks": {
     "netcoreapp1.1": {

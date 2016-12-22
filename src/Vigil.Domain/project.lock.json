@@ -1089,14 +1089,14 @@
           "lib/netstandard1.3/System.IO.UnmanagedMemoryStream.dll": {}
         }
       },
-      "System.Linq/4.3.0-preview1-24530-04": {
+      "System.Linq/4.3.0": {
         "type": "package",
         "dependencies": {
-          "System.Collections": "4.3.0-preview1-24530-04",
-          "System.Diagnostics.Debug": "4.3.0-preview1-24530-04",
-          "System.Resources.ResourceManager": "4.3.0-preview1-24530-04",
-          "System.Runtime": "4.3.0-preview1-24530-04",
-          "System.Runtime.Extensions": "4.3.0-preview1-24530-04"
+          "System.Collections": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0"
         },
         "compile": {
           "ref/netstandard1.6/System.Linq.dll": {}
@@ -4188,13 +4188,11 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "System.Linq/4.3.0-preview1-24530-04": {
-      "sha512": "RwEDMSc+CwfRSrlNEaWHmNYY/dTCldAzuyilpUb6him1OcbPgP7zUBxn8j/eBzxfI/Q/pp/8bmWsLBFdp3zJ3g==",
+    "System.Linq/4.3.0": {
+      "sha512": "5DbqIUpsDp0dFftytzuMmc0oeMdQwjcP/EWxsksIz/w1TcFRkZ3yKKz0PqiYFMmEwPSWw+qNVqD7PJ889JzHbw==",
       "type": "package",
-      "path": "System.Linq/4.3.0-preview1-24530-04",
+      "path": "System.Linq/4.3.0",
       "files": [
-        "System.Linq.4.3.0-preview1-24530-04.nupkg.sha512",
-        "System.Linq.nuspec",
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/MonoAndroid10/_._",
@@ -4255,7 +4253,9 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._"
+        "ref/xamarinwatchos10/_._",
+        "system.linq.4.3.0.nupkg.sha512",
+        "system.linq.nuspec"
       ]
     },
     "System.Linq.Expressions/4.3.0": {
@@ -7069,7 +7069,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "System.Linq >= 4.3.0-preview1-24530-04"
+      "System.Linq >= 4.3.0"
     ],
     ".NETCoreApp,Version=v1.1": [
       "Microsoft.NETCore.App >= 1.1.0"
