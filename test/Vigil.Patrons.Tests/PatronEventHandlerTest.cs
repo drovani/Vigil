@@ -1,34 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons.Events;
 using Xunit;
-using Vigil.Domain.EventSourcing;
 
 namespace Vigil.Patrons
 {
     public class PatronEventHandlerTest
     {
-        private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
         private readonly Func<PatronContext> Context;
-
 
         public PatronEventHandlerTest()
         {
-            var options = new DbContextOptionsBuilder<PatronContext>()
-                .UseInMemoryDatabase(databaseName: "PatronEventHandlerTest")
-                .Options;
-            Context = () => new PatronContext(options);
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+            var builder = new DbContextOptionsBuilder<PatronContext>()
+                .UseInMemoryDatabase(databaseName: "TestHelper")
+                .UseInternalServiceProvider(serviceProvider);
+
+            Context = () => new PatronContext(builder.Options);
         }
+
 
         [Fact]
         public void Handle_PatronCreated_Adds_NewPatron()
         {
             IEventHandler<PatronCreated> handler = new PatronEventHandler(Context);
-            PatronCreated evnt = new PatronCreated("Create User", Now, Guid.NewGuid())
+            PatronCreated evnt = new PatronCreated("Create User", TestHelper.Now, Guid.NewGuid())
             {
                 DisplayName = "New Patron",
                 IsAnonymous = false,
@@ -47,7 +49,7 @@ namespace Vigil.Patrons
                 Assert.Equal(evnt.PatronId, result.Id);
                 Assert.False(result.IsAnonymous);
                 Assert.Equal("Create User", result.CreatedBy);
-                Assert.Equal(Now, result.CreatedOn);
+                Assert.Equal(TestHelper.Now, result.CreatedOn);
                 Assert.Equal(0, result.Version);
                 Assert.Null(result.ModifiedBy);
                 Assert.Null(result.ModifiedOn);
@@ -65,7 +67,7 @@ namespace Vigil.Patrons
 
             IEventHandler<PatronHeaderChanged> handler = new PatronEventHandler(() => mContext.Object);
 
-            handler.Handle(new PatronHeaderChanged("Change User", Now, Guid.NewGuid())
+            handler.Handle(new PatronHeaderChanged("Change User", TestHelper.Now, Guid.NewGuid())
             {
                 PatronId = Guid.NewGuid()
             });
@@ -81,7 +83,7 @@ namespace Vigil.Patrons
             using (var context = Context())
             {
                 context.Patrons.Add(new Patron(newId, new[] {
-                    new PatronCreated("Create User", Now, Guid.NewGuid())
+                    new PatronCreated("Create User", TestHelper.Now, Guid.NewGuid())
                     {
                         DisplayName = "New Patron",
                         IsAnonymous = false,
@@ -94,7 +96,7 @@ namespace Vigil.Patrons
             }
 
             IEventHandler<PatronHeaderChanged> handler = new PatronEventHandler(Context);
-            handler.Handle(new PatronHeaderChanged("Change User", Now, Guid.NewGuid())
+            handler.Handle(new PatronHeaderChanged("Change User", TestHelper.Now, Guid.NewGuid())
             {
                 DisplayName = "Changed Name",
                 PatronType = "New Type",
@@ -108,7 +110,7 @@ namespace Vigil.Patrons
                 Assert.Equal("Changed Name", patron.DisplayName);
                 Assert.Equal("New Type", patron.PatronType);
                 Assert.Equal(1, patron.Version);
-                Assert.Equal(Now, patron.ModifiedOn);
+                Assert.Equal(TestHelper.Now, patron.ModifiedOn);
                 Assert.Equal("Change User", patron.ModifiedBy);
             }
         }
@@ -122,7 +124,7 @@ namespace Vigil.Patrons
 
             IEventHandler<PatronDeleted> handler = new PatronEventHandler(() => mContext.Object);
 
-            handler.Handle(new PatronDeleted("Delete User", Now, Guid.NewGuid())
+            handler.Handle(new PatronDeleted("Delete User", TestHelper.Now, Guid.NewGuid())
             {
                 PatronId = Guid.NewGuid()
             });
@@ -138,7 +140,7 @@ namespace Vigil.Patrons
             using (var context = Context())
             {
                 context.Patrons.Add(new Patron(newId, new[] {
-                    new PatronCreated("Create User", Now, Guid.NewGuid())
+                    new PatronCreated("Create User", TestHelper.Now, Guid.NewGuid())
                     {
                         DisplayName = "New Patron",
                         IsAnonymous = false,
@@ -151,7 +153,7 @@ namespace Vigil.Patrons
             }
 
             IEventHandler<PatronDeleted> handler = new PatronEventHandler(Context);
-            handler.Handle(new PatronDeleted("Delete User", Now.AddDays(1), Guid.NewGuid())
+            handler.Handle(new PatronDeleted("Delete User", TestHelper.Later, Guid.NewGuid())
             {
                 PatronId = newId
             });
@@ -160,9 +162,9 @@ namespace Vigil.Patrons
             {
                 var patron = context.Patrons.Find(newId);
                 Assert.Equal("Delete User", patron.ModifiedBy);
-                Assert.Equal(Now.AddDays(1), patron.ModifiedOn);
+                Assert.Equal(TestHelper.Later, patron.ModifiedOn);
                 Assert.Equal("Delete User", patron.DeletedBy);
-                Assert.Equal(Now.AddDays(1), patron.DeletedOn);
+                Assert.Equal(TestHelper.Later, patron.DeletedOn);
             }
 
         }

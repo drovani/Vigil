@@ -8,12 +8,10 @@ namespace Vigil.Patrons.Commands
 {
     public class DeletePatronTest
     {
-        private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
-
         [Fact]
         public void Validation_Requires_PatronId()
         {
-            DeletePatron command = new DeletePatron("Delete User", Now)
+            DeletePatron command = new DeletePatron("Delete User", TestHelper.Now)
             {
                 PatronId = Guid.Empty
             };

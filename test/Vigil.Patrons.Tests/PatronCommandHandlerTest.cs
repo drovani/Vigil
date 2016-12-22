@@ -9,12 +9,10 @@ namespace Vigil.Patrons
 {
     public class PatronCommandHandlerTest
     {
-        private readonly DateTime Now = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Utc);
-
         [Fact]
         public void User_Can_Create_New_Patron()
         {
-            CreatePatron command = new CreatePatron("Create User", Now)
+            CreatePatron command = new CreatePatron("Create User", TestHelper.Now)
             {
                 DisplayName = "Test Patron",
                 IsAnonymous = false,
@@ -47,7 +45,7 @@ namespace Vigil.Patrons
         [Fact]
         public void User_Can_Update_a_Patron_Header()
         {
-            UpdatePatronHeader command = new UpdatePatronHeader("Update User", Now)
+            UpdatePatronHeader command = new UpdatePatronHeader("Update User", TestHelper.Now)
             {
                 PatronId = Guid.NewGuid(),
                 DisplayName = "Updated Test Patron",
@@ -66,7 +64,7 @@ namespace Vigil.Patrons
                     Assert.Equal(command.PatronId, evnt.PatronId);
                     Assert.NotEqual(command.Id, evnt.Id);
                     Assert.Equal("Update User", evnt.GeneratedBy);
-                    Assert.Equal(Now, evnt.GeneratedOn);
+                    Assert.Equal(TestHelper.Now, evnt.GeneratedOn);
                 }).Verifiable();
             var repo = new Mock<ICommandRepository>();
             repo.Setup(re => re.Save(It.Is<UpdatePatronHeader>(cpc => cpc.Id == command.Id))).Verifiable();
@@ -81,7 +79,7 @@ namespace Vigil.Patrons
         [Fact]
         public void User_Can_Delete_a_Patron()
         {
-            DeletePatron command = new DeletePatron("Delete User", Now.AddDays(1))
+            DeletePatron command = new DeletePatron("Delete User", TestHelper.Later)
             {
                 PatronId = Guid.NewGuid()
             };
