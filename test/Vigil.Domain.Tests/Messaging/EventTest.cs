@@ -23,12 +23,26 @@ namespace Vigil.Domain.Messaging
         [Fact]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_DefaultDateTime()
         {
-            Assert.Throws<ArgumentException>("generatedOn", () => new TestEvent("Create User", default(DateTime), Guid.Empty));
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", default(DateTime), Guid.Empty));
+        }
+        [Fact]
+        public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindUnspecified()
+        {
+            var nonUtcNow = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Unspecified);
+
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", nonUtcNow, Guid.Empty));
+        }
+        [Fact]
+        public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindLocal()
+        {
+            var nonUtcNow = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Local);
+
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", nonUtcNow, Guid.Empty));
         }
         [Fact]
         public void Constructor_Throw_ArgumentException_When_SourceId_Is_DefaultGuid()
         {
-            Assert.Throws<ArgumentException>("sourceId", () => new TestEvent("Create User", DateTime.Now, Guid.Empty));
+            Assert.Throws<ArgumentException>("sourceId", () => new TestEvent("Create User", TestHelper.Now, Guid.Empty));
         }
     }
 }

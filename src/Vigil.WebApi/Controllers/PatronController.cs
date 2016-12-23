@@ -36,25 +36,21 @@ namespace Vigil.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]CreatePatron command)
+        public IActionResult Create([FromBody]CreatePatron command)
         {
-            if (command == null)
-            {
-                return BadRequest();
-            }
-            else if (!ModelState.IsValid)
+            if (command == null || !ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             else
             {
                 commandQueue.Publish(command);
-                return CreatedAtAction(nameof(Get), new { id = command.PatronId }, command);
+                return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
             }
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult Patch(Guid id,
+        [HttpPut("{id}")]
+        public IActionResult UpdateHeader(Guid id,
             [Bind(nameof(UpdatePatronHeader.DisplayName),
                   nameof(UpdatePatronHeader.IsAnonymous),
                   nameof(UpdatePatronHeader.PatronType))] UpdatePatronHeader command)
@@ -65,11 +61,11 @@ namespace Vigil.WebApi.Controllers
             }
             using (var context = contextFactory())
             {
-                if (context.Patrons.Any(p => p.Id == id))
+                if (context.Patrons.Find(id) == null)
                 {
                     command.PatronId = id;
                     commandQueue.Publish(command);
-                    return Ok();
+                    return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
                 }
                 else
                 {
@@ -86,7 +82,7 @@ namespace Vigil.WebApi.Controllers
                 if (context.Patrons.Any(p => p.Id == id))
                 {
                     commandQueue.Publish(new DeletePatron(User.Identity.Name, DateTime.Now) { PatronId = id });
-                    return Ok();
+                    return Accepted();
                 }
                 else
                 {

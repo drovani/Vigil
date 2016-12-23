@@ -7,13 +7,14 @@ namespace Vigil.Domain.Messaging
         public string GeneratedBy { get; protected set; }
         public DateTime GeneratedOn { get; protected set; }
 
-        protected Command(string generatedBy, DateTime generatedOn)
+        protected Command(string generatedBy, DateTime generatedOnUtc)
         {
             if (string.IsNullOrEmpty(generatedBy)) throw new ArgumentNullException(nameof(generatedBy));
-            if (generatedOn == default(DateTime)) throw new ArgumentException($"{nameof(generatedOn)} requires a non-default value.", nameof(generatedOn));
+            if (generatedOnUtc == default(DateTime)) throw new ArgumentException($"{nameof(generatedOnUtc)} requires a non-default value.", nameof(generatedOnUtc));
+            if (generatedOnUtc.Kind != DateTimeKind.Utc) throw new ArgumentException($"{nameof(generatedOnUtc)} must be DateTimeKind.UTC.", nameof(generatedOnUtc));
 
             GeneratedBy = generatedBy;
-            GeneratedOn = generatedOn;
+            GeneratedOn = generatedOnUtc;
         }
     }
 }

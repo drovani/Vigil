@@ -21,9 +21,23 @@ namespace Vigil.Domain.Messaging
             Assert.Throws<ArgumentNullException>("generatedBy", () => new TestCommand(string.Empty, DateTime.MinValue));
         }
         [Fact]
-        public void Constructor_Throw_ArgumentOutOfRangeException_When_GeneratedOn_Is_DefaultDateTime()
+        public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_DefaultDateTime()
         {
-            Assert.Throws<ArgumentException>("generatedOn", () => new TestCommand("Create User", default(DateTime)));
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestCommand("Create User", default(DateTime)));
+        }
+        [Fact]
+        public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindUnspecified()
+        {
+            var nonUtcNow = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Unspecified);
+
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestCommand("Create User", nonUtcNow));
+        }
+        [Fact]
+        public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindLocal()
+        {
+            var nonUtcNow = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Local);
+
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestCommand("Create User", nonUtcNow));
         }
     }
 }
