@@ -49,5 +49,6 @@
   "tools": {
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
-  "userSecretsId": "aspnet-Vigil.WebApi-20161209034118"
+  "userSecretsId": "aspnet-Vigil.WebApi-20161209034118",
+  "version": "0.0.1-*"
 }

@@ -18,6 +18,16 @@ namespace Vigil.WebApi.Controllers
             this.contextFactory = contextFactory;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            using (var context = contextFactory())
+            {
+                var patrons = context.Patrons.Where(p => p.DeletedOn == null);
+                return Ok(patrons);
+            }
+        }
+
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
