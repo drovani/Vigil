@@ -2,48 +2,16 @@
 using System;
 using System.Linq;
 using Vigil.Domain.Messaging;
+using Vigil.Patrons;
 using Vigil.Patrons.Commands;
 
 namespace Vigil.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    public class PatronController : Controller
+    public class PatronController : BaseController<Patron>
     {
-        private readonly ICommandQueue commandQueue;
-        private readonly Func<VigilWebContext> contextFactory;
-
         public PatronController(ICommandQueue commandQueue, Func<VigilWebContext> contextFactory)
-        {
-            this.commandQueue = commandQueue;
-            this.contextFactory = contextFactory;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            using (var context = contextFactory())
-            {
-                var patrons = context.Patrons.Where(p => p.DeletedOn == null);
-                return Ok(patrons);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
-        {
-            using (var context = contextFactory())
-            {
-                var patron = context.Patrons.Find(id);
-                if (patron == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(patron);
-                }
-            }
-        }
+            : base(commandQueue, contextFactory) { }
 
         [HttpPost]
         public IActionResult Create([FromBody]CreatePatron command)
@@ -54,28 +22,26 @@ namespace Vigil.WebApi.Controllers
             }
             else
             {
-                commandQueue.Publish(command);
+                command.PatronId = Guid.NewGuid();
+                CommandQueue.Publish(command);
                 return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
             }
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateHeader(Guid id,
-            [Bind(nameof(UpdatePatronHeader.DisplayName),
-                  nameof(UpdatePatronHeader.IsAnonymous),
-                  nameof(UpdatePatronHeader.PatronType))] UpdatePatronHeader command)
+        public IActionResult UpdateHeader(Guid id, [FromBody] UpdatePatronHeader command)
         {
             if (command == null || !ModelState.IsValid)
             {
-                return BadRequest(command);
+                return BadRequest(ModelState);
             }
-            using (var context = contextFactory())
+            using (var context = ContextFactory())
             {
-                if (context.Patrons.Find(id) == null)
+                if (context.Patrons.Find(id) != null)
                 {
                     command.PatronId = id;
-                    commandQueue.Publish(command);
-                    return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
+                    CommandQueue.Publish(command);
+                    return Accepted(Url.Action(nameof(Get), new { id = id }));
                 }
                 else
                 {
@@ -87,11 +53,11 @@ namespace Vigil.WebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            using (var context = contextFactory())
+            using (var context = ContextFactory())
             {
                 if (context.Patrons.Any(p => p.Id == id))
                 {
-                    commandQueue.Publish(new DeletePatron(User.Identity.Name, DateTime.Now) { PatronId = id });
+                    CommandQueue.Publish(new DeletePatron(User.Identity.Name, DateTime.Now.ToUniversalTime()) { PatronId = id });
                     return Accepted();
                 }
                 else
