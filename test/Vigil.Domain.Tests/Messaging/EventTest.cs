@@ -28,14 +28,14 @@ namespace Vigil.Domain.Messaging
         [Fact]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindUnspecified()
         {
-            var nonUtcNow = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Unspecified);
+            var nonUtcNow = new DateTime(1981, 8, 26, 1, 17, 00, DateTimeKind.Unspecified);
 
             Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", nonUtcNow, Guid.Empty));
         }
         [Fact]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindLocal()
         {
-            var nonUtcNow = new DateTime(1981, 8, 25, 20, 17, 00, DateTimeKind.Local);
+            var nonUtcNow = new DateTime(1981, 8, 26, 1, 17, 00, DateTimeKind.Local);
 
             Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", nonUtcNow, Guid.Empty));
         }
