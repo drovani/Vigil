@@ -1,17 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Claims;
-using System.Security.Principal;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons.Commands;
 using Vigil.Patrons.Events;
@@ -223,7 +218,7 @@ namespace Vigil.WebApi.Controllers
         }
         private void SetupUser(Controller controller, string username)
         {
-            var mockContext = new Mock<HttpContext>();
+            var mockContext = new Mock<HttpContext>(MockBehavior.Strict);
             mockContext.SetupGet(hc => hc.User.Identity.Name).Returns(username);
             controller.ControllerContext = new ControllerContext()
             {

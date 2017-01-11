@@ -5,7 +5,6 @@ namespace Vigil.WebApi.Controllers
 {
     public class VigilWebContext : DbContext
     {
-        public VigilWebContext() : base() { }
         public VigilWebContext(DbContextOptions<VigilWebContext> options) : base(options) { }
 
         public DbSet<Patron> Patrons { get; set; }

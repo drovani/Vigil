@@ -5,7 +5,6 @@ namespace Vigil.WebApi
 {
     public class TestVigilWebContext : VigilWebContext
     {
-        public TestVigilWebContext() : base() { }
         public TestVigilWebContext(DbContextOptions<VigilWebContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
