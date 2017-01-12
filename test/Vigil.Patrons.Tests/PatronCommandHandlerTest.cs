@@ -20,26 +20,24 @@ namespace Vigil.Patrons
             };
 
             var eventBus = new Mock<IEventBus>();
+            PatronCreated publishedEvent = null;
             eventBus.Setup(bus => bus.Publish(It.IsAny<PatronCreated>()))
-                .Callback<PatronCreated>((evnt) =>
-                {
-                    Assert.Equal(command.DisplayName, evnt.DisplayName);
-                    Assert.Equal(command.IsAnonymous, evnt.IsAnonymous);
-                    Assert.Equal(command.PatronType, evnt.PatronType);
-                    Assert.Equal(command.Id, evnt.SourceId);
-                    Assert.NotEqual(command.Id, evnt.Id);
-                    Assert.NotEqual(command.Id, evnt.PatronId);
-                    Assert.NotEqual(Guid.Empty, evnt.PatronId);
-                    Assert.NotEqual(Guid.Empty, evnt.Id);
-                }).Verifiable();
-            var repo = new Mock<ICommandRepository>();
-            repo.Setup(re => re.Save(It.Is<CreatePatron>(cpc => cpc.Id == command.Id))).Verifiable();
+                .Callback<PatronCreated>(evnt => publishedEvent = evnt).Verifiable();
 
-            ICommandHandler<CreatePatron> handler = new PatronCommandHandler(eventBus.Object, repo.Object);
+            ICommandHandler<CreatePatron> handler = new PatronCommandHandler(eventBus.Object);
             handler.Handle(command);
 
             Assert.NotEqual(Guid.Empty, command.Id);
-            Mock.Verify(eventBus, repo);
+            eventBus.VerifyPublish<PatronCreated>(Times.Once());
+            Assert.NotNull(publishedEvent);
+            Assert.Equal(command.DisplayName, publishedEvent.DisplayName);
+            Assert.Equal(command.IsAnonymous, publishedEvent.IsAnonymous);
+            Assert.Equal(command.PatronType, publishedEvent.PatronType);
+            Assert.Equal(command.Id, publishedEvent.SourceId);
+            Assert.NotEqual(command.Id, publishedEvent.Id);
+            Assert.NotEqual(command.Id, publishedEvent.PatronId);
+            Assert.NotEqual(Guid.Empty, publishedEvent.PatronId);
+            Assert.NotEqual(Guid.Empty, publishedEvent.Id);
         }
 
         [Fact]
@@ -54,26 +52,24 @@ namespace Vigil.Patrons
             };
 
             var eventBus = new Mock<IEventBus>();
+            PatronHeaderChanged publishedEvent = null;
             eventBus.Setup(bus => bus.Publish(It.IsAny<PatronHeaderChanged>()))
-                .Callback<PatronHeaderChanged>((evnt) =>
-                {
-                    Assert.Equal("Updated Test Patron", evnt.DisplayName);
-                    Assert.Equal(command.IsAnonymous, evnt.IsAnonymous);
-                    Assert.Equal(command.PatronType, evnt.PatronType);
-                    Assert.Equal(command.Id, evnt.SourceId);
-                    Assert.Equal(command.PatronId, evnt.PatronId);
-                    Assert.NotEqual(command.Id, evnt.Id);
-                    Assert.Equal("Update User", evnt.GeneratedBy);
-                    Assert.Equal(TestHelper.Now, evnt.GeneratedOn);
-                }).Verifiable();
-            var repo = new Mock<ICommandRepository>();
-            repo.Setup(re => re.Save(It.Is<UpdatePatronHeader>(cpc => cpc.Id == command.Id))).Verifiable();
+                .Callback<PatronHeaderChanged>(evnt => publishedEvent = evnt).Verifiable();
 
-            ICommandHandler<UpdatePatronHeader> handler = new PatronCommandHandler(eventBus.Object, repo.Object);
+            ICommandHandler<UpdatePatronHeader> handler = new PatronCommandHandler(eventBus.Object);
             handler.Handle(command);
 
             Assert.NotEqual(Guid.Empty, command.Id);
-            Mock.Verify(eventBus, repo);
+            eventBus.VerifyPublish<PatronHeaderChanged>(Times.Once());
+            Assert.NotNull(publishedEvent);
+            Assert.Equal("Updated Test Patron", publishedEvent.DisplayName);
+            Assert.Equal(command.IsAnonymous, publishedEvent.IsAnonymous);
+            Assert.Equal(command.PatronType, publishedEvent.PatronType);
+            Assert.Equal(command.Id, publishedEvent.SourceId);
+            Assert.Equal(command.PatronId, publishedEvent.PatronId);
+            Assert.NotEqual(command.Id, publishedEvent.Id);
+            Assert.Equal("Update User", publishedEvent.GeneratedBy);
+            Assert.Equal(TestHelper.Now, publishedEvent.GeneratedOn);
         }
 
         [Fact]
@@ -85,24 +81,23 @@ namespace Vigil.Patrons
             };
 
             var eventBus = new Mock<IEventBus>();
+            PatronDeleted publishedEvent = null;
             eventBus.Setup(bus => bus.Publish(It.IsAny<PatronDeleted>()))
-                .Callback<PatronDeleted>((evnt) =>
-                {
-                    Assert.Equal(command.Id, evnt.SourceId);
-                    Assert.Equal(command.PatronId, evnt.PatronId);
-                    Assert.NotEqual(command.Id, evnt.Id);
-                    Assert.NotEqual(command.Id, evnt.PatronId);
-                    Assert.NotEqual(Guid.Empty, evnt.PatronId);
-                    Assert.NotEqual(Guid.Empty, evnt.Id);
-                }).Verifiable();
-            var repo = new Mock<ICommandRepository>();
-            repo.Setup(re => re.Save(It.Is<DeletePatron>(cpc => cpc.Id == command.Id))).Verifiable();
+                    .Callback<PatronDeleted>(evnt => publishedEvent = evnt)
+                    .Verifiable();
 
-            ICommandHandler<DeletePatron> handler = new PatronCommandHandler(eventBus.Object, repo.Object);
+            ICommandHandler<DeletePatron> handler = new PatronCommandHandler(eventBus.Object);
             handler.Handle(command);
 
             Assert.NotEqual(Guid.Empty, command.Id);
-            Mock.Verify(eventBus, repo);
+            eventBus.VerifyPublish<PatronDeleted>(Times.Once());
+            Assert.NotNull(publishedEvent);
+            Assert.Equal(command.Id, publishedEvent.SourceId);
+            Assert.Equal(command.PatronId, publishedEvent.PatronId);
+            Assert.NotEqual(command.Id, publishedEvent.Id);
+            Assert.NotEqual(command.Id, publishedEvent.PatronId);
+            Assert.NotEqual(Guid.Empty, publishedEvent.PatronId);
+            Assert.NotEqual(Guid.Empty, publishedEvent.Id);
         }
     }
 }

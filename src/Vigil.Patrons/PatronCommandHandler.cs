@@ -8,12 +8,10 @@ namespace Vigil.Patrons
     public class PatronCommandHandler : ICommandHandler<CreatePatron>, ICommandHandler<UpdatePatronHeader>, ICommandHandler<DeletePatron>
     {
         private readonly IEventBus eventBus;
-        private readonly ICommandRepository repo;
 
-        public PatronCommandHandler(IEventBus eventBus, ICommandRepository repo)
+        public PatronCommandHandler(IEventBus eventBus)
         {
             this.eventBus = eventBus;
-            this.repo = repo;
         }
 
         public void Handle(CreatePatron command)
@@ -26,7 +24,6 @@ namespace Vigil.Patrons
                 PatronType = command.PatronType
             };
             eventBus.Publish(evnt);
-            repo.Save(command);
         }
         public void Handle(UpdatePatronHeader command)
         {
@@ -38,7 +35,6 @@ namespace Vigil.Patrons
                 PatronType = command.PatronType
             };
             eventBus.Publish(evnt);
-            repo.Save(command);
         }
         public void Handle(DeletePatron command)
         {
@@ -47,7 +43,6 @@ namespace Vigil.Patrons
                 PatronId = command.PatronId
             };
             eventBus.Publish(evnt);
-            repo.Save(command);
         }
     }
 }

@@ -47,7 +47,11 @@
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   },
   "tools": {
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4.final",
+    "Microsoft.DotNet.Watcher.Tools": {
+      "imports": "portable-net451",
+      "version": "1.1.0-*"
+    }
   },
   "userSecretsId": "aspnet-Vigil.WebApi-20161209034118",
   "version": "0.0.1-*"
