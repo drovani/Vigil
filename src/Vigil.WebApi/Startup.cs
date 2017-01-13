@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using Vigil.Domain.Messaging;
+using Vigil.Sql;
+using Vigil.WebApi.Controllers;
 
 namespace Vigil.WebApi
 {
@@ -25,6 +30,17 @@ namespace Vigil.WebApi
         {
             // Add framework services.
             services.AddMvc();
+            services.AddSingleton<IEventBus, SqlEventBus>()
+                    .AddSingleton<ICommandQueue, SqlCommandQueue>();
+
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+            var builder = new DbContextOptionsBuilder<VigilWebContext>()
+                .UseInMemoryDatabase(databaseName: "PatronControllerTestHelper")
+                .UseInternalServiceProvider(serviceProvider);
+
+            services.AddSingleton<Func<VigilWebContext>>(srv => () => new VigilWebContext(builder.Options));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

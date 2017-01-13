@@ -7,6 +7,7 @@ using Vigil.Domain.Messaging;
 
 namespace Vigil.WebApi.Controllers
 {
+    [Route("api/[controller]")]
     public abstract class BaseController<TEntity> : Controller
         where TEntity : class, IEventSourced
     {
@@ -32,7 +33,7 @@ namespace Vigil.WebApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public IActionResult Get(Guid id)
         {
             using (var context = contextFactory())

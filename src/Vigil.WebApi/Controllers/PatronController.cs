@@ -7,7 +7,6 @@ using Vigil.Patrons.Commands;
 
 namespace Vigil.WebApi.Controllers
 {
-    [Route("api/[controller]")]
     public class PatronController : BaseController<Patron>
     {
         public PatronController(ICommandQueue commandQueue, Func<VigilWebContext> contextFactory)
