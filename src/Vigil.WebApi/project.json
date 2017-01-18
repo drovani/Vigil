@@ -5,6 +5,8 @@
     "preserveCompilationContext": true
   },
   "dependencies": {
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
@@ -21,6 +23,7 @@
       "type": "platform",
       "version": "1.1.0"
     },
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
     "Vigil.Patrons": "0.0.1-*",
     "Vigil.Sql": "0.0.1-*"
   },
@@ -49,10 +52,10 @@
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   },
   "tools": {
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4.final",
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
     "Microsoft.DotNet.Watcher.Tools": {
       "imports": "portable-net451",
-      "version": "1.1.0-*"
+      "version": "1.1.0-preview4-final"
     }
   },
   "userSecretsId": "aspnet-Vigil.WebApi-20161209034118",

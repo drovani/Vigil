@@ -21,7 +21,6 @@ namespace Vigil.WebApi.Controllers
             }
             else
             {
-                command.PatronId = Guid.NewGuid();
                 CommandQueue.Publish(command);
                 return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
             }

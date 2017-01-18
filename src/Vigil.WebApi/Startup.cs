@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using Vigil.Domain.Messaging;
+using Vigil.Patrons;
+using Vigil.Patrons.Commands;
 using Vigil.Sql;
+using Vigil.WebApi.Binders;
 using Vigil.WebApi.Controllers;
 
 namespace Vigil.WebApi
@@ -29,9 +35,14 @@ namespace Vigil.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
-            services.AddSingleton<IEventBus, SqlEventBus>()
-                    .AddSingleton<ICommandQueue, SqlCommandQueue>();
+            services.AddMvc()
+                .AddMvcOptions(options =>
+                {
+                    options.InputFormatters.Insert(0, new CommandInputFormatter());
+                });
+            services.AddTransient<IEventBus, SqlEventBus>()
+                    .AddTransient<ICommandQueue, SqlCommandQueue>();
+            services.AddPatronCommandHandlers();
 
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkInMemoryDatabase()
@@ -48,6 +59,13 @@ namespace Vigil.WebApi
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
+            }
 
             app.UseMvc();
         }

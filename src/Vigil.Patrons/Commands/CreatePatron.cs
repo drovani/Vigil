@@ -13,6 +13,9 @@ namespace Vigil.Patrons.Commands
         [Required, StringLength(250)]
         public string PatronType { get; set; }
 
-        public CreatePatron(string generatedBy, DateTime generatedOn) : base(generatedBy, generatedOn) { }
+        public CreatePatron(string generatedBy, DateTime generatedOn) : base(generatedBy, generatedOn)
+        {
+            PatronId = Guid.NewGuid();
+        }
     }
 }
