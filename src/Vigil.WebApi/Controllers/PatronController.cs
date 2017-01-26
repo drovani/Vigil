@@ -55,7 +55,7 @@ namespace Vigil.WebApi.Controllers
             {
                 if (context.Patrons.Any(p => p.Id == id))
                 {
-                    CommandQueue.Publish(new DeletePatron(User.Identity.Name, DateTime.Now.ToUniversalTime()) { PatronId = id });
+                    CommandQueue.Publish(new DeletePatron(User.Identity.Name ?? "Anonymous User", DateTime.UtcNow) { PatronId = id });
                     return Accepted();
                 }
                 else
