@@ -1,11 +1,9 @@
 ﻿using System;
-using Vigil.Domain.EventSourcing;
 
 namespace Vigil.Patrons.Events
 {
-    public class PatronHeaderChanged : VersionedEvent
+    public class PatronHeaderChanged : PatronEvent
     {
-        public Guid PatronId { get; set; }
         public string DisplayName { get; set; }
         public bool? IsAnonymous { get; set; }
         public string PatronType { get; set; }
