@@ -34,10 +34,10 @@ namespace Vigil.Patrons
             Assert.Equal(command.IsAnonymous, publishedEvent.IsAnonymous);
             Assert.Equal(command.PatronType, publishedEvent.PatronType);
             Assert.Equal(command.Id, publishedEvent.SourceId);
+            Assert.Equal(command.PatronId, publishedEvent.PatronId);
             Assert.NotEqual(command.Id, publishedEvent.Id);
-            Assert.NotEqual(command.Id, publishedEvent.PatronId);
-            Assert.NotEqual(Guid.Empty, publishedEvent.PatronId);
-            Assert.NotEqual(Guid.Empty, publishedEvent.Id);
+            Assert.NotEqual(command.PatronId, publishedEvent.Id);
+            Assert.Equal(0, publishedEvent.Version);
         }
 
         [Fact]

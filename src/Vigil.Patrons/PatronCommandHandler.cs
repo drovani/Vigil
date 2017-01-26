@@ -18,7 +18,7 @@ namespace Vigil.Patrons
         {
             var evnt = new PatronCreated(command.GeneratedBy, command.GeneratedOn, command.Id)
             {
-                PatronId = Guid.NewGuid(),
+                PatronId = command.PatronId,
                 DisplayName = command.DisplayName,
                 IsAnonymous = command.IsAnonymous,
                 PatronType = command.PatronType

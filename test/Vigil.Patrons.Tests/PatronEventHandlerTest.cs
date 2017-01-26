@@ -35,8 +35,7 @@ namespace Vigil.Patrons
                 DisplayName = "New Patron",
                 IsAnonymous = false,
                 PatronType = "Test Account",
-                PatronId = Guid.NewGuid(),
-                Version = 0
+                PatronId = Guid.NewGuid()
             };
 
             handler.Handle(evnt);
@@ -88,8 +87,7 @@ namespace Vigil.Patrons
                         DisplayName = "New Patron",
                         IsAnonymous = false,
                         PatronType = "Test Account",
-                        PatronId = newId,
-                        Version = 0
+                        PatronId = newId
                     }
                 }));
                 context.SaveChanges();
@@ -100,7 +98,6 @@ namespace Vigil.Patrons
             {
                 DisplayName = "Changed Name",
                 PatronType = "New Type",
-                Version = 1,
                 PatronId = newId
             });
 
@@ -112,6 +109,7 @@ namespace Vigil.Patrons
                 Assert.Equal(1, patron.Version);
                 Assert.Equal(TestHelper.Now, patron.ModifiedOn);
                 Assert.Equal("Change User", patron.ModifiedBy);
+                Assert.Equal(1, patron.Version);
             }
         }
 
@@ -145,8 +143,7 @@ namespace Vigil.Patrons
                         DisplayName = "New Patron",
                         IsAnonymous = false,
                         PatronType = "Test Account",
-                        PatronId = newId,
-                        Version = 0
+                        PatronId = newId
                     }
                 }));
                 context.SaveChanges();
@@ -165,6 +162,7 @@ namespace Vigil.Patrons
                 Assert.Equal(TestHelper.Later, patron.ModifiedOn);
                 Assert.Equal("Delete User", patron.DeletedBy);
                 Assert.Equal(TestHelper.Later, patron.DeletedOn);
+                Assert.Equal(1, patron.Version);
             }
 
         }

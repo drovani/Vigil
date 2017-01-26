@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Vigil.Domain.EventSourcing;
 using Vigil.Patrons.Events;
 

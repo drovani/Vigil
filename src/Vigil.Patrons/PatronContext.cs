@@ -6,6 +6,7 @@ namespace Vigil.Patrons
     {
         public DbSet<Patron> Patrons { get; set; }
 
+        public PatronContext(DbContextOptions options) : base(options) { }
         public PatronContext(DbContextOptions<PatronContext> options) : base(options) { }
     }
 }

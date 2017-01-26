@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Vigil.Domain.EventSourcing
 {
@@ -12,6 +14,7 @@ namespace Vigil.Domain.EventSourcing
         [Key]
         public Guid Id { get; protected set; }
         public int Version { get; protected set; } = -1;
+        [IgnoreDataMember]
         public IEnumerable<IVersionedEvent> Events { get { return events; } }
 
         [Required]
@@ -43,7 +46,8 @@ namespace Vigil.Domain.EventSourcing
 
         protected void LoadFrom(IEnumerable<IVersionedEvent> pastEvents)
         {
-            foreach (var e in pastEvents)
+            var orderedPastEvents = pastEvents.OrderBy(pe => pe.GeneratedOn);
+            foreach (var e in orderedPastEvents)
             {
                 handlers[e.GetType()].Invoke(e);
                 Version = e.Version;
