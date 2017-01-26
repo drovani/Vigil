@@ -8,10 +8,10 @@ namespace Vigil.Sql
     public class SqlEventBus : IEventBus
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Func<CommandDbContext> _dbFactory;
+        private readonly Func<SqlMessageDbContext> _dbFactory;
 
 
-        public SqlEventBus(IServiceProvider serviceProvider, Func<CommandDbContext> dbFactory)
+        public SqlEventBus(IServiceProvider serviceProvider, Func<SqlMessageDbContext> dbFactory)
         {
             _serviceProvider = serviceProvider;
             _dbFactory = dbFactory;
@@ -19,7 +19,7 @@ namespace Vigil.Sql
 
         public void Publish<TEvent>(TEvent evnt) where TEvent : IEvent
         {
-            using (CommandDbContext context = _dbFactory())
+            using (SqlMessageDbContext context = _dbFactory())
             {
                 var newEvnt = new Event()
                 {
@@ -41,7 +41,7 @@ namespace Vigil.Sql
                 handler.Handle(evnt);
             }
 
-            using (CommandDbContext context = _dbFactory())
+            using (SqlMessageDbContext context = _dbFactory())
             {
                 var handled = context.Events.Find(evnt.Id);
                 handled.HandledOn = DateTime.UtcNow;

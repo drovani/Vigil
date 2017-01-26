@@ -8,9 +8,9 @@ namespace Vigil.Sql
     public class SqlCommandQueue : ICommandQueue
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Func<CommandDbContext> _dbFactory;
+        private readonly Func<SqlMessageDbContext> _dbFactory;
 
-        public SqlCommandQueue(IServiceProvider serviceProvider, Func<CommandDbContext> dbFactory)
+        public SqlCommandQueue(IServiceProvider serviceProvider, Func<SqlMessageDbContext> dbFactory)
         {
             _serviceProvider = serviceProvider;
             _dbFactory = dbFactory;
@@ -18,7 +18,7 @@ namespace Vigil.Sql
 
         public void Publish<TCommand>(TCommand command) where TCommand : ICommand
         {
-            using (CommandDbContext context = _dbFactory())
+            using (SqlMessageDbContext context = _dbFactory())
             {
                 var newCmd = new Command()
                 {
@@ -36,7 +36,7 @@ namespace Vigil.Sql
             var handler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
             handler.Handle(command);
 
-            using (CommandDbContext context = _dbFactory())
+            using (SqlMessageDbContext context = _dbFactory())
             {
                 var cmd = context.Commands.Find(command.Id);
                 cmd.HandledOn = DateTime.UtcNow;

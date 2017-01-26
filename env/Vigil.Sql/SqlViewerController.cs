@@ -12,9 +12,9 @@ namespace Vigil.WebApi.Controllers
     [Route("sql")]
     public class SqlViewerController : ControllerBase
     {
-        private readonly Func<CommandDbContext> _dbFactory;
+        private readonly Func<SqlMessageDbContext> _dbFactory;
 
-        public SqlViewerController(Func<CommandDbContext> contextFactory)
+        public SqlViewerController(Func<SqlMessageDbContext> contextFactory)
         {
             _dbFactory = contextFactory;
         }

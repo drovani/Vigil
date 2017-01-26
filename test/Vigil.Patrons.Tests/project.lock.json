@@ -3008,12 +3008,6 @@
         "dependencies": {
           "Microsoft.NETCore.App": "1.1.0",
           "System.Linq": "4.3.0"
-        },
-        "compile": {
-          "netcoreapp1.1/Vigil.Domain.dll": {}
-        },
-        "runtime": {
-          "netcoreapp1.1/Vigil.Domain.dll": {}
         }
       },
       "Vigil.Patrons/0.0.1": {
@@ -3023,12 +3017,6 @@
           "Microsoft.EntityFrameworkCore": "1.1.0-preview1-final",
           "Microsoft.NETCore.App": "1.1.0",
           "Vigil.Domain": "0.0.1"
-        },
-        "compile": {
-          "netcoreapp1.1/Vigil.Patrons.dll": {}
-        },
-        "runtime": {
-          "netcoreapp1.1/Vigil.Patrons.dll": {}
         }
       }
     }
@@ -3090,7 +3078,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
-      "sha512": "gnT84a8TrVbVDZ9OAuVWyHF916lNrtEQHgb8QQ4zF+uCWRs/pUWWtDEU5ItMyU8jIboFSSY/vh8Mtyx1L+OBZQ==",
+      "sha512": "wAk9a7usIRKtlnBRdpBxXUB3aHMz4Le/r6PstTtCDQFJy/1sne5Dnz37k0gsq/9mDUHyU/YwLvzINVZakAMs2Q==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.Analyzers/1.1.0",
       "files": [
@@ -3106,7 +3094,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.Common/1.3.0": {
-      "sha512": "JNgTJ4cGl31HyW9S56BfIwqndQh1SBDM2MI62jz61x2DDJvcEVQYCxYPm5qodUL/5okSXiIPFc7iU9GMIl5RdQ==",
+      "sha512": "9iuH7xoj5q/4C/aww660br7eEqSWc+NazjNsSXg0LgjDE3dxqY42suzkzg8hJt5BAqlh93+d4L5/mXidUg2NMA==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.Common/1.3.0",
       "files": [
@@ -3122,7 +3110,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.CSharp/1.3.0": {
-      "sha512": "y7Xs1423vSYt9wFnFE09XFh4JOTNX9e3rwHfOR9PoCtu0i/KXHELUY/rRVmG1raEhXc7UaFi0cIlPhnH400aYw==",
+      "sha512": "r3MRGbPqw5cLHSHN7GCypgQb3U2yC+IzRiUU/H96u21GEOPZ8ySXoL5ufHGfg3bnUPQzSVw7ENcbaoSKdeuBoA==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.CSharp/1.3.0",
       "files": [
@@ -3138,7 +3126,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.VisualBasic/1.3.0": {
-      "sha512": "Rae/oj13g0w4z+EmFo6wmbboWRQe0dKijaqZ5vbZkW8gfklNK2A7zVUFZZJYnaVpcysteo5AlzUwZhaAUdHyyQ==",
+      "sha512": "YW3EUTy+ntmSxbogq+opbPILb3xEYJpGPspZUjwS9Nl+Q7IWTGKZSGXT/o6ZdNDRhvmU7ceiHwYHP2syXmOW0w==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.VisualBasic/1.3.0",
       "files": [
@@ -3221,7 +3209,7 @@
       ]
     },
     "Microsoft.DiaSymReader/1.0.8": {
-      "sha512": "ABLULVhCAiyBFLBT5xX6vB4NhZDgwUylGRQK+zW5nZn2rbh1f8LOnFZ9gVSxzL6qOzPNb32Nu3QZ43iZerHOxA==",
+      "sha512": "HAhTmRgU+nnDVYxMZFAS1iwqg6CudbsSMZfSY9UJj4AJO4L69xZCtTOPKC5rW8+egNBWjDb0iBZV4ZdNI6dZnA==",
       "type": "package",
       "path": "Microsoft.DiaSymReader/1.0.8",
       "files": [
@@ -3252,7 +3240,7 @@
       ]
     },
     "Microsoft.DotNet.InternalAbstractions/1.0.0": {
-      "sha512": "AAguUq7YyKk3yDWPoWA8DrLZvURxB/LrDdTn1h5lmPeznkFUpfC3p459w5mQYQE0qpquf/CkSQZ0etiV5vRHFA==",
+      "sha512": "Quw7gLLiX1ozStRK/cPT6H6Jwx1saMBb9CcZHf13Ja2+Gp/hlJO/ke5Dxr3xFmSMeLLydM4HfXpB9pcyJ846Aw==",
       "type": "package",
       "path": "Microsoft.DotNet.InternalAbstractions/1.0.0",
       "files": [
@@ -3510,7 +3498,7 @@
       ]
     },
     "Microsoft.NETCore.Windows.ApiSets/1.0.1": {
-      "sha512": "WoSqDjcjQOc3oltWQlZm3xhhgPskYVY5jVpbuNi5T/XovKe3lkOm/QVEXCoAZ4NIOwB9UmGShc8JS4/T5WemMw==",
+      "sha512": "HvsXC2+uh5wusCKJKfXcnpUHGa0XJNhydVW1jio9JW4T7qPdiRAd25sOjfNd1lg10ssFkwrOLUTu8sBS6wRwQw==",
       "type": "package",
       "path": "Microsoft.NETCore.Windows.ApiSets/1.0.1",
       "files": [
@@ -4628,7 +4616,7 @@
       ]
     },
     "System.Diagnostics.FileVersionInfo/4.0.0": {
-      "sha512": "EAA2J4ZbXO7VUkqurKnzWuZr4E3cL3zUmK5WAmURVnOrwam6FTA8zsdTTsoidS3EmHrtQ2fPixLR140TQaIhcA==",
+      "sha512": "VF60tn5CqNqQRHGfCiJvMuVqOHNV3yF4JUjLZjVjb2rUopjwkAm+y02FXiez+ut96p85SdDsJkJLXRUgcFcDFQ==",
       "type": "package",
       "path": "System.Diagnostics.FileVersionInfo/4.0.0",
       "files": [
@@ -4723,7 +4711,7 @@
       ]
     },
     "System.Diagnostics.StackTrace/4.0.1": {
-      "sha512": "MnJKMyWiPzmoNAu7yntvqPH0m1vnzSsCAX+i/dFyVa7quX5cQVQ1YpCKKxGAfRmQ6AqLBFubvCNBKpS5udkiBQ==",
+      "sha512": "ZsJSZuKLzYtQpi0mdKNKeFybzdyWItRXN7IubQ4CErfiUL4GVwPZrLVHs3jhxt0tHWrsFLr7je91Orj/UcS4nQ==",
       "type": "package",
       "path": "System.Diagnostics.StackTrace/4.0.1",
       "files": [
@@ -5153,7 +5141,7 @@
       ]
     },
     "System.Interactive.Async/3.0.0": {
-      "sha512": "UEM+WmG1Oq0bNbPx/E1jaIQ83QOrPfVDUyuYBtG6D6DpB77ytv9flPterMujumpHuoRjSc0ilSB8w41fQc05dw==",
+      "sha512": "iyrgkZz9Dzm0fiPouQszFC3SO/46k6AYd/jG9bu+/o0AoDMaRXtlo3TIuWVNtOuJFd1noL963QouroJ0T3rImw==",
       "type": "package",
       "path": "System.Interactive.Async/3.0.0",
       "files": [
@@ -7691,7 +7679,7 @@
       ]
     },
     "System.Text.Encoding.CodePages/4.0.1": {
-      "sha512": "8oAj15qDYfDJm/wdCqFJsPgN5MgrohzZJB4JlsPiHIgqrO2nVJ4DlIW8JbIQpOLjz+U7y93QU8IhKh5TTteGbQ==",
+      "sha512": "8D7qnUmqPmOrI/oh3FXgcBkHSJTRD5994Yl1Sd/WgeHeXSVCL4pjYGjJmNyf5e5n0Wf7Q8t9ntoKwWiJRYdIYw==",
       "type": "package",
       "path": "System.Text.Encoding.CodePages/4.0.1",
       "files": [
@@ -8393,7 +8381,7 @@
       ]
     },
     "System.Xml.XmlDocument/4.0.1": {
-      "sha512": "f8SF7ZZjUS/7U1pUmEKaf0RnYxbiK8a4cZlYQZWcI9y20Cufn3gnKpnpMHeLjoLn2U8pt8G3PurN8XSEw/b6ZQ==",
+      "sha512": "kchxooxefWjAck2zLeskxjwAPMwmfgHCEAZIoqQeandITKYWah2odJPqhwk6a7vTKAHEyR4nT7+xcy3vH40u8Q==",
       "type": "package",
       "path": "System.Xml.XmlDocument/4.0.1",
       "files": [
@@ -8499,7 +8487,7 @@
       ]
     },
     "System.Xml.XPath/4.0.1": {
-      "sha512": "AT8jOM6pX0VmYC7pGgoDb19/QQsom7z6kSO2w13AKhiNR+cc+Q7myGuXznXKQKqJi8rS7AgrE2k3URU7h+C70Q==",
+      "sha512": "IO259rk49wQJG0FHd0r7Mkmi6wt1eYhrdvTaBO8SWMzohcUHlgA0IPnKvicNg9yVIOxAHocV8/P8Y2tvS3jL6Q==",
       "type": "package",
       "path": "System.Xml.XPath/4.0.1",
       "files": [
@@ -8536,7 +8524,7 @@
       ]
     },
     "System.Xml.XPath.XDocument/4.0.1": {
-      "sha512": "2/dOcq22cVVN44+oDwOMGUW4zjDgKtjXVnfjG4R7kG3XQ+JBG3lWVaP1m3ziHbEhUr7HBtewHKLHW7u5z2AzdQ==",
+      "sha512": "5xta0qgshV8F37jRRAPutqvMvAc4hRqeimx28UbLy3QwmHHmdEX2P9tuDqde9UH/Gmc7yWnfboAsD4kucmD7GQ==",
       "type": "package",
       "path": "System.Xml.XPath.XDocument/4.0.1",
       "files": [
@@ -8687,13 +8675,11 @@
     },
     "Vigil.Domain/0.0.1": {
       "type": "project",
-      "path": "../../src/Vigil.Domain/project.json",
-      "msbuildProject": "../../src/Vigil.Domain/Vigil.Domain.xproj"
+      "path": "../../src/Vigil.Domain/project.json"
     },
     "Vigil.Patrons/0.0.1": {
       "type": "project",
-      "path": "../../src/Vigil.Patrons/project.json",
-      "msbuildProject": "../../src/Vigil.Patrons/Vigil.Patrons.xproj"
+      "path": "../../src/Vigil.Patrons/project.json"
     }
   },
   "projectFileDependencyGroups": {
