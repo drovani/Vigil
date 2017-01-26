@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using Vigil.Domain.Messaging;
 
@@ -6,9 +7,19 @@ namespace Vigil.Sql
 {
     public class SqlEventBus : IEventBus
     {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly Func<CommandDbContext> _dbFactory;
+
+
+        public SqlEventBus(IServiceProvider serviceProvider, Func<CommandDbContext> dbFactory)
+        {
+            _serviceProvider = serviceProvider;
+            _dbFactory = dbFactory;
+        }
+
         public void Publish<TEvent>(TEvent evnt) where TEvent : IEvent
         {
-            using (CommandDbContext context = new CommandDbContext())
+            using (CommandDbContext context = _dbFactory())
             {
                 var newEvnt = new Event()
                 {
@@ -16,21 +27,26 @@ namespace Vigil.Sql
                     GeneratedOn = evnt.GeneratedOn,
                     Id = evnt.Id,
                     SourceId = evnt.SourceId,
-                    SerializedEvent = JsonConvert.SerializeObject(evnt)
+                    EventType = typeof(TEvent).AssemblyQualifiedName,
+                    SerializedEvent = JsonConvert.SerializeObject(evnt),
+                    DispatchedOn = DateTime.UtcNow
                 };
                 context.Events.Add(newEvnt);
                 context.SaveChanges();
             }
 
-            // TODO - figure out how to call the appropriate EventHandlers
-            //throw new NotImplementedException();
+            var handlers = _serviceProvider.GetServices<IEventHandler<TEvent>>();
+            foreach(IEventHandler<TEvent> handler in handlers)
+            {
+                handler.Handle(evnt);
+            }
 
-            //using (CommandDbContext context = new CommandDbContext())
-            //{
-            //    var handled = context.Events.Find(evnt.Id);
-            //    handled.HandledOn = DateTime.Now.ToUniversalTime();
-            //    context.SaveChanges();
-            //}
+            using (CommandDbContext context = _dbFactory())
+            {
+                var handled = context.Events.Find(evnt.Id);
+                handled.HandledOn = DateTime.UtcNow;
+                context.SaveChanges();
+            }
         }
     }
 }

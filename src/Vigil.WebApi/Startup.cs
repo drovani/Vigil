@@ -1,19 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons;
-using Vigil.Patrons.Commands;
 using Vigil.Sql;
 using Vigil.WebApi.Binders;
-using Vigil.WebApi.Controllers;
+using Vigil.WebApi.Configuration;
 
 namespace Vigil.WebApi
 {
@@ -42,16 +36,9 @@ namespace Vigil.WebApi
                 });
             services.AddTransient<IEventBus, SqlEventBus>()
                     .AddTransient<ICommandQueue, SqlCommandQueue>();
-            services.AddPatronCommandHandlers();
+            services.AddPatronHandlers();
 
-            var serviceProvider = new ServiceCollection()
-                .AddEntityFrameworkInMemoryDatabase()
-                .BuildServiceProvider();
-            var builder = new DbContextOptionsBuilder<VigilWebContext>()
-                .UseInMemoryDatabase(databaseName: "PatronControllerTestHelper")
-                .UseInternalServiceProvider(serviceProvider);
-
-            services.AddSingleton<Func<VigilWebContext>>(srv => () => new VigilWebContext(builder.Options));
+            services.AddDbContexts(databaseName: "VigilWebApiInMemoryDatabase");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,9 +49,8 @@ namespace Vigil.WebApi
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseJsonExceptionResponse();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
             }
 
             app.UseMvc();

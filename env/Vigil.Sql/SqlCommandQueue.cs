@@ -1,41 +1,45 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using Vigil.Domain.Messaging;
-using Vigil.Patrons;
-using Vigil.Patrons.Commands;
 
 namespace Vigil.Sql
 {
     public class SqlCommandQueue : ICommandQueue
     {
-        private readonly Dictionary<Type, ICommandHandler<ICommand>> _commandHandlers;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly Func<CommandDbContext> _dbFactory;
 
-        public SqlCommandQueue(Dictionary<Type, ICommandHandler<ICommand>> commandHandlers)
+        public SqlCommandQueue(IServiceProvider serviceProvider, Func<CommandDbContext> dbFactory)
         {
-            _commandHandlers = commandHandlers;
-
+            _serviceProvider = serviceProvider;
+            _dbFactory = dbFactory;
         }
 
         public void Publish<TCommand>(TCommand command) where TCommand : ICommand
         {
-            using (CommandDbContext context = new CommandDbContext())
+            using (CommandDbContext context = _dbFactory())
             {
                 var newCmd = new Command()
                 {
                     GeneratedBy = command.GeneratedBy,
                     GeneratedOn = command.GeneratedOn,
                     Id = command.Id,
-                    SerializedCommand = JsonConvert.SerializeObject(command)
+                    SerializedCommand = JsonConvert.SerializeObject(command),
+                    CommandType = typeof(TCommand).AssemblyQualifiedName,
+                    DispatchedOn = DateTime.UtcNow
                 };
                 context.Commands.Add(newCmd);
                 context.SaveChanges();
             }
 
-            using (CommandDbContext context = new CommandDbContext())
+            var handler = _serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
+            handler.Handle(command);
+
+            using (CommandDbContext context = _dbFactory())
             {
                 var cmd = context.Commands.Find(command.Id);
-                cmd.HandledOn = DateTime.Now.ToUniversalTime();
+                cmd.HandledOn = DateTime.UtcNow;
                 context.SaveChanges();
             }
         }

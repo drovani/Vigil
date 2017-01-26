@@ -27,7 +27,7 @@ namespace Vigil.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateHeader(Guid id, [FromBody] UpdatePatronHeader command)
+        public IActionResult UpdateHeader(Guid id, [FromBody]UpdatePatronHeader command)
         {
             if (command == null || !ModelState.IsValid)
             {
