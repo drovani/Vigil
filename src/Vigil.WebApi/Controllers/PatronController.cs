@@ -26,8 +26,8 @@ namespace Vigil.WebApi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateHeader(Guid id, [FromBody]UpdatePatronHeader command)
+        [HttpPut("{patronId}")]
+        public IActionResult UpdateHeader(Guid patronId, [FromBody]UpdatePatronHeader command)
         {
             if (command == null || !ModelState.IsValid)
             {
@@ -35,32 +35,31 @@ namespace Vigil.WebApi.Controllers
             }
             using (var context = ContextFactory())
             {
-                if (context.Patrons.Find(id) != null)
+                if (context.Patrons.Find(command.PatronId) != null)
                 {
-                    command.PatronId = id;
                     CommandQueue.Publish(command);
-                    return Accepted(Url.Action(nameof(Get), new { id = id }));
+                    return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
                 }
                 else
                 {
-                    return NotFound(id);
+                    return NotFound(command.PatronId);
                 }
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        [HttpDelete("{patronId}")]
+        public IActionResult Delete(Guid patronId)
         {
             using (var context = ContextFactory())
             {
-                if (context.Patrons.Any(p => p.Id == id))
+                if (context.Patrons.Any(p => p.Id == patronId))
                 {
-                    CommandQueue.Publish(new DeletePatron(User.Identity.Name ?? "Anonymous User", DateTime.UtcNow) { PatronId = id });
+                    CommandQueue.Publish(new DeletePatron(User.Identity.Name ?? "Anonymous User", DateTime.UtcNow) { PatronId = patronId });
                     return Accepted();
                 }
                 else
                 {
-                    return NotFound(id);
+                    return NotFound(patronId);
                 }
             }
         }

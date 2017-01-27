@@ -54,7 +54,7 @@ namespace Vigil.WebApi.Binders
             }
 
             var serializer = new JsonSerializer();
-            object model = _commandModelCreator(context?.HttpContext?.User?.Identity?.Name ?? "Anonymous User", DateTime.Now.ToUniversalTime());
+            object model = _commandModelCreator(context?.HttpContext?.User?.Identity?.Name ?? "Anonymous User", DateTime.UtcNow);
 
             using (var sr = new StreamReader(context.HttpContext.Request.Body))
             using (var jsonTextRead = new JsonTextReader(sr))
