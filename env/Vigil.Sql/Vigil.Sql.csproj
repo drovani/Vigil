@@ -19,7 +19,7 @@
     <ProjectReference Include="..\..\src\Vigil.Patrons\Vigil.Patrons.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.0" />
     <PackageReference Include="NETStandard.Library">
       <Version>1.6.1</Version>

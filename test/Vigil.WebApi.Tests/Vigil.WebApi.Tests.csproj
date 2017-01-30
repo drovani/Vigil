@@ -36,7 +36,7 @@
       <Version>2.2.0-beta5-build1225</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc">
-      <Version>1.1.0</Version>
+      <Version>1.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Routing">
       <Version>1.1.0</Version>
