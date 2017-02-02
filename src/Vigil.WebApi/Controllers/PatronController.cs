@@ -26,13 +26,19 @@ namespace Vigil.WebApi.Controllers
             }
         }
 
-        [HttpPut("{patronId}")]
+        [HttpPut("{patronId:guid}")]
         public IActionResult UpdateHeader(Guid patronId, [FromBody]UpdatePatronHeader command)
         {
             if (command == null || !ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            else if (patronId != command.PatronId)
+            {
+                ModelState.AddModelError(nameof(command.PatronId), "Patron Id does not match command target.");
+                return BadRequest(ModelState);
+            }
+
             using (var context = ContextFactory())
             {
                 if (context.Patrons.Find(command.PatronId) != null)
@@ -47,7 +53,7 @@ namespace Vigil.WebApi.Controllers
             }
         }
 
-        [HttpDelete("{patronId}")]
+        [HttpDelete("{patronId:guid}")]
         public IActionResult Delete(Guid patronId)
         {
             using (var context = ContextFactory())

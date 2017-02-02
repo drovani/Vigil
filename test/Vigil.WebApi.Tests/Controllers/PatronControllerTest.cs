@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Vigil.Domain.Messaging;
@@ -43,7 +44,7 @@ namespace Vigil.WebApi.Controllers
             BadRequestObjectResult result = controller.Create(null) as BadRequestObjectResult;
 
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
-            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<SerializableError>(result.Value);
         }
 
@@ -56,7 +57,7 @@ namespace Vigil.WebApi.Controllers
             BadRequestObjectResult result = controller.Create(new CreatePatron("Patron Web Test", TestHelper.Now)) as BadRequestObjectResult;
 
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
-            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<SerializableError>(result.Value);
         }
 
@@ -82,7 +83,7 @@ namespace Vigil.WebApi.Controllers
 
             AcceptedResult result = controller.Create(cmd) as AcceptedResult;
 
-            Assert.NotNull(result);
+            Assert.IsType<AcceptedResult>(result);
             mockUrlHelper.Verify(urlSetup, Times.Once());
             cmdQueueMock.Verify(cq => cq.Publish(It.IsAny<CreatePatron>()), Times.Once());
             Assert.Equal("a/mock/url/for/testing", result.Location);
@@ -96,7 +97,7 @@ namespace Vigil.WebApi.Controllers
             BadRequestObjectResult result = controller.UpdateHeader(Guid.NewGuid(), null) as BadRequestObjectResult;
 
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
-            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<SerializableError>(result.Value);
         }
 
@@ -105,11 +106,16 @@ namespace Vigil.WebApi.Controllers
         {
             PatronController controller = new PatronController(cmdQueue, dbContextFactory);
             controller.ModelState.AddModelError("DisplayName", "Display Name error is being tested.");
+            var command = new UpdatePatronHeader("Patron Web Test", TestHelper.Now)
+            {
+                PatronId = Guid.NewGuid(),
+                DisplayName = String.Join(" - ", Enumerable.Repeat("A Really Long String", 1000))
+            };
 
-            BadRequestObjectResult result = controller.UpdateHeader(Guid.NewGuid(), new UpdatePatronHeader("Patron Web Test", TestHelper.Now)) as BadRequestObjectResult;
+            BadRequestObjectResult result = controller.UpdateHeader(command.PatronId, command) as BadRequestObjectResult;
 
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
-            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<SerializableError>(result.Value);
         }
 
@@ -117,14 +123,27 @@ namespace Vigil.WebApi.Controllers
         public void UpdateHeader_With_ValidCommand_ButPatronNotFound_Returns_NotFound()
         {
             PatronController controller = new PatronController(cmdQueue, dbContextFactory);
-            Guid patronId = Guid.NewGuid();
+            var command = new UpdatePatronHeader("Patron Web Test", TestHelper.Now) { PatronId = Guid.NewGuid() };
 
-            NotFoundObjectResult result = controller.UpdateHeader(patronId, new UpdatePatronHeader("Patron Web Test", TestHelper.Now)) as NotFoundObjectResult;
+            NotFoundObjectResult result = controller.UpdateHeader(command.PatronId, command) as NotFoundObjectResult;
 
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
-            Assert.NotNull(result);
+            Assert.IsType<NotFoundObjectResult>(result);
             Assert.IsType<Guid>(result.Value);
-            Assert.Equal(patronId, (Guid)result.Value);
+            Assert.Equal(command.PatronId, (Guid)result.Value);
+        }
+
+        [Fact]
+        public void UpdateHeader_With_ValidCommand_ButMismatchedPatronIds_Returns_BadRequest()
+        {
+            PatronController controller = new PatronController(cmdQueue, dbContextFactory);
+            var command = new UpdatePatronHeader("Patron Web Test", TestHelper.Now) { PatronId = Guid.NewGuid() };
+
+            BadRequestObjectResult result = controller.UpdateHeader(Guid.NewGuid(), command) as BadRequestObjectResult;
+
+            cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<SerializableError>(result.Value);
         }
 
         [Fact]
@@ -133,6 +152,7 @@ namespace Vigil.WebApi.Controllers
             Guid patronId = MakeTestPatron();
             UpdatePatronHeader cmd = new UpdatePatronHeader("Patron Web Test", TestHelper.Now)
             {
+                PatronId = patronId,
                 DisplayName = "Updated Patron Display Name",
                 IsAnonymous = false,
                 PatronType = "Patron Updated"
@@ -149,12 +169,12 @@ namespace Vigil.WebApi.Controllers
                 Url = mockUrlHelper.Object
             };
 
-            AcceptedResult result = controller.UpdateHeader(patronId, cmd) as AcceptedResult;
+            AcceptedResult result = controller.UpdateHeader(cmd.PatronId, cmd) as AcceptedResult;
 
+            Assert.IsType<AcceptedResult>(result);
+            Assert.Equal(patronId, cmd.PatronId);
             mockUrlHelper.Verify(urlSetup, Times.Once());
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<UpdatePatronHeader>()), Times.Once());
-            Assert.NotNull(result);
-            Assert.Equal(patronId, cmd.PatronId);
             Assert.Equal("a/mock/url/for/testing", result.Location);
         }
 
@@ -167,7 +187,7 @@ namespace Vigil.WebApi.Controllers
             NotFoundObjectResult result = controller.Delete(patronId) as NotFoundObjectResult;
 
             cmdQueueMock.Verify(c => c.Publish(It.IsAny<ICommand>()), Times.Never());
-            Assert.NotNull(result);
+            Assert.IsType<NotFoundObjectResult>(result);
             Assert.IsType<Guid>(result.Value);
             Assert.Equal(patronId, (Guid)result.Value);
         }
@@ -191,7 +211,7 @@ namespace Vigil.WebApi.Controllers
             AcceptedResult result = controller.Delete(patronId) as AcceptedResult;
 
             cmdQueueMock.Verify(publishSetup, Times.Once);
-            Assert.NotNull(result);
+            Assert.IsType<AcceptedResult>(result);
             Assert.Null(result.Value);
         }
 

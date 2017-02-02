@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Vigil.Domain.Messaging;
 using Xunit;
+using System.Collections.ObjectModel;
 
 namespace Vigil.WebApi.Controllers
 {
@@ -54,6 +55,7 @@ namespace Vigil.WebApi.Controllers
 
             Assert.NotNull(result);
             Assert.NotNull(result.Value);
+            Assert.IsAssignableFrom<IReadOnlyCollection<TestEventSourced>>(result.Value);
         }
 
         [Fact]
@@ -71,10 +73,10 @@ namespace Vigil.WebApi.Controllers
                 result = controller.Get();
             }
 
+            Assert.IsAssignableFrom<IReadOnlyCollection<TestEventSourced>>(result.Value);
+
             var data = result.Value as IReadOnlyCollection<TestEventSourced>;
 
-            Assert.NotNull(result);
-            Assert.NotNull(data);
             Assert.Equal(2, data.Count());
             Assert.DoesNotContain(data, d => d.Id == TestItems[0].Id);
             Assert.Contains(data, d => d.Id == TestItems[1].Id);
@@ -96,7 +98,7 @@ namespace Vigil.WebApi.Controllers
                 result = controller.Get(Guid.NewGuid()) as NotFoundResult;
             }
 
-            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
@@ -114,8 +116,8 @@ namespace Vigil.WebApi.Controllers
                 result = controller.Get(TestItems[1].Id) as OkObjectResult;
             }
 
-            Assert.NotNull(result);
-            Assert.NotNull(result.Value as TestEventSourced);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<TestEventSourced>(result.Value);
             Assert.Equal(TestItems[1].Id, (result.Value as TestEventSourced).Id);
         }
     }
