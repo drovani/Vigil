@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.ObjectPool;
 using Moq;
-using System;
+using Newtonsoft.Json;
+using System.Buffers;
 using System.IO;
+using System.Text;
 using Vigil.Domain.Messaging;
 using Vigil.Patrons.Commands;
 using Xunit;
@@ -12,45 +16,73 @@ namespace Vigil.WebApi.Binders
 {
     public class CommandInputFormatterTest
     {
-        private readonly CommandInputFormatter _formatter = new CommandInputFormatter();
+        private static readonly ObjectPoolProvider _objectPoolProvider = new DefaultObjectPoolProvider();
+        private static readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings();
+        private readonly CommandInputFormatter _formatter;
 
-        [Fact]
-        public void CanRead_WithNullContext_ThrowsException()
+        public CommandInputFormatterTest()
         {
-            Assert.Throws<ArgumentNullException>(() => _formatter.CanRead(null));
+            var loggerMock = NullLogger.Instance;
+            _formatter = new CommandInputFormatter(loggerMock, _serializerSettings, ArrayPool<char>.Shared, _objectPoolProvider);
         }
 
-        [Fact]
-        public void CanRead_WithEmptyRequest_ReturnsFalse()
+        [Theory]
+        [InlineData("application/json", true)]
+        [InlineData("application/*", false)]
+        [InlineData("*/*", false)]
+        [InlineData("text/json", true)]
+        [InlineData("text/*", false)]
+        [InlineData("text/xml", false)]
+        [InlineData("application/xml", false)]
+        [InlineData("", false)]
+        [InlineData(null, false)]
+        [InlineData("invalid", false)]
+        public void CanRead_ReturnsTrueForAnySupportedContentType(string requestContentType, bool expectedCanRead)
         {
-            var context = new InputFormatterContext(new DefaultHttpContext(),
-                "Irrelevant",
-                new ModelStateDictionary(),
-                new EmptyModelMetadataProvider().GetMetadataForType(typeof(Command)),
-                (stream, encoding) => new StreamReader(stream, encoding));
+            // Arrange
+            var loggerMock = NullLogger.Instance;
 
-            context.HttpContext.Request.ContentLength = 0;
-            context.HttpContext.Request.ContentType = "application/json";
+            var contentBytes = Encoding.UTF8.GetBytes("content");
 
-            bool result = _formatter.CanRead(context);
+            var httpContext = GetHttpContext(contentBytes, contentType: requestContentType);
+            var provider = new EmptyModelMetadataProvider();
+            var formatterContext = new InputFormatterContext(
+                httpContext,
+                modelName: "Irrelevant",
+                modelState: new ModelStateDictionary(),
+                metadata: provider.GetMetadataForType(typeof(Command)),
+                readerFactory: new TestHttpRequestStreamReaderFactory().CreateReader);
 
-            Assert.False(result);
+            // Act
+            var result = _formatter.CanRead(formatterContext);
+
+            // Assert
+            Assert.Equal(expectedCanRead, result);
         }
 
-        [Fact]
-        public void CanRead_WithModeTypeNotOfCommand_ReturnsFalse()
+        [Theory]
+        [InlineData("application/json")]
+        [InlineData("text/json")]
+        public void CanRead_WithModeTypeOfString_ReturnsFalse(string requestContentType)
         {
-            var context = new InputFormatterContext(new DefaultHttpContext(),
-                "Irrelevant",
-                new ModelStateDictionary(),
-                new EmptyModelMetadataProvider().GetMetadataForType(typeof(object)),
-                (stream, encoding) => new StreamReader(stream, encoding));
+            // Arrange
+            var loggerMock = NullLogger.Instance;
 
-            context.HttpContext.Request.ContentLength = 1;
-            context.HttpContext.Request.ContentType = "application/json";
+            var contentBytes = Encoding.UTF8.GetBytes("content");
 
-            bool result = _formatter.CanRead(context);
+            var httpContext = GetHttpContext(contentBytes, contentType: requestContentType);
+            var provider = new EmptyModelMetadataProvider();
+            var formatterContext = new InputFormatterContext(
+                httpContext,
+                modelName: "Irrelevant",
+                modelState: new ModelStateDictionary(),
+                metadata: provider.GetMetadataForType(typeof(string)),
+                readerFactory: new TestHttpRequestStreamReaderFactory().CreateReader);
 
+            // Act
+            var result = _formatter.CanRead(formatterContext);
+
+            // Assert
             Assert.False(result);
         }
 
@@ -137,6 +169,20 @@ namespace Vigil.WebApi.Binders
             bool result = _formatter.CanRead(context);
 
             Assert.False(result);
+        }
+
+        private static HttpContext GetHttpContext(byte[] contentBytes, string contentType = "application/json")
+        {
+            var request = new Mock<HttpRequest>();
+            var headers = new Mock<IHeaderDictionary>();
+            request.SetupGet(r => r.Headers).Returns(headers.Object);
+            request.SetupGet(f => f.Body).Returns(new MemoryStream(contentBytes));
+            request.SetupGet(f => f.ContentType).Returns(contentType);
+
+            var httpContext = new Mock<HttpContext>();
+            httpContext.SetupGet(c => c.Request).Returns(request.Object);
+            httpContext.SetupGet(c => c.Request).Returns(request.Object);
+            return httpContext.Object;
         }
     }
 }

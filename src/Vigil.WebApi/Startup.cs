@@ -30,10 +30,7 @@ namespace Vigil.WebApi
         {
             // Add framework services.
             services.AddMvc()
-                .AddMvcOptions(options =>
-                {
-                    options.InputFormatters.Insert(0, new CommandInputFormatter());
-                });
+                .AddCommandFormatter();
             services.AddTransient<IEventBus, SqlEventBus>()
                     .AddTransient<ICommandQueue, SqlCommandQueue>();
             services.AddPatronHandlers();
