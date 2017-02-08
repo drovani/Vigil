@@ -8,20 +8,8 @@
     <AssemblyOriginatorKeyFile>../../vigil.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <UserSecretsId>aspnet-Vigil.WebApi-20161209034118</UserSecretsId>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include="**\*.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="wwwroot\**" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Vigil.Patrons\Vigil.Patrons.csproj" />
     <ProjectReference Include="..\..\env\Vigil.Sql\Vigil.Sql.csproj" />

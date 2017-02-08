@@ -11,10 +11,6 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="**\*.resx" />
-    <EmbeddedResource Include="compiler\resources\**\*" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Vigil.Domain\Vigil.Domain.csproj" />
     <ProjectReference Include="..\..\src\Vigil.Patrons\Vigil.Patrons.csproj" />
   </ItemGroup>
