@@ -39,8 +39,8 @@ namespace Vigil.WebApi.Controllers
             }
         }
 
-        [HttpGet("rehydrate/{id:guid}")]
-        public IActionResult RehydratePatron(Guid id)
+        [HttpGet("rehydrate/{patronId:guid}")]
+        public IActionResult RehydratePatron(Guid patronId)
         {
             using (var context = _dbFactory())
             {
@@ -54,11 +54,11 @@ namespace Vigil.WebApi.Controllers
                     patronEvents.Add(pEvent);
                 }
 
-                var forPatron = patronEvents.Where(pc => pc.PatronId == id);
+                var forPatron = patronEvents.Where(pc => pc.PatronId == patronId);
 
                 if (forPatron.Any())
                 {
-                    return Ok(new Patron(id, forPatron));
+                    return Ok(new Patron(patronId, forPatron));
                 }
                 else
                 {
