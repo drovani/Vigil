@@ -8,7 +8,10 @@
     <AssemblyOriginatorKeyFile>../../vigil.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
+    <Authors>drovani</Authors>
+    <Description />
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Vigil.Patrons\Vigil.Patrons.csproj" />

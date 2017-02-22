@@ -9,6 +9,10 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>Vigil.Domain</RootNamespace>
+    <Authors>drovani</Authors>
+    <Description />
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json">

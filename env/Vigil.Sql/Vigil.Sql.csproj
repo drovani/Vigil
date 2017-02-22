@@ -9,6 +9,10 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Authors>drovani</Authors>
+    <Description />
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vigil.Domain\Vigil.Domain.csproj" />

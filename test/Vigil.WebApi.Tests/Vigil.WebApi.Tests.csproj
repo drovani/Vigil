@@ -9,6 +9,10 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>Vigil.WebApi</RootNamespace>
+    <Authors>drovani</Authors>
+    <Description />
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json">
@@ -17,15 +21,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vigil.WebApi\Vigil.WebApi.csproj" />
-    <ProjectReference Include="..\..\src\Vigil.Patrons\Vigil.Patrons.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
-    <ProjectReference Include="..\..\env\Vigil.Sql\Vigil.Sql.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Vigil.Domain\Vigil.Domain.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
+    <ProjectReference Include="..\..\src\Vigil.Patrons\Vigil.Patrons.csproj" />
+    <ProjectReference Include="..\..\env\Vigil.Sql\Vigil.Sql.csproj" />
+    <ProjectReference Include="..\..\src\Vigil.Domain\Vigil.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk">
