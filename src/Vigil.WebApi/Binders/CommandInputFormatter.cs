@@ -83,7 +83,6 @@ namespace Vigil.WebApi.Binders
                 throw new ArgumentNullException(nameof(encoding));
             }
 
-            object model = GetModel(context);
 
             using (var streamReader = context.ReaderFactory(context.HttpContext.Request.Body, encoding))
             {
@@ -131,6 +130,7 @@ namespace Vigil.WebApi.Binders
                     var type = context.ModelType;
                     var jsonSerializer = CreateJsonSerializer();
                     jsonSerializer.Error += errorHandler;
+                    object model = GetModel(context);
                     try
                     {
                         jsonSerializer.Populate(jsonReader, model);
@@ -164,6 +164,7 @@ namespace Vigil.WebApi.Binders
 
                 _commandModelCreators.Add(context.ModelType, lambda.Compile());
             }
+            // @TODO Find a better way to get the current user's name
             return _commandModelCreators[context.ModelType](context?.HttpContext?.User?.Identity?.Name ?? "Anonymous User", DateTime.UtcNow);
         }
 
