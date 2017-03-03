@@ -1,6 +1,8 @@
 language: csharp
 solution: Vigil.sln
-dotnet: 1.0.0-preview2-003131
+dotnet: 1.0.0-preview2-003121
+dist: trusty
+sudo: required
 install:
   - nuget restore Vigil.sln
   - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
