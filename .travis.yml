@@ -5,9 +5,9 @@ dist: trusty
 sudo: required
 install:
   - nuget restore Vigil.sln
-  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
+  - nuget install xunit.runners -Version 2.0.0 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release Vigil.sln
-  - mono ./testrunn/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./test/Vigil.Domain.Tests/bin/Release/Vigil.Domain.Tests.dll
-  - mono ./testrunn/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./test/Vigil.Patrons.Tests/bin/Release/Vigil.Patrons.Tests.dll
-  - mono ./testrunn/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./test/Vigil.WebApi.Tests/bin/Release/Vigil.WebApi.Tests.dll
+  - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./test/Vigil.Patrons.Tests/bin/Release/netcoreapp1.1/Vigil.Patrons.Tests.dll
+  - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./test/Vigil.WebApi.Tests/bin/Release/netcoreapp1.1/Vigil.WebApi.Tests.dll
+  - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./test/Vigil.Domain.Tests/bin/Release/netcoreapp1.1/Vigil.Domain.Tests.dll
