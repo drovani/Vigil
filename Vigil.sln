@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{47F09CB0-E97
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1BCE7835-8C4D-4DEA-8857-C80220E9FCE5}"
 	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
 		global.json = global.json
 		testsettings.runsettings = testsettings.runsettings
 		vigil.snk = vigil.snk
