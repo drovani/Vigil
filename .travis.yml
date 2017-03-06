@@ -1,3 +1,4 @@
 language: csharp
+solution: Vigil.sln
 dist: trusty
 sudo: required
