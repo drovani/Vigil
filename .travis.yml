@@ -1,6 +1,6 @@
 language: csharp
 sudo: required
 dist: trusty
+solution: Vigil.sln
 mono: none
 dotnet: 1.0.0-rc4-004771
-solution: Vigil.sln
