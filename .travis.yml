@@ -2,6 +2,7 @@ language: csharp
 
 sudo: required
 dist: trusty
+mono: none
 
 addons:
   apt:
