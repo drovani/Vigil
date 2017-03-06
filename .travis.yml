@@ -1,13 +1,6 @@
 language: csharp
-solution: Vigil.sln
-dotnet: 1.0.0-preview3-004056
-dist: trusty
 sudo: required
-install:
-  - nuget restore Vigil.sln
-  - nuget install xunit.runners -Version 2.0.0 -OutputDirectory testrunner
-script:
-  - xbuild /p:Configuration=Release Vigil.sln
-  - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./test/Vigil.Patrons.Tests/bin/Release/netcoreapp1.1/Vigil.Patrons.Tests.dll
-  - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./test/Vigil.WebApi.Tests/bin/Release/netcoreapp1.1/Vigil.WebApi.Tests.dll
-  - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./test/Vigil.Domain.Tests/bin/Release/netcoreapp1.1/Vigil.Domain.Tests.dll
+dist: trusty
+solution: Vigil.sln
+mono: none
+dotnet: 1.0.0-rc4-004771
