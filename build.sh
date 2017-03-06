@@ -1,4 +1,5 @@
 #!/bin/bash
+dotnet --info
 dotnet restore
 
 # Build Library and Example
