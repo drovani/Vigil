@@ -16,5 +16,5 @@ done
 for path in test/*/*csproj; do
     dirname="$(dirname "${path}")"
     dotnet build ${dirname} -c Release
-    dotnet run -p ${dirname} -c Release
+    dotnet test -p ${dirname} -c Release
 done
