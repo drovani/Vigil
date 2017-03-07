@@ -2,8 +2,7 @@ language: csharp
 sudo: required
 dist: trusty
 solution: Vigil.sln
-mono: none
-dotnet: 1.0.0-rc4-004771
+
 install:
     - nuget restore $TAVIS_SOLUTION
 script:
@@ -11,3 +10,5 @@ script:
 matrix:
   include:
     - dotnet: 1.0.0-rc4-004771
+      mono: none
+      env: FRAMEWORK=netcoreapp1.1 DOTNETCORE=1
