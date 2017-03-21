@@ -12,14 +12,17 @@
     <Description />
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
+    <UserSecretsId>6bf18fc4-44a1-4c9b-98ea-22cc92ed1c94</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\env\Vigil.Azure\Vigil.Azure.csproj" />
     <ProjectReference Include="..\Vigil.Patrons\Vigil.Patrons.csproj" />
     <ProjectReference Include="..\..\env\Vigil.Sql\Vigil.Sql.csproj" />
     <ProjectReference Include="..\Vigil.Domain\Vigil.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics">
       <Version>1.1.1</Version>
     </PackageReference>
@@ -66,6 +69,12 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions">
       <Version>1.1.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
