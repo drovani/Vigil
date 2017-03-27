@@ -1,10 +1,10 @@
-﻿using System;
-using Vigil.Domain.Messaging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
+﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
-using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
+using Vigil.Domain.Messaging;
 
 namespace Vigil.Azure
 {
@@ -12,11 +12,9 @@ namespace Vigil.Azure
     {
         private CloudQueue commandQueue;
 
-        public AzureCommandQueue(StorageCredentials storageCredentials)
+        public AzureCommandQueue(CloudQueue commandQueue)
         {
-            CloudStorageAccount storageAccount = new CloudStorageAccount(storageCredentials, true);
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            commandQueue = queueClient.GetQueueReference("commandqueue");
+            this.commandQueue = commandQueue;
         }
 
         public void Publish<TCommand>(TCommand command) where TCommand : ICommand
