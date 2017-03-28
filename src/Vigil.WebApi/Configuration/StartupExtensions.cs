@@ -26,8 +26,7 @@ namespace Vigil.WebApi.Configuration
                 .Options;
 
             services.AddSingleton<Func<VigilWebContext>>(srv => () => new VigilWebContext(options))
-                    .AddSingleton<Func<IPatronContext>>(srv => () => new VigilWebContext(options))
-                    .AddSingleton<Func<SqlMessageDbContext>>(srv => () => new SqlMessageDbContext(options));
+                    .AddSingleton<Func<IPatronContext>>(srv => () => new VigilWebContext(options));
 
             return services;
         }
