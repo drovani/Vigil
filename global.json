@@ -1,6 +1,3 @@
 {
-  "projects": [ "src", "test", "env" ],
-  "sdk": {
-    "version": "1.0.0-rc4-004771"
-  }
+  "projects": [ "src", "test", "env" ]
 }
