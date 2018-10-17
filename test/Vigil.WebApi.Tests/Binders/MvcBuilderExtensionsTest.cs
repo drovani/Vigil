@@ -20,7 +20,7 @@ namespace Vigil.WebApi.Binders
             Assert.Same(result, builder);
             ServiceDescriptor descriptor = Assert.Single(result.Services);
             Assert.Equal(typeof(VigilMvcOptionsSetup), descriptor.ImplementationType);
-            Assert.Equal(descriptor.Lifetime, ServiceLifetime.Transient);
+            Assert.Equal(ServiceLifetime.Transient, descriptor.Lifetime);
             Assert.Equal(typeof(IConfigureOptions<MvcOptions>), descriptor.ServiceType);
         }
     }

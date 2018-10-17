@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Formatters.Json.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Vigil.Domain.Messaging;
@@ -40,7 +40,7 @@ namespace Vigil.WebApi.Binders
             , JsonSerializerSettings serializerSettings
             , ArrayPool<char> charPool
             , ObjectPoolProvider objectPoolProvider)
-            : base(logger, serializerSettings, charPool, objectPoolProvider)
+            : base(logger, serializerSettings, charPool, objectPoolProvider, options: new MvcOptions(), jsonOptions: new MvcJsonOptions())
         {
             if (charPool == null)
             {
