@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using Ardalis.GuardClauses;
 
 namespace Vigil.Domain.Messaging
 {
@@ -15,10 +15,10 @@ namespace Vigil.Domain.Messaging
 
         protected Event(string generatedBy, DateTime generatedOnUtc, Guid sourceId)
         {
-            if (string.IsNullOrEmpty(generatedBy)) throw new ArgumentNullException(nameof(generatedBy));
-            if (generatedOnUtc == default(DateTime)) throw new ArgumentException($"{nameof(generatedOnUtc)} requires a non-default value.", nameof(generatedOnUtc));
+            Guard.Against.NullOrEmpty(generatedBy, nameof(generatedBy));
+            Guard.Against.Default(generatedOnUtc, nameof(generatedOnUtc));
             if (generatedOnUtc.Kind != DateTimeKind.Utc) throw new ArgumentException($"{nameof(generatedOnUtc)} must be DateTimeKind.UTC.", nameof(generatedOnUtc));
-            if (Guid.Empty.Equals(sourceId)) throw new ArgumentException($"{nameof(sourceId)} requires a non-default value.", nameof(sourceId));
+            Guard.Against.Default(sourceId, nameof(sourceId));
 
             GeneratedBy = generatedBy;
             GeneratedOn = generatedOnUtc;

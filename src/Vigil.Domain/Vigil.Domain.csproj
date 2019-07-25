@@ -14,6 +14,7 @@
     <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Linq">
       <Version>4.3.0</Version>
