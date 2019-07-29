@@ -41,5 +41,5 @@ steps:
       !**\*TestAdapter.dll
       !**\obj\**
     searchFolder: '$(System.DefaultWorkingDirectory)\test'
-    codeCoverageEnabled: true
+    codeCoverageEnabled: false
     rerunFailedTests: false
