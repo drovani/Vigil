@@ -32,9 +32,8 @@ namespace Vigil.Domain.EventSourcing
 
         public void Update(VersionedEvent e)
         {
-            e.Version = Version + 1;
+            Version = ++e.Version;
             handlers[e.GetType()].Invoke(e);
-            Version = e.Version;
             events.Add(e);
         }
 

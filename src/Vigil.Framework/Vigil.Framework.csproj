@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>Vigil.Framework</AssemblyName>
+    <AssemblyOriginatorKeyFile>../../vigil.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Authors>drovani</Authors>
+    <Description />
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
+  </ItemGroup>
+
+</Project>

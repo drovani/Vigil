@@ -16,7 +16,7 @@ namespace Vigil.Domain
         /// <returns>Returns true if the two Id values are equal; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -31,32 +31,12 @@ namespace Vigil.Domain
             return Equals((KeyIdentity)obj);
         }
 
-        public bool Equals(KeyIdentity other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-            return Equals(other.Id, Id);
-        }
+        public bool Equals(KeyIdentity other) => other == null ? false : Equals(other.Id, Id);
 
-        public static bool operator ==(KeyIdentity left, KeyIdentity right)
-        {
-            return Equals(left, right);
-        }
-        public static bool operator !=(KeyIdentity left, KeyIdentity right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator ==(KeyIdentity left, KeyIdentity right) => Equals(left, right);
+        public static bool operator !=(KeyIdentity left, KeyIdentity right) => !Equals(left, right);
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Id.ToString();
-        }
+        public override int GetHashCode() => Id.GetHashCode();
+        public override string ToString() => Id.ToString();
     }
 }

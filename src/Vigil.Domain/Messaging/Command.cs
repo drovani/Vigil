@@ -1,5 +1,6 @@
 ﻿using System;
 using Ardalis.GuardClauses;
+using Vigil.Framework;
 
 namespace Vigil.Domain.Messaging
 {
@@ -12,10 +13,7 @@ namespace Vigil.Domain.Messaging
         {
             Guard.Against.NullOrEmpty(generatedBy, nameof(generatedBy));
             Guard.Against.Default(generatedOnUtc, nameof(generatedOnUtc));
-            if (generatedOnUtc.Kind != DateTimeKind.Utc)
-            {
-                throw new ArgumentException($"{nameof(generatedOnUtc)} must be DateTimeKind.UTC.", nameof(generatedOnUtc));
-            }
+            Guard.Against.NonUtcDateTimeKind(generatedOnUtc, nameof(generatedOnUtc));
 
             GeneratedBy = generatedBy;
             GeneratedOn = generatedOnUtc;
