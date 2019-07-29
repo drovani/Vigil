@@ -13,6 +13,7 @@
     <Description />
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/drovani/Vigil</RepositoryUrl>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json">
