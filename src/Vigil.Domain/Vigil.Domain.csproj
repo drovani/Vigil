@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <VersionPrefix>0.0.1</VersionPrefix>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Vigil.Domain</AssemblyName>
     <AssemblyOriginatorKeyFile>../../vigil.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -15,10 +15,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview7.19365.7" />
     <PackageReference Include="System.Linq">
       <Version>4.3.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vigil.Framework\Vigil.Framework.csproj" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>

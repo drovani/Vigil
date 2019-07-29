@@ -40,21 +40,19 @@ namespace Vigil.Patrons
 
             handler.Handle(evnt);
 
-            using (var context = Context.Invoke())
-            {
-                Patron result = context.Patrons.Single();
-                Assert.Equal("New Patron", result.DisplayName);
-                Assert.Equal("Test Account", result.PatronType);
-                Assert.Equal(evnt.PatronId, result.Id);
-                Assert.False(result.IsAnonymous);
-                Assert.Equal("Create User", result.CreatedBy);
-                Assert.Equal(TestHelper.Now, result.CreatedOn);
-                Assert.Equal(0, result.Version);
-                Assert.Null(result.ModifiedBy);
-                Assert.Null(result.ModifiedOn);
-                Assert.Null(result.DeletedBy);
-                Assert.Null(result.DeletedOn);
-            }
+            using var context = Context.Invoke();
+            Patron result = context.Patrons.Single();
+            Assert.Equal("New Patron", result.DisplayName);
+            Assert.Equal("Test Account", result.PatronType);
+            Assert.Equal(evnt.PatronId, result.Id);
+            Assert.False(result.IsAnonymous);
+            Assert.Equal("Create User", result.CreatedBy);
+            Assert.Equal(TestHelper.Now, result.CreatedOn);
+            Assert.Equal(0, result.Version);
+            Assert.Null(result.ModifiedBy);
+            Assert.Null(result.ModifiedOn);
+            Assert.Null(result.DeletedBy);
+            Assert.Null(result.DeletedOn);
         }
 
         [Fact]

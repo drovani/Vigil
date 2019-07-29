@@ -13,19 +13,19 @@ namespace Vigil.Domain.Messaging
         [Fact]
         public void Constructor_Throw_ArgumentNullException_When_GeneratedBy_Is_Null()
         {
-            Assert.Throws<ArgumentNullException>("generatedBy", () => new TestEvent(null, default(DateTime), Guid.Empty));
+            Assert.Throws<ArgumentNullException>("generatedBy", () => new TestEvent(null, default, Guid.Empty));
         }
         [Fact]
         [Trait("FailsBecause", "Waiting on library update")]
         public void Constructor_Throw_ArgumentException_When_GeneratedBy_Is_Empty()
         {
-            Assert.Throws<ArgumentNullException>("generatedBy", () => new TestEvent(string.Empty, default(DateTime), Guid.Empty));
+            Assert.Throws<ArgumentNullException>("generatedBy", () => new TestEvent(string.Empty, default, Guid.Empty));
         }
         [Fact]
         [Trait("FailsBecause", "Waiting on library update")]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_DefaultDateTime()
         {
-            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", default(DateTime), Guid.Empty));
+            Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", default, Guid.Empty));
         }
         [Fact]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_KindUnspecified()

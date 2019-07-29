@@ -22,48 +22,51 @@ namespace Vigil.WebApi.Controllers
         [HttpGet("commands")]
         public OkObjectResult GetAllCommands()
         {
+            List<Command> cmds;
             using (var context = _dbFactory())
             {
-                var cmds = context.Commands.OrderByDescending(c => c.GeneratedOn).ToList();
-                return Ok(cmds);
+                cmds = context.Commands.OrderByDescending(c => c.GeneratedOn).ToList();
             }
+            return Ok(cmds);
         }
 
         [HttpGet("events")]
         public OkObjectResult GetAllEvents()
         {
+            List<Event> events;
             using (var context = _dbFactory())
             {
-                var events = context.Events.OrderByDescending(c => c.GeneratedOn).ToList();
-                return Ok(events);
+                events = context.Events.OrderByDescending(c => c.GeneratedOn).ToList();
             }
+            return Ok(events);
         }
 
         [HttpGet("rehydrate/{patronId:guid}")]
         public IActionResult RehydratePatron(Guid patronId)
         {
+            List<Event> events;
             using (var context = _dbFactory())
             {
-                var events = context.Events.Where(ev => ev.SerializedEvent.Contains("PatronId")).ToList();
-                List<PatronEvent> patronEvents = new List<PatronEvent>();
-                foreach(var ev in events)
-                {
-                    Type type = Type.GetType(ev.EventType, true);
-                    var obj = JsonConvert.DeserializeObject(ev.SerializedEvent, type);
-                    var pEvent = obj as PatronEvent;
-                    patronEvents.Add(pEvent);
-                }
+                events = context.Events.Where(ev => ev.SerializedEvent.Contains("PatronId")).ToList();
+            }
+            List<PatronEvent> patronEvents = new List<PatronEvent>();
+            foreach (var ev in events)
+            {
+                Type type = Type.GetType(ev.EventType, true);
+                var obj = JsonConvert.DeserializeObject(ev.SerializedEvent, type);
+                var pEvent = obj as PatronEvent;
+                patronEvents.Add(pEvent);
+            }
 
-                var forPatron = patronEvents.Where(pc => pc.PatronId == patronId);
+            var forPatron = patronEvents.Where(pc => pc.PatronId == patronId);
 
-                if (forPatron.Any())
-                {
-                    return Ok(new Patron(patronId, forPatron));
-                }
-                else
-                {
-                    return NotFound();
-                }
+            if (forPatron.Any())
+            {
+                return Ok(new Patron(patronId, forPatron));
+            }
+            else
+            {
+                return NotFound();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Vigil.Domain.EventSourcing;
@@ -26,27 +27,29 @@ namespace Vigil.WebApi.Controllers
         [HttpGet]
         public OkObjectResult Get()
         {
+            IList<TEntity> entities;
             using (var context = ContextFactory())
             {
-                var entities = context.Set<TEntity>().Where(en => en.DeletedOn == null).ToList();
-                return Ok(new ReadOnlyCollection<TEntity>(entities));
+                entities = context.Set<TEntity>().Where(en => en.DeletedOn == null).ToList();
             }
+            return Ok(new ReadOnlyCollection<TEntity>(entities));
         }
 
         [HttpGet("{id:guid}")]
         public IActionResult Get(Guid id)
         {
+            TEntity entity;
             using (var context = contextFactory())
             {
-                var entity = context.Set<TEntity>().Find(id);
-                if (entity == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(entity);
-                }
+                entity = context.Set<TEntity>().Find(id);
+            }
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(entity);
             }
         }
 

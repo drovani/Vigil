@@ -1,6 +1,4 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Queue;
+﻿using Microsoft.Azure.Storage.Queue;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
@@ -10,7 +8,7 @@ namespace Vigil.Azure
 {
     public class AzureCommandQueue : ICommandQueue
     {
-        private CloudQueue commandQueue;
+        private readonly CloudQueue commandQueue;
 
         public AzureCommandQueue(CloudQueue commandQueue)
         {

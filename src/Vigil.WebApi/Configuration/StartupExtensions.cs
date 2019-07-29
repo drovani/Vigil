@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using System;
 using System.Net;
 using Vigil.Patrons;
-using Vigil.Sql;
 using Vigil.WebApi.Controllers;
 
 namespace Vigil.WebApi.Configuration
@@ -47,7 +46,7 @@ namespace Vigil.WebApi.Configuration
                                     var obj = new
                                     {
                                         ExceptionType = ex.GetType().FullName,
-                                        Message = ex.Error.Message,
+                                        ex.Error.Message,
                                         StackTrace = stackTrace
                                     };
                                     string jsonString = JsonConvert.SerializeObject(obj, Formatting.Indented);

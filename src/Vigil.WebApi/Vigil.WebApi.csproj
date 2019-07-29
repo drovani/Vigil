@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <VersionPrefix>0.0.1</VersionPrefix>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>Vigil.WebApi</AssemblyName>
     <OutputType>Exe</OutputType>
@@ -15,16 +15,16 @@
     <UserSecretsId>6bf18fc4-44a1-4c9b-98ea-22cc92ed1c94</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\env\Vigil.Azure\Vigil.Azure.csproj" />
     <ProjectReference Include="..\Vigil.Patrons\Vigil.Patrons.csproj" />
-    <ProjectReference Include="..\..\env\Vigil.Sql\Vigil.Sql.csproj" />
     <ProjectReference Include="..\Vigil.Domain\Vigil.Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <ProjectReference Include="..\..\env\Vigil.Azure\Vigil.Azure.csproj" />
+    <ProjectReference Include="..\..\env\Vigil.Sql\Vigil.Sql.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview7.19365.7" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>

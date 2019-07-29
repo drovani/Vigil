@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <VersionPrefix>0.0.1</VersionPrefix>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Vigil.Sql</AssemblyName>
     <AssemblyOriginatorKeyFile>../../vigil.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -19,7 +19,8 @@
     <ProjectReference Include="..\..\src\Vigil.Patrons\Vigil.Patrons.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0-preview7.19362.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview7.19362.6" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>

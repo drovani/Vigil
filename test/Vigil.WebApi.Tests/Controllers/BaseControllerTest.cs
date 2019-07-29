@@ -84,6 +84,7 @@ namespace Vigil.WebApi.Controllers
         }
 
         [Fact]
+        [Trait("FailsBecause", "Find(id) throws NullReferenceException instead of returning null")]
         public void Get_ById_Returns_NotFound_WhenIdDoesNotMatch()
         {
             using (var context = Context())

@@ -39,34 +39,30 @@ namespace Vigil.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            using (var context = ContextFactory())
+            using var context = ContextFactory();
+            if (context.Patrons.Find(command.PatronId) != null)
             {
-                if (context.Patrons.Find(command.PatronId) != null)
-                {
-                    CommandQueue.Publish(command);
-                    return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
-                }
-                else
-                {
-                    return NotFound(command.PatronId);
-                }
+                CommandQueue.Publish(command);
+                return Accepted(Url.Action(nameof(Get), new { id = command.PatronId }));
+            }
+            else
+            {
+                return NotFound(command.PatronId);
             }
         }
 
         [HttpDelete("{patronId:guid}")]
         public IActionResult Delete(Guid patronId)
         {
-            using (var context = ContextFactory())
+            using var context = ContextFactory();
+            if (context.Patrons.Any(p => p.Id == patronId && p.DeletedOn == null))
             {
-                if (context.Patrons.Any(p => p.Id == patronId && p.DeletedOn == null))
-                {
-                    CommandQueue.Publish(new DeletePatron(User.Identity.Name ?? "Anonymous User", DateTime.UtcNow) { PatronId = patronId });
-                    return Accepted();
-                }
-                else
-                {
-                    return NotFound(patronId);
-                }
+                CommandQueue.Publish(new DeletePatron(User.Identity.Name ?? "Anonymous User", DateTime.UtcNow) { PatronId = patronId });
+                return Accepted();
+            }
+            else
+            {
+                return NotFound(patronId);
             }
         }
     }

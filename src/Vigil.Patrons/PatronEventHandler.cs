@@ -9,7 +9,7 @@ namespace Vigil.Patrons
         IEventHandler<PatronHeaderChanged>,
         IEventHandler<PatronDeleted>
     {
-        private Func<IPatronContext> contextFactory;
+        private readonly Func<IPatronContext> contextFactory;
 
         public PatronEventHandler(Func<IPatronContext> contextFactory)
         {
@@ -26,28 +26,24 @@ namespace Vigil.Patrons
 
         public void Handle(PatronHeaderChanged evnt)
         {
-            using (var context = contextFactory.Invoke())
-            {
-                var patron = context.Patrons.Find(evnt.PatronId);
+            using var context = contextFactory.Invoke();
+            var patron = context.Patrons.Find(evnt.PatronId);
 
-                if (patron != null)
-                {
-                    patron.Update(evnt);
-                    context.SaveChanges();
-                }
+            if (patron != null)
+            {
+                patron.Update(evnt);
+                context.SaveChanges();
             }
         }
 
         public void Handle(PatronDeleted evnt)
         {
-            using (var context = contextFactory.Invoke())
+            using var context = contextFactory.Invoke();
+            var patron = context.Patrons.Find(evnt.PatronId);
+            if (patron != null)
             {
-                var patron = context.Patrons.Find(evnt.PatronId);
-                if (patron != null)
-                {
-                    patron.Update(evnt);
-                    context.SaveChanges();
-                }
+                patron.Update(evnt);
+                context.SaveChanges();
             }
         }
     }
