@@ -83,8 +83,7 @@ namespace Vigil.WebApi.Controllers
             Assert.Contains(data, d => d.Id == TestItems[2].Id);
         }
 
-        [Fact]
-        [Trait("FailsBecause", "Find(id) throws NullReferenceException instead of returning null")]
+        [Fact(Skip = "Find(id) throws NullReferenceException instead of returning null")]
         public void Get_ById_Returns_NotFound_WhenIdDoesNotMatch()
         {
             using (var context = Context())

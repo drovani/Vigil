@@ -15,14 +15,12 @@ namespace Vigil.Domain.Messaging
         {
             Assert.Throws<ArgumentNullException>("generatedBy", () => new TestEvent(null, default, Guid.Empty));
         }
-        [Fact]
-        [Trait("FailsBecause", "Waiting on library update")]
+        [Fact(Skip = "Guard.Against.Default does not return the ParameterName")]
         public void Constructor_Throw_ArgumentException_When_GeneratedBy_Is_Empty()
         {
             Assert.Throws<ArgumentNullException>("generatedBy", () => new TestEvent(string.Empty, default, Guid.Empty));
         }
-        [Fact]
-        [Trait("FailsBecause", "Waiting on library update")]
+        [Fact(Skip = "Guard.Against.Default does not return the ParameterName")]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_DefaultDateTime()
         {
             Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", default, Guid.Empty));
@@ -41,8 +39,7 @@ namespace Vigil.Domain.Messaging
 
             Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestEvent("Create User", nonUtcNow, Guid.Empty));
         }
-        [Fact]
-        [Trait("FailsBecause", "Waiting on library update")]
+        [Fact(Skip = "Guard.Against.Default does not return the ParameterName")]
         public void Constructor_Throw_ArgumentException_When_SourceId_Is_DefaultGuid()
         {
             Assert.Throws<ArgumentException>("sourceId", () => new TestEvent("Create User", TestHelper.Now, Guid.Empty));
