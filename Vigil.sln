@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{47F09CB0-E97
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1BCE7835-8C4D-4DEA-8857-C80220E9FCE5}"
 	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
 		global.json = global.json
 		testsettings.runsettings = testsettings.runsettings
 		vigil.snk = vigil.snk
@@ -34,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vigil.Azure", "env\Vigil.Az
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vigil.Framework", "src\Vigil.Framework\Vigil.Framework.csproj", "{86A567FD-5175-4BAF-92E6-9BD8D5F2AB30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vigil.Framework.Tests", "test\Vigil.Framework.Tests\Vigil.Framework.Tests.csproj", "{EE788D39-2F68-4F32-A2E0-94A632B89AC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vigil.Framework.Tests", "test\Vigil.Framework.Tests\Vigil.Framework.Tests.csproj", "{EE788D39-2F68-4F32-A2E0-94A632B89AC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
