@@ -15,14 +15,12 @@ namespace Vigil.Domain.Messaging
         {
             Assert.Throws<ArgumentNullException>("generatedBy", () => new TestCommand(null, DateTime.MinValue));
         }
-        [Fact]
-        [Trait("FailsBecause", "Waiting on library update")]
+        [Fact(Skip = "Guard.Against.Default does not return the ParameterName")]
         public void Constructor_Throw_ArgumentNullException_When_GeneratedBy_Is_Empty()
         {
             Assert.Throws<ArgumentNullException>("generatedBy", () => new TestCommand(string.Empty, DateTime.MinValue));
         }
-        [Fact]
-        [Trait("FailsBecause", "Waiting on library update")]
+        [Fact(Skip = "Guard.Against.Default does not return the ParameterName")]
         public void Constructor_Throw_ArgumentException_When_GeneratedOn_Is_DefaultDateTime()
         {
             Assert.Throws<ArgumentException>("generatedOnUtc", () => new TestCommand("Create User", default));
